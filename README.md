@@ -13,9 +13,22 @@ You'll need [io.js](https://iojs.org/en/index.html) and [mysql](https://www.mysq
 
 ### Environment Variables
 
-You'll need to provide the following environment variables:
+You'll need to create a `.env` file and provide the following environment variables:
 
-- `PORT`
+```
+PORT=3000
+
+DB_HOST=localhost
+DB_USER=jspef
+DB_PASS=s3cR3t
+DB_NAME=jsperf
+
+DOMAIN=
+ASSETS_DOMAIN=
+ADMIN_EMAIL=you@example.com
+
+BROWSERSCOPE_API_KEY=s3cR3t
+```
 
 ### Run
 

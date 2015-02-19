@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/jsperf/jsperf.com",
   "dependencies": {
+    "dotenv": "^0.5.1",
     "good": "^5.1.2",
     "good-console": "^4.1.0",
     "hapi": "^8.2.0"
