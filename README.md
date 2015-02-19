@@ -41,13 +41,13 @@ npm start
 We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab enforces linting with [eslint](http://eslint.org/). To run the test suite:
 
 ```
-make test
+npm run test-lint
 ```
 
 ### Coverage
 
-When [travis-ci](https://travis-ci.org) runs the tests, it enforces 100% code coverage. You can run this locally with either `make test-cov` or `npm test`
+When [travis-ci](https://travis-ci.org) runs the tests, it enforces 100% code coverage. You can run this locally with either `npm test`
 
 #### HTML Report
 
-To generate an HTML report with code coverage, run `make test-cov-html`
+To generate an HTML report with code coverage, run `npm run test-cov-html`
