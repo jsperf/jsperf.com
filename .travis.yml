@@ -2,6 +2,6 @@ language: node_js
 node_js:
   - iojs
 after_success:
-  - npm install -g codeclimate
+  - npm install -g codeclimate-test-reporter
 after_script:
   - cat lcov.info | codeclimate
