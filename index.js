@@ -32,7 +32,7 @@ server.views({
   partialsPath: "templates/partials",
   context: function() {
     var debug = process.env.NODE_ENV === "development";
-    var domain = server.info.host;
+    var domain = process.env.DOMAIN;
     var cssFile = "main.css";
 
     if (debug) {
