@@ -1,7 +1,12 @@
 language: node_js
 node_js:
-  - iojs
-after_success:
-  - npm install -g codeclimate-test-reporter
+- iojs
 after_script:
-  - cat lcov.info | codeclimate
+- npm install -g codeclimate-test-reporter
+- cat lcov.info | codeclimate
+deploy:
+  provider: heroku
+  app:
+    master: jsperf-dev
+  api_key:
+    secure: Enbwr5BsIj6Q12tlrPytm7aoOgOBc5649NrRZaUzXbPxBMZslrs//bE2ibYE/UgUu55gzNh8a5orGVNj2i+wiisFsblF4K/GgNxlNWgTJtdd7Y27JKBGXJdXUJk6hMU4ksgNy9YM/fJAvPQOdyI7Pb+fM7oXwTvWeciSeUrev44=
