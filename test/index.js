@@ -21,10 +21,7 @@ lab.experiment("Index", function () {
       method: "GET",
       url: "/"
     }, function(response) {
-      var result = response.result;
-
       Code.expect(response.statusCode).to.equal(200);
-      Code.expect(result).to.equal("Hello, world!");
 
       done();
     });
