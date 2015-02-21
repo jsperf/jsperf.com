@@ -1,0 +1,15 @@
+<head>
+  <meta charset="utf-8">
+  <title>{{title}}</title>
+
+  {{! don’t use ASSETS_DOMAIN here in case the CSS will be XHRed }}
+  <link rel="stylesheet" href="http://{{domain}}/_css/{{cssFile}}">
+
+  <!--[if lt IE 9]>
+    <script src="//{{assetsDomain}}/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+
+  <article>

@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/jsperf/jsperf.com.svg?branch=master)](https://travis-ci.org/jsperf/jsperf.com) [![Code Climate](https://codeclimate.com/github/jsperf/jsperf.com/badges/gpa.svg)](https://codeclimate.com/github/jsperf/jsperf.com)
 
+[Chat on `irc.freenode.net` in the `#jsperf` channel](https://webchat.freenode.net/?channels=jsperf)
+
 ## How to run a local copy of jsPerf for testing/debugging
 
 ### Prerequisites
@@ -16,6 +18,7 @@ You'll need [io.js](https://iojs.org/en/index.html) and [mysql](https://www.mysq
 You'll need to create a `.env` file and provide the following environment variables:
 
 ```
+NODE_ENV=development
 PORT=3000
 
 DB_HOST=localhost

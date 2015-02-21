@@ -3,8 +3,11 @@
 require("dotenv").load();
 
 var path = require("path");
-var publicPath = path.join(__dirname, "public");
 var Hapi = require("hapi");
+
+var pkg = require("./package.json");
+
+var publicPath = path.join(__dirname, "public");
 
 var server = new Hapi.Server({
   connections: {
@@ -15,13 +18,44 @@ var server = new Hapi.Server({
     }
   }
 });
+
 server.connection({ port: process.env.PORT });
+
+server.views({
+  engines: {
+    html: require("handlebars")
+  },
+  relativeTo: __dirname,
+  path: "templates",
+  layout: "layout",
+  helpersPath: "templates/helpers",
+  partialsPath: "templates/partials",
+  context: function() {
+    var debug = process.env.NODE_ENV === "development";
+    var domain = server.info.host;
+    var cssFile = "main.css";
+
+    if (debug) {
+      cssFile = "main.src.css?" + Date.now();
+      domain += ":" + server.info.port;
+    }
+
+    return {
+      debug: debug,
+      version: pkg.version,
+      title: "jsPerf: JavaScript performance playground",
+      domain: domain,
+      assetsDomain: process.env.ASSETS_DOMAIN,
+      cssFile: cssFile
+    };
+  }
+});
 
 server.route({
   method: "GET",
   path: "/",
   handler: function (request, reply) {
-    reply("Hello, world!");
+    reply.view("index");
   }
 });
 
@@ -38,7 +72,7 @@ server.route({
 
 server.route({
   method: "GET",
-  path: "/public/{path*}",
+  path: "/{path*}",
   handler: {
     directory: {
       path: publicPath,
