@@ -27,30 +27,28 @@
 
   {{#if benchmark}}
     {{#if debug}}
-      <script src="//{{assetsDomain}}/_js/platform.src.js"></script>
-      <script src="//{{assetsDomain}}/_js/benchmark.src.js"></script>
-      <script src="//{{assetsDomain}}/_js/ui.src.js"></script>
-      <script src="//{{assetsDomain}}/_js/ui.browserscope.src.js"></script>
+      <script src="//_js/platform.src.js"></script>
+      <script src="//_js/benchmark.src.js"></script>
+      <script src="//_js/ui.src.js"></script>
+      <script src="//_js/ui.browserscope.src.js"></script>
     {{else}}
-      <script src="//{{assetsDomain}}/benchmark-{{version}}.js"></script>
+      <script src="//_js/benchmark.js"></script>
     {{/if}}
   {{else}}
     {{#if mainJS}}
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
 
       {{#if debug}}
-        <script src="//{{assetsDomain}}/beautify.js"></script>
-        <script src="//{{assetsDomain}}/main.src.js"></script>
+        <script src="//_js/beautify.js"></script>
+        <script src="//_js/main.src.js"></script>
       {{else}}
-        {{! TODO 111009?? }}
-        <script src="//{{assetsDomain}}/main-111009.js"></script>
+        <script src="//_js/main.js"></script>
       {{/if}}
 
     {{else}}
       {{#if ga}}
       <script>
-        var _gaq=[['_setAccount','UA-6065217-40'],['_trackPageview']];
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))
+        var _gaq=[['_setAccount','UA-6065217-40'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))
       </script>
       {{/if}}
     {{/if}}
