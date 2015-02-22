@@ -19,9 +19,9 @@
 
     <a href="https://github.com/jsperf/jsperf.com">source on GitHub</a> &middot;
 
-    <a href="//benchmarkjs.com">Benchmark.js</a> &middot;
+    <a href="http://benchmarkjs.com">Benchmark.js</a> &middot;
 
-    by <a href="//mathiasbynens.be">@mathias</a> and <a href="/contributors">contributors</a>
+    by <a href="https://mathiasbynens.be">@mathias</a> and <a href="/contributors">contributors</a>
 
   </footer>
 
@@ -36,7 +36,7 @@
     {{/if}}
   {{else}}
     {{#if mainJS}}
-      <script src="/ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
 
       {{#if debug}}
         <script src="/_js/beautify.js"></script>
@@ -48,7 +48,8 @@
     {{else}}
       {{#if ga}}
       <script>
-        var _gaq=[['_setAccount','UA-6065217-40'],['_trackPageview']];(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='//www.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))
+        window._gaq=[['_setAccount','UA-6065217-40'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='https://ssl.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))
       </script>
       {{/if}}
     {{/if}}
