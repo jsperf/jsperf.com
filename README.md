@@ -13,24 +13,6 @@ You'll need [io.js](https://iojs.org/en/index.html) and [mysql](https://www.mysq
 1. Clone the repository (`git clone https://github.com/jsperf/jsperf.com.git`)
 2. Install dependencies (`npm install`)
 
-### Environment Variables
-
-You'll need to create a `.env` file and provide the following environment variables:
-
-```
-NODE_ENV=development
-PORT=3000
-
-DB_HOST=localhost
-DB_USER=jspef
-DB_PASS=s3cR3t
-DB_NAME=jsperf
-
-ADMIN_EMAIL=you@example.com
-
-BROWSERSCOPE_API_KEY=s3cR3t
-```
-
 ### Run
 
 ```
@@ -47,8 +29,16 @@ npm run test-lint
 
 ### Coverage
 
-When [travis-ci](https://travis-ci.org) runs the tests, it enforces 100% code coverage. You can run this locally with either `npm test`
+When [travis-ci](https://travis-ci.org) runs the tests, it enforces 100% code coverage. You can run this locally with either
+
+```
+npm test
+```
 
 #### HTML Report
 
-To generate an HTML report with code coverage, run `npm run test-cov-html`
+To generate an HTML report with code coverage, run
+
+```
+npm run test-cov-html
+```
