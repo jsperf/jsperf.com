@@ -30,12 +30,12 @@
     "good-console": "^4.1.0",
     "handlebars": "^3.0.0",
     "hapi": "^8.2.0",
-    "nodemon": "^1.3.7",
     "visionary": "^2.0.0"
   },
   "devDependencies": {
     "code": "^1.3.0",
-    "lab": "^5.2.1"
+    "lab": "^5.2.1",
+    "nodemon": "^1.3.7"
   },
   "engines": {
     "iojs": "1.x.x"
