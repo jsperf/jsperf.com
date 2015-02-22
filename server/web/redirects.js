@@ -1,17 +1,19 @@
 "use strict";
 
 exports.register = function(server, options, next) {
+
   server.route({
     method: "GET",
-    path: "/api/json",
+    path: "/@",
     handler: function(request, reply) {
-      reply({ content: "test" });
+      reply.redirect("https://twitter.com/jsperf").permanent();
     }
   });
 
   return next();
+
 };
 
 exports.register.attributes = {
-  name: "api/json"
+  name: "web/redirects"
 };

@@ -2,28 +2,17 @@
 
 var Code = require("code");
 var Lab = require("lab");
-var server = require("../index");
+var composer = require("../index");
 
 var lab = exports.lab = Lab.script();
 
 lab.experiment("Index", function () {
 
-  lab.before(function (done) {
-    done();
-  });
+  lab.test("it composes a server", function (done) {
+    composer(function(err, server) {
+      Code.expect(server).to.be.an.object();
 
-  lab.beforeEach(function (done) {
-    done();
-  });
-
-  lab.test("main endpoint returns hello world", function (done) {
-    server.inject({
-      method: "GET",
-      url: "/"
-    }, function(response) {
-      Code.expect(response.statusCode).to.equal(200);
-
-      done();
+      done(err);
     });
   });
 });

@@ -9,9 +9,9 @@ exports.register = function(server, options, next) {
     }
   });
 
-  next();
+  return next();
 };
 
 exports.register.attributes = {
-  name: "jsonp"
+  name: "api/jsonp"
 };

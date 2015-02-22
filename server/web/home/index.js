@@ -1,17 +1,19 @@
 "use strict";
 
 exports.register = function(server, options, next) {
+
   server.route({
     method: "GET",
-    path: "/api/json",
-    handler: function(request, reply) {
-      reply({ content: "test" });
+    path: "/",
+    handler: function (request, reply) {
+      reply.view("home/index");
     }
   });
 
   return next();
+
 };
 
 exports.register.attributes = {
-  name: "api/json"
+  name: "web/home"
 };

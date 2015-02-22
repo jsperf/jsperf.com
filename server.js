@@ -1,20 +1,8 @@
 "use strict";
 
-var Good = require("good");
-var server = require("./index.js");
+var composer = require("./index");
 
-server.register({
-  register: Good,
-  options: {
-    reporters: [{
-      reporter: require("good-console"),
-      args: [{
-        log: "*",
-        response: "*"
-      }]
-    }]
-  }
-}, function(err) {
+composer(function(err, server) {
   if (err) {
     throw err;
   }

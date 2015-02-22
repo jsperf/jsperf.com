@@ -6,13 +6,13 @@ var Hapi = require("hapi");
 
 var Config = require("../../../config");
 
-var JsonPlugin = require("../../../server/api/json");
+var WebRedirectsPlugin = require("../../../server/web/redirects");
 
 var lab = exports.lab = Lab.script();
 var request, server;
 
 lab.beforeEach(function(done) {
-  var plugins = [ JsonPlugin ];
+  var plugins = [ WebRedirectsPlugin ];
   server = new Hapi.Server();
   server.connection({
     port: Config.get("/port/web")
@@ -20,21 +20,21 @@ lab.beforeEach(function(done) {
   server.register(plugins, done);
 });
 
-lab.experiment("json", function() {
+lab.experiment("redirects", function() {
   lab.beforeEach(function(done) {
     request = {
-      method: "GET",
-      url: "/api/json"
+      method: "GET"
     };
 
     done();
   });
 
-  lab.test("it returns object with 'content' key and 'test' value", function(done) {
+  lab.test("it redirects @ to twitter profile", function(done) {
+    request.url = "/@";
+
     server.inject(request, function(response) {
-      Code.expect(response.statusCode).to.equal(200);
-      Code.expect(response.headers["content-type"]).to.equal("application/json; charset=utf-8");
-      Code.expect(response.result.content).to.equal("test");
+      Code.expect(response.statusCode).to.equal(301);
+      Code.expect(response.headers.location).to.equal("https://twitter.com/jsperf");
 
       done();
     });

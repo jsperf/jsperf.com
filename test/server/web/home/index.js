@@ -1,41 +1,47 @@
 "use strict";
 
+var path = require("path");
+
 var Lab = require("lab");
 var Code = require("code");
 var Hapi = require("hapi");
 
-var Config = require("../../../config");
+var Config = require("../../../../config");
 
-var JsonpPlugin = require("../../../server/api/jsonp");
+var HomePlugin = require("../../../../server/web/home/index");
 
 var lab = exports.lab = Lab.script();
 var request, server;
 
 lab.beforeEach(function(done) {
-  var plugins = [ JsonpPlugin ];
+  var plugins = [ HomePlugin ];
   server = new Hapi.Server();
   server.connection({
     port: Config.get("/port/web")
   });
+  server.views({
+    engines: {
+      hbs: require("handlebars")
+    },
+    path: "./server/web",
+    relativeTo: path.join(__dirname, "..", "..", "..", "..")
+  });
   server.register(plugins, done);
 });
 
-lab.experiment("jsonp", function() {
+lab.experiment("home", function() {
   lab.beforeEach(function(done) {
     request = {
       method: "GET",
-      url: "/api/jsonp"
+      url: "/"
     };
 
     done();
   });
 
-  lab.test("it returns object with 'content' key and 'test' value", function(done) {
+  lab.test("it responds with the home page", function(done) {
     server.inject(request, function(response) {
       Code.expect(response.statusCode).to.equal(200);
-      Code.expect(response.headers["content-type"]).to.equal("application/json; charset=utf-8");
-      Code.expect(response.headers["access-control-allow-origin"]).to.equal("*");
-      Code.expect(response.result.content).to.equal("test");
 
       done();
     });
