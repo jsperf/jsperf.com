@@ -56,6 +56,7 @@ var manifest = {
     "./server/api/jsonp": {},
     "./server/web/contributors": {},
     "./server/web/dart": {},
+    "./server/web/faq": {},
     "./server/web/home": {},
     "./server/web/public": {},
     "./server/web/redirects": {}
