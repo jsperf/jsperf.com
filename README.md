@@ -12,6 +12,7 @@ You’ll need [io.js](https://iojs.org/en/index.html) and [MySQL](https://www.my
 
 1. Clone the repository (`git clone https://github.com/jsperf/jsperf.com.git`).
 2. Install dependencies (`npm install`).
+3. Setup database and other environment configuration (`npm run setup`).
 
 ### Running the server
 
@@ -24,7 +25,14 @@ npm start
 We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab enforces linting with [eslint](http://eslint.org/). To run the test suite:
 
 ```
+# everything
 npm run test-lint
+
+# directory
+npm run test-lint -- test/server/web
+
+# file
+npm run test-lint -- test/server/web/contributors/index.js
 ```
 
 ### Coverage

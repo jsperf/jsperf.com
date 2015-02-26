@@ -1,8 +1,6 @@
-/**
-  TODO create a setup script to customize this
-*/
-
 "use strict";
+
+require("dotenv").load();
 
 var Confidence = require("confidence");
 
@@ -13,24 +11,19 @@ var criteria = {
 var config = {
   projectName: "jsPerf.com",
   port: {
-    web: {
-      $filter: "env",
-      test: 3003,
-      production: process.env.PORT,
-      $default: 3000
-    }
+    web: process.env.PORT
   },
   admin: {
-    email: "{{ADMIN_EMAIL}}"
+    email: process.env.ADMIN_EMAIL
   },
   browserscope: {
-    apiKey: "{{BROWSERSCOPE_API_KEY}}"
+    apiKey: process.env.BROWSERSCOPE_API_KEY
   },
   db: {
-    host: "{{DB_HOST}}",
-    user: "{{DB_USER}}",
-    pass: "{{DB_PASS}}",
-    name: "{{DB_NAME}}"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    pass: process.env.DB_PASS,
+    name: process.env.DB_NAME
   }
 };
 

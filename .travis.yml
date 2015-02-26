@@ -1,6 +1,7 @@
 language: node_js
 node_js:
 - iojs
+env: PORT=3000
 after_script:
 - npm install -g codeclimate-test-reporter
 - cat lcov.info | codeclimate
