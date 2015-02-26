@@ -5,4 +5,4 @@ var composeOptions = {
   relativeTo: __dirname
 };
 
-exports = Glue.compose.bind(Glue, Manifest.get("/"), composeOptions);
+module.exports = Glue.compose.bind(Glue, Manifest.get("/"), composeOptions);
