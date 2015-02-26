@@ -1,10 +1,10 @@
 {
   "name": "jsperf.com",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "description": "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
   "main": "index.js",
   "scripts": {
-    "setup": "node setup.js",
+    "setup": "node setup",
     "start": "nodemon.js --ext js,hbs server.js",
     "test": "lab -c -L -r lcov -o lcov.info",
     "test-cov-html": "lab -r html -o coverage.html && open coverage.html",
@@ -32,6 +32,7 @@
     "good-console": "^4.1.0",
     "handlebars": "^3.0.0",
     "hapi": "^8.2.0",
+    "mysql": "^2.5.5",
     "prompt": "^0.2.14",
     "visionary": "^2.0.0"
   },
