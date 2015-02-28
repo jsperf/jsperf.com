@@ -1,5 +1,19 @@
 {
   "env": {
     "node": true
+  },
+  "rules": {
+    "eol-last": true,
+    "no-space-before-semi": true,
+    "no-spaced-func": true,
+    "no-trailing-spaces": true,
+    "one-var": true,
+    "space-after-keywords": true,
+    "space-before-blocks": "always",
+    "space-before-function-parentheses": "never",
+    "space-in-parens": "never",
+    "space-infix-ops": true,
+    "spaced-line-comment": "always",
+    "space-return-throw-case": true
   }
 }
