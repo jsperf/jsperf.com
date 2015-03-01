@@ -15,5 +15,8 @@
     "space-infix-ops": true,
     "spaced-line-comment": "always",
     "space-return-throw-case": true
+  },
+  "ecmaFeatures": {
+    "templateStrings": true
   }
 }
