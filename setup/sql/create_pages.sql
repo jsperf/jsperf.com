@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `author` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `authorEmail` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `authorURL` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `hits` bigint(20) NOT NULL,
+  -- `hits` bigint(20) NOT NULL, TODO default value
   `published` datetime NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),

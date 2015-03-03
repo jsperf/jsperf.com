@@ -84,5 +84,5 @@ module.exports = {
     "(?::\\d{2,5})?" +
     // resource path
     "(?:/\\S*)?" + "$",
-  slug: "[a-z0-9](?:-?[a-z0-9])*"
+  slug: "[A-Za-z0-9](?:-?[A-Za-z0-9])*"
 };

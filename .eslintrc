@@ -1,4 +1,7 @@
 {
+  "settings": {
+    "ecmascript": 6
+  },
   "env": {
     "node": true
   },
