@@ -7,7 +7,7 @@ exports.register = function(server, options, next) {
     path: "/contributors",
     handler: function (request, reply) {
       reply.view("contributors/index", {
-        title: "Contributors",
+        headTitle: "Contributors",
         ga: true
       });
     }

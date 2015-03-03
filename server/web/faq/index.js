@@ -7,7 +7,7 @@ exports.register = function(server, options, next) {
     path: "/faq",
     handler: function (request, reply) {
       reply.view("faq/index", {
-        title: "Frequently asked questions",
+        headTitle: "Frequently asked questions",
         ga: true,
         faq: [
           {

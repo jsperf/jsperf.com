@@ -7,17 +7,44 @@ var mysql = require("mysql");
 
 var schema = {
   properties: {
+    scheme: {
+      type: "string",
+      description: "Scheme for node server",
+      pattern: /^(https?)$/,
+      message: "Must be either 'http' or 'https'",
+      required: true,
+      default: "http"
+    },
+    domain: {
+      type: "string",
+      description: "Local domain for node server",
+      format: "host-name",
+      required: true,
+      default: "dev.jsperf.com"
+    },
     port: {
       type: "number",
-      description: "Port for node server to run on",
+      description: "Port for node server",
       message: "Should be a high port like 3000",
       required: false,
       default: 3000
     },
-    // TODO: admin email
-
-    // TODO: browserscope api key
-
+    admin: {
+      properties: {
+        email: {
+          type: "string",
+          description: "Email to send admin things to",
+          format: "email",
+          required: false
+        }
+      }
+    },
+    browserscope: {
+      type: "string",
+      description: "Browserscope.org API key",
+      message: "See README for instructions on how to get one",
+      required: true
+    },
     db: {
       properties: {
         host: {
@@ -81,7 +108,7 @@ prompt.get(schema, function(er, result) {
     throw er
   }
 
-  fs.writeFileSync(".env", buildVars("", result));
+  fs.writeFileSync(".env", buildVars("NODE_ENV=development\n", result));
 
   console.log("Thanks! You can change these later in the .env file");
 

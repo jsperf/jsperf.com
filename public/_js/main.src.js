@@ -43,10 +43,10 @@ $.fn.insertAtCaret = function(myValue) {
 $(function() {
 	$.fn.addScript = function(str, myLib) {
 		return this.click(function(event) {
-			if (!~$initHtml.val().indexOf(str)) {
-				$initHtml.insertAtCaret('<script src="//' + (myLib ? 'www.cinsoft.net/' : 'ajax.googleapis.com/ajax/libs/') + str + '.js">\x3C/script>\n');
+			if (!~$initHTML.val().indexOf(str)) {
+				$initHTML.insertAtCaret('<script src="//' + (myLib ? 'www.cinsoft.net/' : 'ajax.googleapis.com/ajax/libs/') + str + '.js">\x3C/script>\n');
 			}
-			$initHtml.focus();
+			$initHTML.focus();
 			event.preventDefault();
 		});
 	};
@@ -56,7 +56,7 @@ $(function() {
 	    $slug = $('#slug'),
 	    $preview = $('mark'),
 	    $tests = $('#tests'),
-	    $initHtml = $('#initHtml'),
+	    $initHTML = $('#initHTML'),
 	    $prepJS = $('#setup'),
 	    $jsFields = $prepJS.add('#setup, #teardown'),
 	    testHTML = '<h4>Code snippet 1</h4><div><label for="test[1][title]">Title <em title="This field is required">*</em> </label><input type="text" name="test[1][title]" id="test[1][title]"></div><div><label for="test[1][defer]">Async </label><label class="inline"><input type="checkbox" value="y" name="test[1][defer]" id="test[1][defer]"> (check if this is an <a href="/faq#async">asynchronous test</a>)</label></div><div><label for="test[1][code]">Code <em title="This field is required">*</em> </label><textarea name="test[1][code]" class="code-js" id="test[1][code]" maxlength="16777215"></textarea></div></fieldset>',
@@ -89,7 +89,7 @@ $(function() {
 	}
 
 	if (storage) {
-		$authorFields = $('#author, #authorEmail, #authorUrl');
+		$authorFields = $('#author, #authorEmail, #authorURL');
 		if ($authorFields.length == $authorFields.filter(function() { return !this.value; }).length) {
 			$authorFields.each(function() {
 				this.value = storage[this.id] || '';
@@ -149,7 +149,7 @@ $(function() {
 	// Beautify
 	$beautify.click(function(event) {
 		$jsFields.add('.code-js').each(beautify);
-		beautify.call($initHtml[0], 'html');
+		beautify.call($initHTML[0], 'html');
 		event.preventDefault();
 	});
 });

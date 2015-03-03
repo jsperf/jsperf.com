@@ -12,6 +12,7 @@ You’ll need [io.js](https://iojs.org/en/index.html) and [MySQL](https://www.my
 
 1. Clone the repository (`git clone https://github.com/jsperf/jsperf.com.git`).
 2. Install dependencies (`npm install`).
+3. Get a [Browserscope.org](http://www.browserscope.org/) API key by signing in and going to [the settings page](http://www.browserscope.org/user/settings). (You'll need this in the next step)
 3. Setup database and other environment configuration (`npm run setup`).
 
 ### Running the server

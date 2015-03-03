@@ -7,7 +7,7 @@ exports.register = function(server, options, next) {
     path: "/dart",
     handler: function (request, reply) {
       reply.view("dart/index", {
-        title: "Dart Summary",
+        headTitle: "Dart Summary",
         ga: true,
         points: [
           {

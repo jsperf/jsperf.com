@@ -21,12 +21,12 @@ exports.register = function(server, options, next) {
     slugPattern: regex.slug,
     author: "",
     authorEmail: "",
-    authorUrl: "",
+    authorURL: "",
     title: "",
     slug: "",
     visible: "",
     info: "",
-    initHtml: "",
+    initHTML: "",
     setup: "",
     teardown: ""
   };

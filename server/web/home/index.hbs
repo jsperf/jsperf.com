@@ -22,7 +22,7 @@
       <label for="authorEmail">Email </label><label class="inline"><input type="email" name="authorEmail" id="authorEmail" value={{authorEmail}}> (won’t be displayed; might be used for Gravatar)</label>
     </div>
     <div>
-      <label for="authorUrl">URL </label><input type="url" name="authorUrl" id="authorUrl" value={{authorUrl}}>
+      <label for="authorURL">URL </label><input type="url" name="authorURL" id="authorURL" value={{authorURL}}>
     </div>
   </fieldset>
 
@@ -38,7 +38,7 @@
       <label for="slug">Slug <em title="This field is required">*</em> </label>
       <input type="text" name="slug" id="slug" pattern="{{slugPattern}}" required value={{slug}}>
       {{error slugError}}
-      <p class="preview">Test case URL will be <samp>http://<?php echo DOMAIN; ?>/<mark>{{#if slug}}{{.}}{{else}}slug{{/if}}</mark></samp></p>
+      <p class="preview">Test case URL will be <samp>{{scheme}}://{{domain}}/<mark>{{#if slug}}{{.}}{{else}}slug{{/if}}</mark></samp></p>
     </div>
     <div>
       <label for="visible">Published </label>
@@ -59,8 +59,8 @@
     <fieldset>
       <h3>Preparation code</h3>
       <div>
-        <label for="initHtml">Preparation code HTML <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)</span> <span>(useful when testing DOM operations or including libraries)</span> </label>
-        <textarea name="initHtml" id="initHtml" maxlength="{{mediumTextLength}}">{{initHtml}}</textarea>
+        <label for="initHTML">Preparation code HTML <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)</span> <span>(useful when testing DOM operations or including libraries)</span> </label>
+        <textarea name="initHTML" id="initHTML" maxlength="{{mediumTextLength}}">{{initHTML}}</textarea>
         <p id="add-libraries">Include JavaScript libraries as follows: <code>&lt;script src="//cdn.ext/library.js">&lt;/script></code></p>
       </div>
       <div>

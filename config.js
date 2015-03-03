@@ -10,21 +10,26 @@ var criteria = {
 
 var config = {
   projectName: "jsPerf.com",
+  scheme: process.env.SCHEME,
+  domain: process.env.DOMAIN,
   port: {
     web: process.env.PORT
   },
   admin: {
     email: process.env.ADMIN_EMAIL
   },
-  browserscope: {
-    apiKey: process.env.BROWSERSCOPE_API_KEY
-  },
+  browserscope: process.env.BROWSERSCOPE,
   db: {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     pass: process.env.DB_PASS,
     name: process.env.DB_NAME
+  },
+  debug: {
+    $filter: "env",
+    development: true,
+    $default: false
   }
 };
 

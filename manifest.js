@@ -44,11 +44,13 @@ var manifest = {
         development: {
           debug: true,
           cssFile: "main.src.css?" + Date.now(),
-          title: "jsPerf-dev"
+          headTitle: "jsPerf-dev"
         },
         $default: {
           cssFile: "main.css",
-          title: "jsPerf: JavaScript performance playground"
+          headTitle: "jsPerf: JavaScript performance playground",
+          scheme: config.get("/scheme"),
+          domain: config.get("/domain")
         }
       }
     },
