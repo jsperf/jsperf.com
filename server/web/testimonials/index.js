@@ -5,7 +5,7 @@ exports.register = function(server, options, next) {
   server.route({
     method: "GET",
     path: "/testimonials",
-    handler: function (request, reply) {
+    handler: function(request, reply) {
       reply.view("testimonials/index", {
         headTitle: "Testimonials",
         ga: true

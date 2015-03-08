@@ -77,7 +77,7 @@ require("dotenv").load();
 
 // process.env.DB_HOST => { db: { host: "" } }
 // warning: nested prompts not supported yet https://github.com/flatiron/prompt/issues/47
-var unbuildVars = function () {
+var unbuildVars = function() {
   var overrides = {};
   let prop;
 
@@ -104,7 +104,7 @@ prompt.override = unbuildVars();
 prompt.start();
 
 // { db: { host: "localhost" } } => DB_HOST=localhost
-var buildVars = function (dest, obj, prefix) {
+var buildVars = function(dest, obj, prefix) {
   if (!prefix) {
     prefix = "";
   }
@@ -123,7 +123,7 @@ var buildVars = function (dest, obj, prefix) {
   return dest;
 };
 
-prompt.get(schema, function (er, result) {
+prompt.get(schema, function(er, result) {
   if (er) {
     throw er
   }
@@ -139,7 +139,7 @@ prompt.get(schema, function (er, result) {
     password: result.db.pass
   });
 
-  conn.connect(function (e) {
+  conn.connect(function(e) {
     if (e) {
       console.error("failed to connect to database:", e.stack);
       throw e
@@ -147,7 +147,7 @@ prompt.get(schema, function (er, result) {
 
     console.log("Connected to database...");
 
-    conn.query("CREATE DATABASE IF NOT EXISTS " + result.db.name, function (err) {
+    conn.query("CREATE DATABASE IF NOT EXISTS " + result.db.name, function(err) {
       if (err) {
         throw err
       }
@@ -160,7 +160,7 @@ prompt.get(schema, function (er, result) {
       grantQuery += " IDENTIFIED BY " + conn.escape(result.db.pass);
     }
 
-    conn.query(grantQuery, function (err) {
+    conn.query(grantQuery, function(err) {
       if (err) {
         throw err
       }
@@ -168,13 +168,13 @@ prompt.get(schema, function (er, result) {
       console.log("Granted permissions to your user");
     });
 
-    conn.query("FLUSH PRIVILEGES", function (err) {
+    conn.query("FLUSH PRIVILEGES", function(err) {
       if (err) {
         throw err
       }
     });
 
-    conn.query("USE " + result.db.name, function (err) {
+    conn.query("USE " + result.db.name, function(err) {
       if (err) {
         throw err
       }
@@ -182,7 +182,7 @@ prompt.get(schema, function (er, result) {
       console.log("Prepared to create tables");
     });
 
-    ["comments", "pages", "tests"].forEach(function (table) {
+    ["comments", "pages", "tests"].forEach(function(table) {
       var fileName = "create_" + table + ".sql";
 
       conn.query(
@@ -190,7 +190,7 @@ prompt.get(schema, function (er, result) {
           path.join(__dirname, "sql", fileName),
           { encoding: "utf8" }
         ),
-        function (err) {
+        function(err) {
           if (err) {
             throw err
           }

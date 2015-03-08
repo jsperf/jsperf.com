@@ -5,7 +5,7 @@ exports.register = function(server, options, next) {
   server.route({
     method: "GET",
     path: "/dart",
-    handler: function (request, reply) {
+    handler: function(request, reply) {
       reply.view("dart/index", {
         headTitle: "Dart Summary",
         ga: true,

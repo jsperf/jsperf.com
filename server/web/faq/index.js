@@ -5,7 +5,7 @@ exports.register = function(server, options, next) {
   server.route({
     method: "GET",
     path: "/faq",
-    handler: function (request, reply) {
+    handler: function(request, reply) {
       reply.view("faq/index", {
         headTitle: "Frequently asked questions",
         ga: true,
