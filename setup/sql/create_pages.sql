@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `slug` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
-  `revision` int(4) NOT NULL DEFAULT '1',
+  `revision` int(4) NOT NULL DEFAULT 1,
   `browserscopeID` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `info` mediumtext COLLATE utf8_unicode_ci NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   `author` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `authorEmail` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `authorURL` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  -- `hits` bigint(20) NOT NULL, TODO default value
+  `hits` bigint(20) NOT NULL DEFAULT 0,
   `published` datetime NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
