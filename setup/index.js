@@ -8,7 +8,6 @@ var mysql = require("mysql");
 var schema = {
   properties: {
     scheme: {
-      type: "string",
       description: "Scheme for node server",
       pattern: /^(https?)$/,
       message: "Must be either 'http' or 'https'",
@@ -16,14 +15,12 @@ var schema = {
       default: "http"
     },
     domain: {
-      type: "string",
       description: "Local domain for node server",
       format: "host-name",
       required: true,
       default: "dev.jsperf.com"
     },
     port: {
-      type: "number",
       description: "Port for node server",
       message: "Should be a high port like 3000",
       required: false,
@@ -32,7 +29,6 @@ var schema = {
     admin: {
       properties: {
         email: {
-          type: "string",
           description: "Email to send admin things to",
           format: "email",
           required: false
@@ -40,7 +36,6 @@ var schema = {
       }
     },
     browserscope: {
-      type: "string",
       description: "Browserscope.org API key",
       message: "See README for instructions on how to get one",
       required: true
@@ -54,25 +49,21 @@ var schema = {
         },
         port: {
           description: "Database port",
-          type: "number",
           required: true,
           default: 3306
         },
         user: {
           description: "Database username",
-          type: "string",
           required: true
         },
         pass: {
           description: "Database password",
-          type: "string",
           hidden: true,
           required: false,
           default: ""
         },
         name: {
           description: "Database name",
-          type: "string",
           required: false,
           default: "jsperf_dev"
         }
@@ -81,10 +72,39 @@ var schema = {
   }
 };
 
+// use existing env vars
+require("dotenv").load();
+
+// process.env.DB_HOST => { db: { host: "" } }
+// warning: nested prompts not supported yet https://github.com/flatiron/prompt/issues/47
+var unbuildVars = function () {
+  var overrides = {};
+  let prop;
+
+  for (prop in schema.properties) {
+    let p = schema.properties[prop];
+
+    if (p.properties) {
+      overrides[prop] = {};
+      let nestedProp;
+
+      for (nestedProp in p.properties) {
+        overrides[prop][nestedProp] = process.env[`${prop.toUpperCase()}_${nestedProp.toUpperCase()}`];
+      }
+    } else {
+      overrides[prop] = process.env[prop.toUpperCase()];
+    }
+  }
+  console.log(overrides);
+  return overrides;
+};
+
+prompt.override = unbuildVars();
+
 prompt.start();
 
 // { db: { host: "localhost" } } => DB_HOST=localhost
-var buildVars = function(dest, obj, prefix) {
+var buildVars = function (dest, obj, prefix) {
   if (!prefix) {
     prefix = "";
   }
@@ -103,7 +123,7 @@ var buildVars = function(dest, obj, prefix) {
   return dest;
 };
 
-prompt.get(schema, function(er, result) {
+prompt.get(schema, function (er, result) {
   if (er) {
     throw er
   }
@@ -119,7 +139,7 @@ prompt.get(schema, function(er, result) {
     password: result.db.pass
   });
 
-  conn.connect(function(e) {
+  conn.connect(function (e) {
     if (e) {
       console.error("failed to connect to database:", e.stack);
       throw e
@@ -127,7 +147,7 @@ prompt.get(schema, function(er, result) {
 
     console.log("Connected to database...");
 
-    conn.query("CREATE DATABASE IF NOT EXISTS " + result.db.name, function(err) {
+    conn.query("CREATE DATABASE IF NOT EXISTS " + result.db.name, function (err) {
       if (err) {
         throw err
       }
@@ -140,7 +160,7 @@ prompt.get(schema, function(er, result) {
       grantQuery += " IDENTIFIED BY " + conn.escape(result.db.pass);
     }
 
-    conn.query(grantQuery, function(err) {
+    conn.query(grantQuery, function (err) {
       if (err) {
         throw err
       }
@@ -148,13 +168,13 @@ prompt.get(schema, function(er, result) {
       console.log("Granted permissions to your user");
     });
 
-    conn.query("FLUSH PRIVILEGES", function(err) {
+    conn.query("FLUSH PRIVILEGES", function (err) {
       if (err) {
         throw err
       }
     });
 
-    conn.query("USE " + result.db.name, function(err) {
+    conn.query("USE " + result.db.name, function (err) {
       if (err) {
         throw err
       }
@@ -162,7 +182,7 @@ prompt.get(schema, function(er, result) {
       console.log("Prepared to create tables");
     });
 
-    ["comments", "pages", "tests"].forEach(function(table) {
+    ["comments", "pages", "tests"].forEach(function (table) {
       var fileName = "create_" + table + ".sql";
 
       conn.query(
@@ -170,7 +190,7 @@ prompt.get(schema, function(er, result) {
           path.join(__dirname, "sql", fileName),
           { encoding: "utf8" }
         ),
-        function(err) {
+        function (err) {
           if (err) {
             throw err
           }
