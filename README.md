@@ -51,3 +51,7 @@ To generate an HTML report with code coverage, run:
 ```
 npm run test-cov-html
 ```
+
+## Gotchas
+
+- ES6 Template Strings are not supported by esprima which means you can't generate coverage reports which means `npm test` won't pass.

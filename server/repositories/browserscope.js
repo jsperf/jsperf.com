@@ -11,7 +11,7 @@ module.exports = {
       "api_key": config.get("/browserscope"),
       name: title,
       description: description.substr(0, 60),
-      url: `${config.get("/scheme")}://${config.get("/domain")}/${slug}`
+      url: config.get("/scheme") + "://" + config.get("/domain") + "/" + slug
     });
 
     http.get("http://www.browserscope.org/user/tests/create?" + qs, function(res) {
