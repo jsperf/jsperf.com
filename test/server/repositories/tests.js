@@ -62,12 +62,13 @@ lab.experiment("Tests Repository", function() {
 
         Code.expect(err).to.be.null();
         Code.expect(
-          queryStub.calledWith(
+          queryStub.calledWithExactly(
             "INSERT INTO ?? (??) VALUES (1, `t1`, `n`, `a = 1`), (1, `t2`, `n`, `a = 2`)",
             [
               "tests",
               ["pageID", "title", "defer", "code"]
-            ]
+            ],
+            sinon.match.func
           )
         ).to.be.true();
 
