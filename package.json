@@ -6,9 +6,9 @@
   "scripts": {
     "setup": "node setup",
     "start": "./node_modules/nodemon/bin/nodemon.js --ext js,hbs server.js",
-    "test": "lab -c -L -r lcov -o lcov.info",
+    "test": "lab -t 100 -c -L -r lcov -o lcov.info",
     "test-cov-html": "lab -r html -o coverage.html && open coverage.html",
-    "test-lint": "lab -L"
+    "test-lint": "lab -L -t 100"
   },
   "repository": {
     "type": "git",

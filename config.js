@@ -9,7 +9,7 @@ var criteria = {
 };
 
 var config = {
-  projectName: "jsPerf.com",
+  $meta: "jsPerf.com",
   scheme: process.env.SCHEME,
   domain: process.env.DOMAIN,
   port: {
