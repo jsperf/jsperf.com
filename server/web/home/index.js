@@ -61,7 +61,7 @@ exports.register = function(server, options, next) {
           errObj.genError = errObj.message;
         }
 
-        reply.view("home/index", _.assign(defaultContext, request.payload, errObj));
+        reply.view("home/index", _.assign(defaultContext, request.payload, errObj)).code(400);
       };
 
       var mediumText = Joi.string().allow("").max(mediumTextLength);
@@ -74,11 +74,11 @@ exports.register = function(server, options, next) {
         slug: Joi.string().required().trim().min(1).max(55).regex(new RegExp(regex.slug), "slug"),
         visible: Joi.string().default("n").valid("y", "n"),
         info: mediumText,
-        question: Joi.valid("no"),
+        question: Joi.required().valid("no"),
         initHTML: mediumText,
         setup: mediumText,
         teardown: mediumText,
-        test: Joi.array().min(2).includes(Joi.object().required().keys({
+        test: Joi.array().required().min(2).includes(Joi.object().required().keys({
           title: Joi.string().required().trim().min(1).max(255),
           defer: Joi.string().default("n").valid("y", "n"),
           code: Joi.string().required().trim().min(1).max(mediumTextLength)
@@ -112,9 +112,17 @@ exports.register = function(server, options, next) {
 
                 switch(testErr.context.key) {
                   case "title":
+                    // FIXME: test payload is string
+                    if (typeof request.payload.test[idx] === "string") {
+                      request.payload.test[idx] = JSON.parse(request.payload.test[idx]);
+                    }
                     request.payload.test[idx].codeTitleError = "Please enter a title for this code snippet.";
                     break;
                   case "code":
+                    // FIXME: test payload is string
+                    if (typeof request.payload.test[idx] === "string") {
+                      request.payload.test[idx] = JSON.parse(request.payload.test[idx]);
+                    }
                     request.payload.test[idx].codeError = "Please enter a code snippet.";
                     break;
                   default:

@@ -95,7 +95,7 @@ var unbuildVars = function() {
       overrides[prop] = process.env[prop.toUpperCase()];
     }
   }
-  console.log(overrides);
+
   return overrides;
 };
 
