@@ -1,7 +1,6 @@
 "use strict";
 
 var path = require("path");
-var querystring = require("querystring");
 
 var Lab = require("lab");
 var Code = require("code");
@@ -65,24 +64,10 @@ lab.experiment("home", function() {
 
   lab.experiment("POST", function() {
 
-    var formalizePayload = function(payload) {
-
-      for (var i = 0, ptl = payload.test.length; i < ptl; i++) {
-        // stringify object so Joi sees them as such
-        payload.test[i] = JSON.stringify(payload.test[i]);
-      }
-
-      // transform payload into string like a form would
-      return querystring.stringify(payload);
-    };
-
     lab.beforeEach(function(done) {
       request = {
         method: "POST",
         url: "/",
-        headers: {
-          "content-type": "application/x-www-form-urlencoded"
-        },
         payload: {
           author: "Pitcher Man",
           authorEmail: "kool-aid@kraft.com",
@@ -114,7 +99,6 @@ lab.experiment("home", function() {
 
       lab.test("title required", function(done) {
         delete request.payload.title;
-        request.payload = formalizePayload(request.payload);
 
         server.inject(request, function(response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -127,7 +111,6 @@ lab.experiment("home", function() {
 
       lab.test("question required", function(done) {
         delete request.payload.question;
-        request.payload = formalizePayload(request.payload);
 
         server.inject(request, function(response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -140,7 +123,6 @@ lab.experiment("home", function() {
 
       lab.test("slug required", function(done) {
         delete request.payload.slug;
-        request.payload = formalizePayload(request.payload);
 
         server.inject(request, function(response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -153,7 +135,6 @@ lab.experiment("home", function() {
 
       lab.test("test title required", function(done) {
         delete request.payload.test[0].title;
-        request.payload = formalizePayload(request.payload);
 
         server.inject(request, function(response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -166,7 +147,6 @@ lab.experiment("home", function() {
 
       lab.test("test code required", function(done) {
         delete request.payload.test[0].code;
-        request.payload = formalizePayload(request.payload);
 
         server.inject(request, function(response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -179,7 +159,6 @@ lab.experiment("home", function() {
 
       lab.test("generic error", function(done) {
         request.payload.test[0].defer = "unexpected";
-        request.payload = formalizePayload(request.payload);
 
         server.inject(request, function(response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -192,12 +171,6 @@ lab.experiment("home", function() {
     });
 
     lab.experiment("slug check", function() {
-
-      lab.beforeEach(function(done) {
-        request.payload = formalizePayload(request.payload);
-
-        done();
-      });
 
       lab.afterEach(function(done) {
         pagesServiceStub.checkIfSlugAvailable = function() {};
@@ -238,8 +211,6 @@ lab.experiment("home", function() {
     lab.experiment("create page", function() {
 
       lab.beforeEach(function(done) {
-        request.payload = formalizePayload(request.payload);
-
         pagesServiceStub.checkIfSlugAvailable = function(a, b, cb) {
           cb(null, true);
         };
@@ -276,7 +247,7 @@ lab.experiment("home", function() {
 
         server.inject(request, function(response) {
           Code.expect(response.statusCode).to.equal(302);
-          Code.expect(response.headers.location).to.include(querystring.parse(request.payload).slug);
+          Code.expect(response.headers.location).to.include(request.payload.slug);
 
           done();
         });

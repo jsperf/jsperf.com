@@ -112,17 +112,9 @@ exports.register = function(server, options, next) {
 
                 switch(testErr.context.key) {
                   case "title":
-                    // FIXME: test payload is string
-                    if (typeof request.payload.test[idx] === "string") {
-                      request.payload.test[idx] = JSON.parse(request.payload.test[idx]);
-                    }
                     request.payload.test[idx].codeTitleError = "Please enter a title for this code snippet.";
                     break;
                   case "code":
-                    // FIXME: test payload is string
-                    if (typeof request.payload.test[idx] === "string") {
-                      request.payload.test[idx] = JSON.parse(request.payload.test[idx]);
-                    }
                     request.payload.test[idx].codeError = "Please enter a code snippet.";
                     break;
                   default:
