@@ -21,6 +21,7 @@ var manifest = {
     labels: ["web"]
   }],
   plugins: {
+    "blipp": {},
     "good": {
       reporters: [{
         reporter: "good-console",
@@ -29,6 +30,9 @@ var manifest = {
           response: "*"
         }]
       }]
+    },
+    "hapi-nudge": {
+      hostname: config.get("/domain")
     },
     "visionary": {
       engines: {
