@@ -31,9 +31,6 @@ var manifest = {
         }]
       }]
     },
-    "hapi-nudge": {
-      hostname: config.get("/domain")
-    },
     "visionary": {
       engines: {
         hbs: "handlebars"
