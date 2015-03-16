@@ -18,11 +18,16 @@ var HomePlugin = proxyquire("../../../../server/web/home/index", {
   "../../services/pages": pagesServiceStub
 });
 
+var YarPlugin = {
+  register: require("yar"),
+  options: { cookieOptions: { password: "testing" } }
+};
+
 var lab = exports.lab = Lab.script();
 var request, server;
 
 lab.beforeEach(function(done) {
-  var plugins = [ HomePlugin ];
+  var plugins = [ HomePlugin, YarPlugin ];
   server = new Hapi.Server();
   server.connection({
     port: Config.get("/port/web")

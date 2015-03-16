@@ -3,9 +3,10 @@
   <footer>
     <a href="/">Add test</a> &middot;
 
-    {{! #if $_SESSION['authorSlug']}}
-      <a href="/browse/{{! $_SESSION['authorSlug']}}">My tests</a> &middot;
-    {{! /if}}
+    {{!-- TODO: this is never added to the context, but set on session after test added --}}
+    {{#if authorSlug}}
+      <a href="/browse/{{authorSlug}}">My tests</a> &middot;
+    {{/if}}
 
     <a href="/browse">Latest</a> &middot;
 

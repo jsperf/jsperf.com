@@ -145,6 +145,7 @@ exports.register = function(server, options, next) {
                 if (errr) {
                   errResp(errr);
                 } else {
+                  request.session.set("authorSlug", payload.author.replace(" ", "-").replace(/[^a-zA-Z0-9 -]/, ""));
                   reply.redirect("/" + payload.slug);
                 }
               });

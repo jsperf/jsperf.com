@@ -55,6 +55,12 @@ var manifest = {
         }
       }
     },
+    "yar": {
+      cookieOptions: {
+        password: config.get("/browserscope"),
+        isSecure: !config.get("/debug")
+      }
+    },
     "./server/api/json": {},
     "./server/api/jsonp": {},
     "./server/web/browse": {},
