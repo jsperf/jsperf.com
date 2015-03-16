@@ -4,9 +4,11 @@
 
   {{#if home}}
     <meta name="description" content="A performance playground for JavaScript developers. Easily create and share test cases and run cross-browser benchmarks to find out which code snippet is most efficient.">
-    <link href="/browse.atom" rel="alternate" type="application/atom+xml" title="Atom feed for new or updated test cases">
   {{/if}}
 
+  {{#if showAtom}}
+    <link href="/{{showAtom.slug}}.atom" rel="alternate" type="application/atom+xml" title="Atom feed for {{#compare showAtom.slug "browse" operator="==="}}new or updated test cases{{else}}revisions of this test case{{/compare}}">
+  {{/if}}
 
   <link rel="stylesheet" href="/_css/{{cssFile}}">
 

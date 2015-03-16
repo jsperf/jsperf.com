@@ -38,36 +38,83 @@ lab.beforeEach(function(done) {
 });
 
 lab.experiment("browse", function() {
-  lab.beforeEach(function(done) {
-    request = {
-      method: "GET",
-      url: "/browse"
-    };
 
-    done();
-  });
+  lab.experiment("page", function() {
 
-  lab.test("it responds with the browse page", function(done) {
-    pagesRepoStub.getLatestVisible250 = function(cb) {
-      cb(null, []);
-    };
-
-    server.inject(request, function(response) {
-      Code.expect(response.statusCode).to.equal(200);
+    lab.beforeEach(function(done) {
+      request = {
+        method: "GET",
+        url: "/browse"
+      };
 
       done();
     });
+
+    lab.test("it responds with the browse page", function(done) {
+      pagesRepoStub.getLatestVisible = function(cnt, cb) {
+        cb(null, []);
+      };
+
+      server.inject(request, function(response) {
+        Code.expect(response.statusCode).to.equal(200);
+
+        done();
+      });
+    });
+
+    lab.test("it responds with generic error", function(done) {
+      pagesRepoStub.getLatestVisible = function(cnt, cb) {
+        cb(new Error());
+      };
+
+      server.inject(request, function(response) {
+        Code.expect(response.statusCode).to.equal(200);
+
+        done();
+      });
+    });
   });
 
-  lab.test("it responds with generic error", function(done) {
-    pagesRepoStub.getLatestVisible250 = function(cb) {
-      cb(new Error());
-    };
+  lab.experiment("atom", function() {
 
-    server.inject(request, function(response) {
-      Code.expect(response.statusCode).to.equal(200);
+    lab.beforeEach(function(done) {
+      request = {
+        method: "GET",
+        url: "/browse.atom"
+      };
 
       done();
+    });
+
+    lab.test("it responds with atom feed", function(done) {
+      pagesRepoStub.getLatestVisible = function(cnt, cb) {
+        var d = new Date();
+        cb(null, [
+          {
+            updated: d,
+            published: d
+          }
+        ]);
+      };
+
+      server.inject(request, function(response) {
+        Code.expect(response.statusCode).to.equal(200);
+        Code.expect(response.headers["content-type"]).to.equal("application/atom+xml;charset=UTF-8");
+
+        done();
+      });
+    });
+
+    lab.test("it responds with generic error", function(done) {
+      pagesRepoStub.getLatestVisible = function(cnt, cb) {
+        cb(new Error());
+      };
+
+      server.inject(request, function(response) {
+        Code.expect(response.statusCode).to.equal(500);
+
+        done();
+      });
     });
   });
 });

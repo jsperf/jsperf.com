@@ -13,6 +13,9 @@ exports.register = function(server, options, next) {
 
   var defaultContext = {
     home: true,
+    showAtom: {
+      slug: "browse"
+    },
     jsClass: true,
     mainJS: true,
     mediumTextLength: mediumTextLength,

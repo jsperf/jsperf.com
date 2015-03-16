@@ -8,7 +8,9 @@ exports.register = function(server, options, next) {
 
   var defaultContext = {
     headTitle: "Browse test cases",
-    showAtom: true,
+    showAtom: {
+      slug: "browse"
+    },
     ga: true
   };
 
@@ -17,7 +19,7 @@ exports.register = function(server, options, next) {
     path: "/browse",
     handler: function(request, reply) {
 
-      pagesRepo.getLatestVisible250(function(err, rows) {
+      pagesRepo.getLatestVisible(250, function(err, rows) {
         var result;
 
         if (err) {
@@ -28,7 +30,26 @@ exports.register = function(server, options, next) {
 
         reply.view("browse/index", _.assign(defaultContext, result));
       });
+    }
+  });
 
+  server.route({
+    method: "GET",
+    path: "/browse.atom",
+    handler: function(request, reply) {
+      pagesRepo.getLatestVisible(20, function(err, rows) {
+        if (err) {
+          reply(err);
+        } else {
+          reply
+            .view("browse/atom", {
+              updated: rows[0].updated.toISOString(),
+              entries: rows
+            })
+            .header("Content-Type", "application/atom+xml;charset=UTF-8")
+            .header("Last-Modified", rows[0].updated.toString());
+        }
+      });
     }
   });
 

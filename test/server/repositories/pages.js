@@ -145,12 +145,12 @@ lab.experiment("Pages Repository", function() {
 
   });
 
-  lab.experiment("getLatestVisible250", function() {
+  lab.experiment("getLatestVisible", function() {
 
-    lab.test("returns up to 250 rows of latest, visible pages", function(done) {
-      queryStub.callsArgWith(1, null, []);
+    lab.test("returns count of rows of latest, visible pages", function(done) {
+      queryStub.callsArgWith(2, null, []);
 
-      pages.getLatestVisible250(function(err, rows) {
+      pages.getLatestVisible(250, function(err, rows) {
 
         Code.expect(err).to.be.null();
         Code.expect(rows).to.be.array();
@@ -163,9 +163,9 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(1, testErr);
+      queryStub.callsArgWith(2, testErr);
 
-      pages.getLatestVisible250(function(err) {
+      pages.getLatestVisible(250, function(err) {
 
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
