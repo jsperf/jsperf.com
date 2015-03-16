@@ -36,6 +36,8 @@ npm run test-lint -- test/server/web
 npm run test-lint -- test/server/web/contributors/index.js
 ```
 
+_If you're in a hurry, use `test-fast` to skip linting_
+
 ### Coverage
 
 When [travis-ci](https://travis-ci.org/) runs the tests, it enforces 100% code coverage. You can run this locally with:

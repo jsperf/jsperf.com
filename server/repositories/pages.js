@@ -31,5 +31,40 @@ module.exports = {
     });
 
     conn.end();
+  },
+
+  getLatestVisible250: function(cb) {
+    var conn = db.createConnection();
+
+    // SELECT
+    //   p1.id AS pID,
+    //   p1.slug AS url,
+    //   p1.revision,
+    //   p1.title,
+    //   p1.published,
+    //   p1.updated,
+    //   (SELECT COUNT(*) FROM pages WHERE slug = url AND visible = \"y\") AS revisionCount,
+    //   (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount
+    // FROM pages p1
+    // LEFT JOIN
+    //   pages p2
+    // ON
+    //   p1.slug = p2.slug AND p1.updated < p2.updated
+    // WHERE
+    //   p2.updated IS NULL AND p1.visible = \"y\"
+    // ORDER BY
+    //   p1.updated
+    // DESC
+    // LIMIT 0, 250
+
+    conn.query("SELECT p1.id AS pID, p1.slug AS url, p1.revision, p1.title, p1.published, p1.updated, (SELECT COUNT(*) FROM pages WHERE slug = url AND visible = \"y\") AS revisionCount, (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount FROM pages p1 LEFT JOIN pages p2 ON p1.slug = p2.slug AND p1.updated < p2.updated WHERE p2.updated IS NULL AND p1.visible = \"y\" ORDER BY p1.updated DESC LIMIT 0, 250", function(err, rows) {
+      if (err) {
+        cb(err);
+      } else {
+        cb(null, rows);
+      }
+    });
+
+    conn.end();
   }
 };

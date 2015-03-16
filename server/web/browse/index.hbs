@@ -1,0 +1,21 @@
+<h1>Browse latest 250 test cases</h1>
+
+<form action="/search" method="get">
+	<p>Looking for a specific test case? Search!</p>
+	<input type="search" name="q" placeholder="e.g. canvas">
+	<input type="submit" value="Search">
+</form>
+
+{{error genError tag="p"}}
+
+<ul>
+  {{#each pages}}
+    <li>
+      <a href="/{{url}}{{#compare 1 revision}}/{{revision}}{{/compare}}">
+        {{addCode title}}
+      </a>
+      {{pluralize testCount "test"}}, {{pluralize revisionCount "revision"}}
+      (last updated <time datetime="{{DatetoISOString updated}}">{{relativeDate updated}}</time>)
+    </li>
+  {{/each}}
+</ul>

@@ -144,4 +144,34 @@ lab.experiment("Pages Repository", function() {
     });
 
   });
+
+  lab.experiment("getLatestVisible250", function() {
+
+    lab.test("returns up to 250 rows of latest, visible pages", function(done) {
+      queryStub.callsArgWith(1, null, []);
+
+      pages.getLatestVisible250(function(err, rows) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(rows).to.be.array();
+
+        done();
+      });
+    });
+
+    lab.test("returns an error when query fails", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+
+      queryStub.callsArgWith(1, testErr);
+
+      pages.getLatestVisible250(function(err) {
+
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+  });
 });

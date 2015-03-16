@@ -57,6 +57,7 @@ var manifest = {
     },
     "./server/api/json": {},
     "./server/api/jsonp": {},
+    "./server/web/browse": {},
     "./server/web/contributors": {},
     "./server/web/dart": {},
     "./server/web/faq": {},
