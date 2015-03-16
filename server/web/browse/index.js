@@ -45,6 +45,8 @@ exports.register = function(server, options, next) {
             .view("browse/atom", {
               updated: rows[0].updated.toISOString(),
               entries: rows
+            }, {
+              layout: false
             })
             .header("Content-Type", "application/atom+xml;charset=UTF-8")
             .header("Last-Modified", rows[0].updated.toString());

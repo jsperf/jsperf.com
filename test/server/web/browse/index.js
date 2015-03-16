@@ -100,6 +100,7 @@ lab.experiment("browse", function() {
       server.inject(request, function(response) {
         Code.expect(response.statusCode).to.equal(200);
         Code.expect(response.headers["content-type"]).to.equal("application/atom+xml;charset=UTF-8");
+        Code.expect(response.result).to.startWith("<feed");
 
         done();
       });
