@@ -147,7 +147,7 @@ lab.experiment("Pages Repository", function() {
 
   lab.experiment("getLatestVisible", function() {
 
-    lab.test("returns count of rows of latest, visible pages", function(done) {
+    lab.test("returns number of rows of latest, visible pages", function(done) {
       queryStub.callsArgWith(2, null, []);
 
       pages.getLatestVisible(250, function(err, rows) {
@@ -166,6 +166,36 @@ lab.experiment("Pages Repository", function() {
       queryStub.callsArgWith(2, testErr);
 
       pages.getLatestVisible(250, function(err) {
+
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment("getLatestVisibleForAuthor", function() {
+
+    lab.test("returns number of rows of latest, visible pages for author", function(done) {
+      queryStub.callsArgWith(2, null, []);
+
+      pages.getLatestVisibleForAuthor("test-author", function(err, rows) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(rows).to.be.array();
+
+        done();
+      });
+    });
+
+    lab.test("returns an error when query fails", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+
+      queryStub.callsArgWith(2, testErr);
+
+      pages.getLatestVisibleForAuthor("test-author", function(err) {
 
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);

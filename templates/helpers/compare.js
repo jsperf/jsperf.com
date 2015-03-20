@@ -5,7 +5,8 @@ module.exports = function(left, right, options) {
 
   var operators = {
     "<": function(l, r) { return l < r; },
-    "===": function(l, r) { return l === r; }
+    "===": function(l, r) { return l === r; },
+    "includes": function(l, r) { return l.indexOf(r) !== -1; }
   };
 
   if (!operators[operator]) {

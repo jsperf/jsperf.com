@@ -63,5 +63,38 @@ module.exports = {
     );
 
     conn.end();
+  },
+
+  getLatestVisibleForAuthor: function(author, cb) {
+    var conn = db.createConnection();
+
+    // SELECT
+    //   id AS pID,
+    //   slug AS url,
+    //   revision,
+    //   title,
+    //   published,
+    //   updated,
+    //   author,
+    //   (SELECT COUNT(*) FROM pages WHERE slug = url AND visible = "y") AS revisionCount,
+    //   (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount
+    // FROM pages
+    // WHERE
+    //   author LIKE "%{{author}}%" // TODO bring back
+    //   OR author LIKE "{{author}}"
+    //   AND updated IN (SELECT MAX(updated) FROM pages WHERE visible = "y" GROUP BY slug)
+    //   AND visible = "y"
+    // ORDER BY updated DESC
+
+    author = author.trim().replace("-", "%");
+
+    conn.query(
+      "SELECT id AS pID, slug AS url, revision, title, published, updated, author, (SELECT COUNT(*) FROM pages WHERE slug = url AND visible = \"y\") AS revisionCount, (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount FROM pages WHERE author LIKE ? AND updated IN (SELECT MAX(updated) FROM pages WHERE visible = \"y\" GROUP BY slug) AND visible = \"y\" ORDER BY updated DESC",
+      [author],
+      cb
+    );
+
+    conn.end();
+
   }
 };

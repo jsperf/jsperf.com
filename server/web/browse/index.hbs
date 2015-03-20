@@ -8,14 +8,4 @@
 
 {{error genError tag="p"}}
 
-<ul>
-  {{#each pages}}
-    <li>
-      <a href="/{{url}}{{#compare 1 revision}}/{{revision}}{{/compare}}">
-        {{addCode title}}
-      </a>
-      {{pluralize testCount "test"}}, {{pluralize revisionCount "revision"}}
-      (last updated <time datetime="{{DatetoISOString updated}}">{{relativeDate updated}}</time>)
-    </li>
-  {{/each}}
-</ul>
+{{> browse-pages}}

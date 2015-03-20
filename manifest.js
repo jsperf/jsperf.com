@@ -57,8 +57,10 @@ var manifest = {
     },
     "yar": {
       cookieOptions: {
+        // name: "jsPerf", FIXME
         password: config.get("/browserscope"),
-        isSecure: !config.get("/debug")
+        isSecure: !config.get("/debug"),
+        isHttpOnly: true
       }
     },
     "./server/api/json": {},

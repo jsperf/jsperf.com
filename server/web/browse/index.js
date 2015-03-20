@@ -1,18 +1,20 @@
 "use strict";
 
-var _ = require("lodash");
-
 var pagesRepo = require("../../repositories/pages");
 
-exports.register = function(server, options, next) {
+var getUpdatedDate = function(results) {
+  var updated;
 
-  var defaultContext = {
-    headTitle: "Browse test cases",
-    showAtom: {
-      slug: "browse"
-    },
-    ga: true
-  };
+  if (results.length === 0) {
+    updated = new Date();
+  } else {
+    updated = results[0].updated;
+  }
+
+  return updated;
+};
+
+exports.register = function(server, options, next) {
 
   server.route({
     method: "GET",
@@ -20,15 +22,21 @@ exports.register = function(server, options, next) {
     handler: function(request, reply) {
 
       pagesRepo.getLatestVisible(250, function(err, rows) {
-        var result;
+        var context = {
+          headTitle: "Browse test cases",
+          showAtom: {
+            slug: "browse"
+          },
+          ga: true
+        };
 
         if (err) {
-          result = { genError: "Sorry. Could not find tests to browse." };
+          context.genError = "Sorry. Could not find tests to browse.";
         } else {
-          result = { pages: rows };
+          context.pages = rows;
         }
 
-        reply.view("browse/index", _.assign(defaultContext, result));
+        reply.view("browse/index", context);
       });
     }
   });
@@ -41,15 +49,69 @@ exports.register = function(server, options, next) {
         if (err) {
           reply(err);
         } else {
+          var updated = getUpdatedDate(rows);
+
           reply
-            .view("browse/atom", {
-              updated: rows[0].updated.toISOString(),
+            .view("browse/index-atom", {
+              updated: updated.toISOString(),
               entries: rows
             }, {
               layout: false
             })
             .header("Content-Type", "application/atom+xml;charset=UTF-8")
-            .header("Last-Modified", rows[0].updated.toString());
+            .header("Last-Modified", updated.toString());
+        }
+      });
+    }
+  });
+
+  server.route({
+    method: "GET",
+    path: "/browse/{authorSlug}",
+    handler: function(request, reply) {
+
+      pagesRepo.getLatestVisibleForAuthor(request.params.authorSlug, function(err, rows) {
+        if (err) {
+          reply(err);
+        } else {
+          if (rows.length === 0) {
+            reply("The author was not found").code(404);
+          } else {
+            reply.view("browse/author", {
+              headTitle: "Test cases by " + request.params.authorSlug,
+              showAtom: {
+                slug: "browse/" + request.params.authorSlug
+              },
+              ga: true,
+              author: request.params.authorSlug,
+              pages: rows
+            });
+          }
+        }
+      });
+    }
+  });
+
+  server.route({
+    method: "GET",
+    path: "/browse/{authorSlug}.atom",
+    handler: function(request, reply) {
+
+      pagesRepo.getLatestVisibleForAuthor(request.params.authorSlug, function(err, rows) {
+        if (err) {
+          reply(err);
+        } else {
+          var updated = getUpdatedDate(rows);
+
+          reply.view("browse/author-atom", {
+            author: request.params.authorSlug,
+            update: updated.toISOString,
+            entries: rows
+          }, {
+            layout: false
+          })
+          .header("Content-Type", "application/atom+xml;charset=UTF-8")
+          .header("Last-Modified", updated.toString());
         }
       });
     }

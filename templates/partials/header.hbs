@@ -7,7 +7,7 @@
   {{/if}}
 
   {{#if showAtom}}
-    <link href="/{{showAtom.slug}}.atom" rel="alternate" type="application/atom+xml" title="Atom feed for {{#compare showAtom.slug "browse" operator="==="}}new or updated test cases{{else}}revisions of this test case{{/compare}}">
+    <link href="/{{showAtom.slug}}.atom" rel="alternate" type="application/atom+xml" title="Atom feed for {{#compare showAtom.slug "browse" operator="includes"}}new or updated test cases{{else}}revisions of this test case{{/compare}}">
   {{/if}}
 
   <link rel="stylesheet" href="/_css/{{cssFile}}">

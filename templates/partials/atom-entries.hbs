@@ -1,0 +1,19 @@
+{{#each entries}}
+  <entry>
+    <title>{{title}}</title>
+    <author>
+      <name>
+        {{#if author}}
+          {{author}}
+        {{else}}
+          jsPerf
+        {{/if}}
+      </name>
+    </author>
+    <link rel="alternate" type="text/html" href="http://{{domain}}/{{url}}{{#compare revision 1}}/{{revision}}{{/compare}}" />
+    <summary>{{#if info}}{{info}}{{else}}No description entered{{/if}}</summary>
+    <id>tag:{{domain}},2010:/{{url}}{{#compare revision 1}}/{{revision}}{{/compare}}</id>
+    <published>{{DatetoISOString published}}</published>
+    <updated>{{DatetoISOString updated}}</updated>
+  </entry>
+{{/each}}
