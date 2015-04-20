@@ -96,5 +96,24 @@ module.exports = {
 
     conn.end();
 
+  },
+
+  getBySlug: function(slug, rev, cb) {
+    // SELECT
+    //   *,
+    //   (SELECT MAX(revision) FROM pages WHERE slug = {{slug}}) AS maxRev
+    // FROM pages
+    // WHERE
+    //   slug = {{slug}} AND revision = {{rev}}
+
+    var conn = db.createConnection();
+
+    conn.query(
+      "SELECT *, (SELECT MAX(revision) FROM pages WHERE slug = ?? ) AS maxRev FROM pages WHERE slug = ?? AND rev = ??",
+      [slug, slug, rev],
+      cb
+    );
+
+    conn.end();
   }
 };

@@ -204,4 +204,26 @@ lab.experiment("Pages Repository", function() {
       });
     });
   });
+
+  lab.experiment("getBySlug", function() {
+
+    lab.test("returns page given slug", function(done) {
+      var slug = "test-slug";
+      var rev = 1;
+      queryStub.callsArgWith(2, null, {});
+
+      pages.getBySlug(slug, rev, function(err, page) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(page).to.be.object();
+        Code.expect(queryStub.calledWithExactly(
+          "SELECT *, (SELECT MAX(revision) FROM pages WHERE slug = ?? ) AS maxRev FROM pages WHERE slug = ?? AND rev = ??",
+          [slug, slug, rev],
+          sinon.match.func
+        )).to.be.true();
+
+        done();
+      });
+    });
+  });
 });
