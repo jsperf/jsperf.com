@@ -14,9 +14,30 @@ var tests = proxyquire("../../../server/repositories/tests", {
 var lab = exports.lab = Lab.script();
 
 lab.experiment("Tests Repository", function() {
+  var queryStub;
+
+  lab.before(function(done) {
+    dbStub.createConnection = function() {
+
+      return {
+        query: queryStub,
+        escape: function(val) {
+          return "`" + val + "`";
+        },
+        end: function() {}
+      };
+    };
+
+    done();
+  });
+
+  lab.beforeEach(function(done) {
+    queryStub = sinon.stub();
+
+    done();
+  });
 
   lab.experiment("bulkCreate", function() {
-    var queryStub;
     var pageID;
     var t;
 
@@ -34,23 +55,6 @@ lab.experiment("Tests Repository", function() {
       ];
 
       pageID = 1;
-
-      dbStub.createConnection = function() {
-
-        return {
-          query: queryStub,
-          escape: function(val) {
-            return "`" + val + "`";
-          },
-          end: function() {}
-        };
-      };
-
-      done();
-    });
-
-    lab.beforeEach(function(done) {
-      queryStub = sinon.stub();
 
       done();
     });
@@ -108,5 +112,34 @@ lab.experiment("Tests Repository", function() {
 
     });
 
+  });
+
+  lab.experiment("sitemap", function() {
+    lab.test("returns an error when query fails", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+
+      queryStub.callsArgWith(1, testErr);
+
+      tests.sitemap(function(err) {
+
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("returns tests to use for sitemap", function(done) {
+      queryStub.callsArgWith(1, null, []);
+
+      tests.sitemap(function(err, results) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(results).to.be.instanceof(Array);
+
+        done();
+      });
+    });
   });
 });

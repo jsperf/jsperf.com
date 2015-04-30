@@ -1,10 +1,18 @@
 "use strict";
 
 var Confidence = require("confidence");
+var _ = require("lodash");
 var config = require("./config");
 
 var criteria = {
   env: process.env.NODE_ENV
+};
+
+var visionaryContextDefault = {
+  cssFile: "main.css",
+  headTitle: "jsPerf: JavaScript performance playground",
+  scheme: config.get("/scheme"),
+  domain: config.get("/domain")
 };
 
 var manifest = {
@@ -42,17 +50,12 @@ var manifest = {
       partialsPath: "templates/partials",
       context: {
         $filter: "env",
-        development: {
+        development: _.assign(visionaryContextDefault, {
           debug: true,
           cssFile: "main.src.css?" + Date.now(),
           headTitle: "jsPerf-dev"
-        },
-        $default: {
-          cssFile: "main.css",
-          headTitle: "jsPerf: JavaScript performance playground",
-          scheme: config.get("/scheme"),
-          domain: config.get("/domain")
-        }
+        }),
+        $default: visionaryContextDefault
       }
     },
     "yar": {
@@ -71,7 +74,8 @@ var manifest = {
     "./server/web/faq": {},
     "./server/web/home": {},
     "./server/web/public": {},
-    "./server/web/redirects": {}
+    "./server/web/redirects": {},
+    "./server/web/sitemap/xml": {}
   }
 };
 
