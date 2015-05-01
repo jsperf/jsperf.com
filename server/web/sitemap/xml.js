@@ -1,6 +1,6 @@
 "use strict";
 
-var testsRepo = require("../../repositories/tests");
+var pagesRepo = require("../../repositories/pages");
 
 exports.register = function(server, options, next) {
 
@@ -9,7 +9,7 @@ exports.register = function(server, options, next) {
     path: "/sitemap.xml",
     handler: function(request, reply) {
 
-      testsRepo.sitemap(function(err, items) {
+      pagesRepo.getSitemap(function(err, items) {
         if (err) {
           reply(err);
         } else {

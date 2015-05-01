@@ -9,10 +9,10 @@ var proxyquire = require("proxyquire");
 
 var Config = require("../../../../config");
 
-var testsRepoStub = {};
+var pagesRepoStub = {};
 
 var SitemapPlugin = proxyquire("../../../../server/web/sitemap/xml", {
-  "../../repositories/tests": testsRepoStub
+  "../../repositories/pages": pagesRepoStub
 });
 
 var lab = exports.lab = Lab.script();
@@ -45,7 +45,7 @@ lab.experiment("sitemap", function() {
   });
 
   lab.test("it responds with sitemap XML", function(done) {
-    testsRepoStub.sitemap = function(cb) {
+    pagesRepoStub.getSitemap = function(cb) {
       cb(null, []);
     };
 
@@ -62,7 +62,7 @@ lab.experiment("sitemap", function() {
   });
 
   lab.test("it responds with error", function(done) {
-    testsRepoStub.sitemap = function(cb) {
+    pagesRepoStub.getSitemap = function(cb) {
       cb(new Error());
     };
 

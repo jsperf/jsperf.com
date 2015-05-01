@@ -226,4 +226,33 @@ lab.experiment("Pages Repository", function() {
       });
     });
   });
+
+  lab.experiment("getSitemap", function() {
+    lab.test("returns an error when query fails", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+
+      queryStub.callsArgWith(1, testErr);
+
+      pages.getSitemap(function(err) {
+
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("returns tests to use for sitemap", function(done) {
+      queryStub.callsArgWith(1, null, []);
+
+      pages.getSitemap(function(err, results) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(results).to.be.instanceof(Array);
+
+        done();
+      });
+    });
+  });
 });
