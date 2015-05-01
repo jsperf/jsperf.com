@@ -73,6 +73,7 @@ var manifest = {
     "./server/web/dart": {},
     "./server/web/faq": {},
     "./server/web/home": {},
+    "./server/web/popular": {},
     "./server/web/public": {},
     "./server/web/redirects": {},
     "./server/web/sitemap/xml": {}

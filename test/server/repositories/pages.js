@@ -255,4 +255,62 @@ lab.experiment("Pages Repository", function() {
       });
     });
   });
+
+  lab.experiment("getPopularRecent", function() {
+    lab.test("returns an error when query fails", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+
+      queryStub.callsArgWith(1, testErr);
+
+      pages.getPopularRecent(function(err) {
+
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("returns at most 30 recent popular tests", function(done) {
+      queryStub.callsArgWith(1, null, new Array(30));
+
+      pages.getPopularRecent(function(err, results) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(results).to.be.instanceof(Array);
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment("getPopularAllTime", function() {
+    lab.test("returns an error when query fails", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+
+      queryStub.callsArgWith(1, testErr);
+
+      pages.getPopularAllTime(function(err) {
+
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("returns at most 30 recent popular tests", function(done) {
+      queryStub.callsArgWith(1, null, new Array(30));
+
+      pages.getPopularAllTime(function(err, results) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(results).to.be.instanceof(Array);
+
+        done();
+      });
+    });
+  });
 });
