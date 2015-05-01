@@ -215,4 +215,49 @@ lab.experiment("Pages Service", function() {
       });
     });
   });
+
+  lab.experiment("getPopular", function() {
+    lab.beforeEach(function(done) {
+      pagesRepoStub.getPopularRecent = s.stub();
+      pagesRepoStub.getPopularAllTime = s.stub();
+
+      done();
+    });
+
+    lab.test("returns error if getting recent fails", function(done) {
+      pagesRepoStub.getPopularRecent.callsArgWith(0, new Error());
+
+      pages.getPopular(function(err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(pagesRepoStub.getPopularAllTime.called).to.be.false();
+
+        done();
+      });
+    });
+
+    lab.test("returns error if getting all-time fails", function(done) {
+      pagesRepoStub.getPopularRecent.callsArgWith(0, null, []);
+      pagesRepoStub.getPopularAllTime.callsArgWith(0, new Error());
+
+      pages.getPopular(function(err) {
+        Code.expect(err).to.be.instanceof(Error);
+
+        done();
+      });
+    });
+
+    lab.test("returns object of recent and all-time pages", function(done) {
+      pagesRepoStub.getPopularRecent.callsArgWith(0, null, []);
+      pagesRepoStub.getPopularAllTime.callsArgWith(0, null, []);
+
+      pages.getPopular(function(err, results) {
+        Code.expect(err).to.be.null();
+        Code.expect(results).to.be.object();
+        Code.expect(results.recent).to.be.array();
+        Code.expect(results.allTime).to.be.array();
+
+        done();
+      });
+    });
+  });
 });

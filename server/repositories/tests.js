@@ -29,19 +29,5 @@ module.exports = {
     });
 
     conn.end();
-  },
-
-  sitemap: function(cb) {
-    var conn = db.createConnection();
-
-    conn.query("SELECT id AS pID, revision, slug, title, updated, (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount FROM pages WHERE visible = \"y\" ORDER BY updated DESC", function(err, results) {
-      if (err) {
-        cb(err);
-      } else {
-        cb(null, results);
-      }
-    });
-
-    conn.end();
   }
 };

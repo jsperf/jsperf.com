@@ -4,6 +4,20 @@ var db = require("../lib/db");
 
 var table = "pages";
 
+var genericQuery = function(q, cb) {
+  var conn = db.createConnection();
+
+  conn.query(q, function(err, results) {
+    if (err) {
+      cb(err);
+    } else {
+      cb(null, results);
+    }
+  });
+
+  conn.end();
+};
+
 module.exports = {
   create: function(payload, cb) {
     var conn = db.createConnection();
@@ -115,5 +129,17 @@ module.exports = {
     );
 
     conn.end();
+  },
+
+  getSitemap: function(cb) {
+    genericQuery("SELECT id AS pID, revision, slug, title, updated, (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount FROM pages WHERE visible = \"y\" ORDER BY updated DESC", cb);
+  },
+
+  getPopularRecent: function(cb) {
+    genericQuery("SELECT id AS pID, slug AS url, author, revision, title, published, updated, hits FROM pages WHERE updated BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW() ORDER BY hits DESC LIMIT 0, 30", cb);
+  },
+
+  getPopularAllTime: function(cb) {
+    genericQuery("SELECT id AS pID, slug AS url, author, revision, title, published, updated, hits FROM pages ORDER BY hits DESC LIMIT 0, 30", cb);
   }
 };

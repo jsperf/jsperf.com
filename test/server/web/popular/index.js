@@ -9,17 +9,17 @@ var proxyquire = require("proxyquire");
 
 var Config = require("../../../../config");
 
-var pagesRepoStub = {};
+var pagesServiceStub = {};
 
-var SitemapPlugin = proxyquire("../../../../server/web/sitemap/xml", {
-  "../../repositories/pages": pagesRepoStub
+var PopularPlugin = proxyquire("../../../../server/web/popular/index", {
+  "../../services/pages": pagesServiceStub
 });
 
 var lab = exports.lab = Lab.script();
 var request, server;
 
 lab.beforeEach(function(done) {
-  var plugins = [ SitemapPlugin ];
+  var plugins = [ PopularPlugin ];
   server = new Hapi.Server();
   server.connection({
     port: Config.get("/port/web")
@@ -34,27 +34,27 @@ lab.beforeEach(function(done) {
   server.register(plugins, done);
 });
 
-lab.experiment("sitemap", function() {
+lab.experiment("popular", function() {
   lab.beforeEach(function(done) {
     request = {
       method: "GET",
-      url: "/sitemap.xml"
+      url: "/popular"
     };
 
     done();
   });
 
-  lab.test("it responds with sitemap XML", function(done) {
-    pagesRepoStub.getSitemap = function(cb) {
+  lab.test("it responds with popular pages", function(done) {
+    pagesServiceStub.getPopular = function(cb) {
       cb(null, []);
     };
 
     server.inject(request, function(response) {
       Code.expect(response.statusCode).to.equal(200);
       Code.expect(response.result).to.include([
-        "urlset",
-        "url>",
-        "loc"
+        "Popular",
+        "recent",
+        "all-time"
       ]);
 
       done();
@@ -62,7 +62,7 @@ lab.experiment("sitemap", function() {
   });
 
   lab.test("it responds with error", function(done) {
-    pagesRepoStub.getSitemap = function(cb) {
+    pagesServiceStub.getPopular = function(cb) {
       cb(new Error());
     };
 

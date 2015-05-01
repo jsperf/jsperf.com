@@ -51,5 +51,24 @@ module.exports = {
         });
       }
     });
+  },
+
+  getPopular: function(cb) {
+    pagesRepo.getPopularRecent(function(er, recent) {
+      if (er) {
+        cb(er);
+      } else {
+        pagesRepo.getPopularAllTime(function(err, allTime) {
+          if (err) {
+            cb(err);
+          } else {
+            cb(null, {
+              recent: recent,
+              allTime: allTime
+            });
+          }
+        });
+      }
+    });
   }
 };
