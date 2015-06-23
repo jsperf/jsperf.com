@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/jsperf/jsperf.com",
   "dependencies": {
+    "bell": "^3.0.0",
     "blipp": "^2.0.1",
     "confidence": "^1.0.0",
     "dotenv": "^0.5.1",
@@ -35,6 +36,7 @@
     "good-console": "^4.1.0",
     "handlebars": "^3.0.0",
     "hapi": "^8.2.0",
+    "hapi-auth-cookie": "^3.0.1",
     "joi": "^5.1.0",
     "lodash": "^3.3.1",
     "mysql": "^2.5.5",

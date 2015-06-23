@@ -12,6 +12,21 @@ var config = {
   $meta: "jsPerf.com",
   scheme: process.env.SCHEME,
   domain: process.env.DOMAIN,
+  auth: {
+    oauth: {
+      secure: false,
+      github: {
+        secret: process.env.GITHUB_CLIENT_SECRET,
+        id: process.env.GITHUB_CLIENT_ID
+      },
+      cookiePass: process.env.BELL_COOKIE_PASS
+    },
+    session: {
+      pass: process.env.COOKIE_PASS,
+      name: "sid-jsperf",
+      secure: false
+    }
+  },
   port: {
     web: process.env.PORT
   },

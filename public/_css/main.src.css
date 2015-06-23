@@ -150,6 +150,21 @@ button, .submit {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ebebeb', EndColorStr='#b8b8b8');
 }
 
+.login {
+	padding: .35em .5em;
+	text-decoration: none;
+	cursor: pointer;
+	color: #000;
+	border: 1px solid #999;
+	background: #dadada;
+	background-image: -moz-linear-gradient(top, #ebebeb, #b8b8b8);
+	background-image: -o-linear-gradient(top, #ebebeb, #b8b8b8);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#ebebeb), to(#b8b8b8));
+	background-image: -webkit-linear-gradient(top, #ebebeb, #b8b8b8);
+	background-image: linear-gradient(top, #ebebeb, #b8b8b8);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ebebeb', EndColorStr='#b8b8b8');
+}
+
 a:hover span, a:focus span, #comments .owner .meta a {
 	color: #fff;
 }

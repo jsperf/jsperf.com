@@ -28,9 +28,9 @@ var manifest = {
     port: config.get("/port/web"),
     labels: ["web"]
   }],
-  plugins: {
-    "blipp": {},
-    "good": {
+  plugins: [
+    {"blipp": {}},
+    {"good": {
       reporters: [{
         reporter: "good-console",
         args: [{
@@ -38,8 +38,8 @@ var manifest = {
           response: "*"
         }]
       }]
-    },
-    "visionary": {
+    }},
+    {"visionary": {
       engines: {
         hbs: "handlebars"
       },
@@ -57,27 +57,31 @@ var manifest = {
         }),
         $default: visionaryContextDefault
       }
-    },
-    "yar": {
+    }},
+    {"yar": {
       cookieOptions: {
         // name: "jsPerf", FIXME
         password: config.get("/browserscope"),
         isSecure: !config.get("/debug"),
         isHttpOnly: true
       }
-    },
-    "./server/api/json": {},
-    "./server/api/jsonp": {},
-    "./server/web/browse": {},
-    "./server/web/contributors": {},
-    "./server/web/dart": {},
-    "./server/web/faq": {},
-    "./server/web/home": {},
-    "./server/web/popular": {},
-    "./server/web/public": {},
-    "./server/web/redirects": {},
-    "./server/web/sitemap/xml": {}
-  }
+    }},
+    {"bell": {}},
+    {"hapi-auth-cookie": {}},
+    {"./server/web/auth/strategies": {}},
+    {"./server/api/json": {}},
+    {"./server/api/jsonp": {}},
+    {"./server/web/browse": {}},
+    {"./server/web/contributors": {}},
+    {"./server/web/dart": {}},
+    {"./server/web/faq": {}},
+    {"./server/web/home": {}},
+    {"./server/web/popular": {}},
+    {"./server/web/public": {}},
+    {"./server/web/redirects": {}},
+    {"./server/web/sitemap/xml": {}},
+    {"./server/web/auth/github": {}}
+  ]
 };
 
 var store = new Confidence.Store(manifest);

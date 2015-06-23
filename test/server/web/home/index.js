@@ -23,15 +23,33 @@ var YarPlugin = {
   options: { cookieOptions: { password: "testing" } }
 };
 
+var AuthPlugin = {
+  register: require("hapi-auth-cookie"),
+  options: {}
+};
+
 var lab = exports.lab = Lab.script();
 var request, server;
 
 lab.beforeEach(function(done) {
   var plugins = [ HomePlugin, YarPlugin ];
   server = new Hapi.Server();
+
   server.connection({
     port: Config.get("/port/web")
   });
+
+  server.register([ AuthPlugin ], function(){
+    server.auth.strategy("session", "cookie", {
+      password: process.env.COOKIE_PASS,
+      cookie: "sid-jsperf",
+      redirectTo: false,
+      isSecure: false
+    });
+  });
+
+  
+
   server.views({
     engines: {
       hbs: require("handlebars")
@@ -43,6 +61,7 @@ lab.beforeEach(function(done) {
     relativeTo: path.join(__dirname, "..", "..", "..", "..")
   });
   server.register(plugins, done);
+
 });
 
 lab.experiment("home", function() {
@@ -65,6 +84,24 @@ lab.experiment("home", function() {
         done();
       });
     });
+
+    lab.test("it presents a login option to a user if they have not auth'd with GitHub", function(done) {
+      server.inject(request, function(response) {
+        Code.expect(response.result).to.include("Login with GitHub to Create Test Cases");
+
+        done();
+      });
+    });
+
+    lab.test("it presents a save option to a user if they have already auth'd with GitHub", function(done) {
+      request.credentials = {"test": "profile"};
+
+      server.inject(request, function(response) {
+        Code.expect(response.result).to.include("Save test case");
+
+        done();
+      });
+    });
   });
 
   lab.experiment("POST", function() {
@@ -73,6 +110,7 @@ lab.experiment("home", function() {
       request = {
         method: "POST",
         url: "/",
+        credentials: {"test": "profile"},
         payload: {
           author: "Pitcher Man",
           authorEmail: "kool-aid@kraft.com",
@@ -175,6 +213,20 @@ lab.experiment("home", function() {
       });
     });
 
+    lab.experiment("authorization", function() {
+
+      lab.test("401 if attempting to POST without authorization", function(done) {
+        delete request.credentials;
+
+        server.inject(request, function(response) {
+          Code.expect(response.statusCode).to.equal(401);
+
+          done();
+        });
+      });
+
+    });
+
     lab.experiment("slug check", function() {
 
       lab.afterEach(function(done) {
@@ -259,4 +311,5 @@ lab.experiment("home", function() {
       });
     });
   });
+
 });
