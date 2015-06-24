@@ -23,17 +23,17 @@ lab.experiment("Config", function() {
       done();
     });
 
-    lab.test("it does not secures the bell cookie if the scheme is http", function(done) {
+    lab.test("it does not secure the bell cookie if the scheme is http", function(done) {
       Code.expect(Config.get("/auth/oauth/secure", {scheme: "http"})).to.equal(false);
       done();
     });
 
-    lab.test("it does not secures the general cookie if the scheme is http", function(done) {
+    lab.test("it does not secure the general cookie if the scheme is http", function(done) {
       Code.expect(Config.get("/auth/session/secure", {scheme: "http"})).to.equal(false);
       done();
     });
 
-    lab.test("it secures the general cookie if the scheme is http", function(done) {
+    lab.test("it secures the general cookie if the scheme is https", function(done) {
       Code.expect(Config.get("/auth/session/secure", {scheme: "https"})).to.equal(true);
       done();
     });
