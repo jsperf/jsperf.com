@@ -47,9 +47,22 @@ exports.register = function(server, options, next) {
   server.route({
     method: "GET",
     path: "/",
+    config: {
+      auth: {
+        mode: "try",
+        strategy: "session"
+      }
+    },
     handler: function(request, reply) {
+      var authorized = false;
+
+      if (request.auth.isAuthenticated) {
+        authorized = true;
+      }
+
       reply.view("home/index", _.assign(defaultContext, {
-        test: [defaultTest, defaultTest]
+        test: [defaultTest, defaultTest],
+        authorized: authorized
       }));
     }
   });
@@ -57,14 +70,16 @@ exports.register = function(server, options, next) {
   server.route({
     method: "POST",
     path: "/",
+    config: {
+      auth: "session"
+    },
     handler: function(request, reply) {
-
       var errResp = function(errObj) {
         if (errObj.message) {
           errObj.genError = errObj.message;
         }
 
-        reply.view("home/index", _.assign(defaultContext, request.payload, errObj)).code(400);
+        reply.view("home/index", _.assign(defaultContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
       var mediumText = Joi.string().allow("").max(mediumTextLength);

@@ -7,6 +7,7 @@
 <p>jsPerf aims to provide an easy way to create and share <a href="/browse" title="View some examples by browsing the jsPerf test cases">test cases</a>, comparing the performance of different JavaScript snippets by running benchmarks. For more information, see <a href="/faq" title="Frequently asked questions">the FAQ</a>.</p>
 
 <h2>Create a test case</h2>
+{{#if authorized}}
 
 {{error genError tag="p"}}
 
@@ -106,3 +107,6 @@
 
   </fieldset>
 </form>
+{{else}}
+   <a class="login" href="/auth/github"><i class="fa fa-github"></i> Login with GitHub to Create Test Cases</a>
+{{/if}}
