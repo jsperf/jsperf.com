@@ -131,6 +131,33 @@ module.exports = {
     conn.end();
   },
 
+  getSearch: function(searchTerms) {
+    //SELECT * FROM (
+    //  SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.updated, COUNT(x.slug) AS revisionCount
+    //FROM pages x
+    //WHERE x.title LIKE "%' . $db->real_escape_string($search) . '%" OR x.info LIKE "%' . $db->real_escape_string($search) . '%"
+    //GROUP BY x.slug
+    //ORDER BY updated DESC
+    //LIMIT 0, 50
+    //) y LEFT JOIN (
+    //  SELECT t.pageid, COUNT(t.pageid) AS testCount
+    //FROM tests t
+    //GROUP BY t.pageid
+    //) z ON z.pageid = y.pID';
+
+    var sql = "SELECT * FROM ( " +
+        "SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.updated, COUNT(x.slug) AS revisionCount " +
+        "FROM pages x WHERE x.title LIKE ?? OR x.info LIKE ?? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50 " +
+      ") y " + "LEFT JOIN ( " +
+        "SELECT t.pageid, COUNT(t.pageid) AS testCount " +
+        "FROM tests t GROUP BY t.pageid " +
+      ") z ON z.pageid = y.pID;";
+    var conn = db.createConnection();
+    return conn.queryAsync(sql, ["%" + searchTerms + "%"]).finally(function() {
+      conn.end();
+    });
+  },
+
   getSitemap: function(cb) {
     genericQuery("SELECT id AS pID, revision, slug, title, updated, (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount FROM pages WHERE visible = \"y\" ORDER BY updated DESC", cb);
   },
