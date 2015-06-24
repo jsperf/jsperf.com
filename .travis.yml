@@ -4,7 +4,7 @@ node_js:
 env: PORT=3000
 after_script:
 - npm install -g codeclimate-test-reporter
-- cat lcov.info | codeclimate
+- cat lcov.info | codeclimate || echo "Could not upload code coverage to CodeClimate"
 deploy:
   provider: heroku
   app:
