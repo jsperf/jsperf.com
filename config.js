@@ -3,9 +3,11 @@
 require("dotenv").load();
 
 var Confidence = require("confidence");
+var _ = require("lodash");
 
 var criteria = {
-  env: process.env.NODE_ENV
+  env: process.env.NODE_ENV,
+  scheme: process.env.SCHEME
 };
 
 var config = {
@@ -14,7 +16,11 @@ var config = {
   domain: process.env.DOMAIN,
   auth: {
     oauth: {
-      secure: false,
+      secure: {
+        $filter: "scheme",
+        "https": true,
+        $default: false
+      },
       github: {
         secret: process.env.GITHUB_CLIENT_SECRET,
         id: process.env.GITHUB_CLIENT_ID
@@ -24,7 +30,11 @@ var config = {
     session: {
       pass: process.env.COOKIE_PASS,
       name: "sid-jsperf",
-      secure: false
+      secure: {
+        $filter: "scheme",
+        "https": true,
+        $default: false
+      }
     }
   },
   port: {
@@ -50,7 +60,8 @@ var config = {
 
 var store = new Confidence.Store(config);
 
-exports.get = function(key) {
+exports.get = function(key, overrides) {
+  _.assign(criteria, overrides);
   return store.get(key, criteria);
 };
 
