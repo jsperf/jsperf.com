@@ -68,6 +68,38 @@ var schema = {
           default: "jsperf_dev"
         }
       }
+    },
+    bell_cookie: {
+      properties:{
+        pass: {
+          description: "Cookie Password for Oauth",
+          required: true,
+          default: ""
+        }
+      }  
+    },
+    cookie: {
+      properties: {
+        pass: {
+          description: "Cookie Password",
+          required: true,
+          default: ""
+        }
+      }
+    },
+    github_client: {
+      properties: {
+        id: {
+          description: "GitHub Client ID",
+          required: true,
+          default: ""
+        },
+        secret: {
+          description: "GitHub Client Secret",
+          required: true,
+          default: ""
+        }
+      }
     }
   }
 };
