@@ -80,7 +80,8 @@ var manifest = {
     {"./server/web/public": {}},
     {"./server/web/redirects": {}},
     {"./server/web/sitemap/xml": {}},
-    {"./server/web/auth/github": {}}
+    {"./server/web/auth/github": {}},
+    {"./server/web/errors": {}}
   ]
 };
 
