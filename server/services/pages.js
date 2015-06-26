@@ -73,6 +73,6 @@ module.exports = {
   },
 
   getSearch: function(searchTerms) {
-    return pagesRepo.getSearch(searchTerms)
+    return pagesRepo.getSearch(searchTerms);
   }
 };

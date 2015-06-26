@@ -1,6 +1,7 @@
 "use strict";
 
 var mysql = require("mysql");
+/*global Promise:true*/
 var Promise = require("bluebird");
 
 // This adds Promise ready functions to all these objects.
