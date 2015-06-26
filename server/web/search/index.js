@@ -8,7 +8,7 @@ exports.register = function(server, options, next) {
     method: "GET",
     path: "/search",
     handler: function(request, reply) {
-
+      var query = request.query.q;
       pagesService.getSearch(query)
         .then(function (search) {
           reply.view("search/index", {
@@ -27,5 +27,5 @@ exports.register = function(server, options, next) {
 };
 
 exports.register.attributes = {
-  name: "web/popular"
+  name: "web/search"
 };
