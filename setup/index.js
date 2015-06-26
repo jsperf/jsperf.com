@@ -69,8 +69,8 @@ var schema = {
         }
       }
     },
-    bell_cookie: {
-      properties:{
+    "bell_cookie": {
+      properties: {
         pass: {
           description: "Cookie Password for Oauth",
           required: true,
@@ -87,7 +87,7 @@ var schema = {
         }
       }
     },
-    github_client: {
+    "github_client": {
       properties: {
         id: {
           description: "GitHub Client ID",
