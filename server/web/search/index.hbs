@@ -1,0 +1,26 @@
+{{#if results}}
+    <h1>Search results</h1>
+    <ul>
+  {{#each results}}
+    <!--<li>
+    <a href="/' . $item->url . ($item->revision > 1 ? '/' . $item->revision : '') . '">
+    ' . addCode(he($item->title)) .
+    '</a>: ' .
+    ($item->testCount > 1 ? $item->testCount . ' tests' : '1 test') .
+    ($item->revisionCount > 1 ? ', ' . $item->revisionCount . ' revisions' : '') .
+    ' (last updated <time datetime="' . date('c', strtotime($item->updated)) . '">' . relativeDate($item->updated) . '</time>)';-->
+  <li>
+      <a href="/{{url}}{{#compare revision 1}}/{{revision}}{{/compare}}">{{title}}</a>
+      {{#compare testCount 1}}{{testCount}} tests{{else}}1 test{{/compare}}
+      {{#compare revisionCount 1}}, {{revisionCount}} revisions{{/compare}}
+      last updated <time datetime="{{DatetoISOString updated}}">{{relativeDate updated}}</time>)
+  {{/each}}
+</ul>
+{{else}}
+<h1>Search jsPerf</h1>
+<form action="/search" method="get">
+    <p>Looking for a specific test case? Search!</p>
+    <input type="search" name="q" placeholder="e.g. canvas">
+    <input type="submit" value="Search">
+</form>
+{{/if}}

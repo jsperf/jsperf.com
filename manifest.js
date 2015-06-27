@@ -77,6 +77,7 @@ var manifest = {
     {"./server/web/faq": {}},
     {"./server/web/home": {}},
     {"./server/web/popular": {}},
+    {"./server/web/search": {}},
     {"./server/web/public": {}},
     {"./server/web/redirects": {}},
     {"./server/web/sitemap/xml": {}},

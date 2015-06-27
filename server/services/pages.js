@@ -70,5 +70,9 @@ module.exports = {
         });
       }
     });
+  },
+
+  getSearch: function(searchTerms) {
+    return pagesRepo.getSearch(searchTerms);
   }
 };

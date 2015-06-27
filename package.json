@@ -29,6 +29,7 @@
   "dependencies": {
     "bell": "^3.0.0",
     "blipp": "^2.0.1",
+    "bluebird": "^2.9.30",
     "confidence": "^1.0.0",
     "dotenv": "^0.5.1",
     "glue": "^2.0.0",
