@@ -1,8 +1,7 @@
-<h1>Search results</h1>
-
-{{#if result}}
-<ul>
-  {{#each result}}
+{{#if results}}
+    <h1>Search results</h1>
+    <ul>
+  {{#each results}}
     <!--<li>
     <a href="/' . $item->url . ($item->revision > 1 ? '/' . $item->revision : '') . '">
     ' . addCode(he($item->title)) .

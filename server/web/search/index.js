@@ -15,7 +15,7 @@ exports.register = function(server, options, next) {
             headTitle: "Search",
             ga: true,
             admin: false,
-            results: search.results
+            results: search
           });
         })
         .catch(reply);
