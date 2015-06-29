@@ -11,7 +11,7 @@ module.exports = {
     var columns = ["pageID", "title", "defer", "code"];
 
     var values = [];
-    for(var i = 0, tl = tests.length; i < tl; i++) {
+    for (var i = 0, tl = tests.length; i < tl; i++) {
       var test = tests[i];
       values.push("(" + pageID + ", " + conn.escape(test.title) + ", " + conn.escape(test.defer) + ", " + conn.escape(test.code) + ")");
     }

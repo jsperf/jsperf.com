@@ -39,7 +39,7 @@ lab.beforeEach(function(done) {
     port: Config.get("/port/web")
   });
 
-  server.register([ AuthCookiePlugin, AuthPlugin ], function(){
+  server.register([ AuthCookiePlugin, AuthPlugin ], function() {
 
     server.auth.strategy("session", "cookie", {
       password: Config.get("/auth/session/pass"),

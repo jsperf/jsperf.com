@@ -109,7 +109,7 @@ lab.experiment("errors", function() {
     server.inject("/web/403", function(response) {
       Code.expect(response.statusCode).to.equal(403);
       Code.expect(response.result).to.include("You don’t have permission to view this document");
-        
+
       done();
     });
   });
@@ -118,7 +118,7 @@ lab.experiment("errors", function() {
     server.inject("/web/400", function(response) {
       Code.expect(response.statusCode).to.equal(400);
       Code.expect(response.result).to.include("The request cannot be fulfilled due to bad syntax");
-        
+
       done();
     });
   });
@@ -127,7 +127,7 @@ lab.experiment("errors", function() {
     server.inject("/silly/no/way/this/is/a/route", function(response) {
       Code.expect(response.statusCode).to.equal(404);
       Code.expect(response.result).to.include("The requested document could not be found");
-        
+
       done();
     });
   });
@@ -135,7 +135,7 @@ lab.experiment("errors", function() {
   lab.test("display a general error page", function(done) {
     server.inject("/web/405", function(response) {
       Code.expect(response.result).to.include("something went wrong");
-        
+
       done();
     });
   });
@@ -143,7 +143,7 @@ lab.experiment("errors", function() {
   lab.test("bypass custom error pages for all allowed routes", function(done) {
     server.inject("/web/bypass", function(response) {
       Code.expect(response.result).to.include("bypassed any boom errors");
-        
+
       done();
     });
   });

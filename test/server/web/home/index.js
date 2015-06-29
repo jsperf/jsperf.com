@@ -39,7 +39,7 @@ lab.beforeEach(function(done) {
     port: Config.get("/port/web")
   });
 
-  server.register([ AuthPlugin ], function(){
+  server.register([ AuthPlugin ], function() {
     server.auth.strategy("session", "cookie", {
       password: process.env.COOKIE_PASS,
       cookie: "sid-jsperf",
@@ -48,7 +48,7 @@ lab.beforeEach(function(done) {
     });
   });
 
-  
+
 
   server.views({
     engines: {

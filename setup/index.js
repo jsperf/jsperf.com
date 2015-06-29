@@ -76,7 +76,7 @@ var schema = {
           required: true,
           default: ""
         }
-      }  
+      }
     },
     cookie: {
       properties: {
@@ -157,7 +157,7 @@ var buildVars = function(dest, obj, prefix) {
 
 prompt.get(schema, function(er, result) {
   if (er) {
-    throw er
+    throw er;
   }
 
   fs.writeFileSync(".env", buildVars("NODE_ENV=development\n", result));
@@ -174,14 +174,14 @@ prompt.get(schema, function(er, result) {
   conn.connect(function(e) {
     if (e) {
       console.error("failed to connect to database:", e.stack);
-      throw e
+      throw e;
     }
 
     console.log("Connected to database...");
 
     conn.query("CREATE DATABASE IF NOT EXISTS " + result.db.name, function(err) {
       if (err) {
-        throw err
+        throw err;
       }
 
       console.log("Successfully created database");
@@ -194,7 +194,7 @@ prompt.get(schema, function(er, result) {
 
     conn.query(grantQuery, function(err) {
       if (err) {
-        throw err
+        throw err;
       }
 
       console.log("Granted permissions to your user");
@@ -202,13 +202,13 @@ prompt.get(schema, function(er, result) {
 
     conn.query("FLUSH PRIVILEGES", function(err) {
       if (err) {
-        throw err
+        throw err;
       }
     });
 
     conn.query("USE " + result.db.name, function(err) {
       if (err) {
-        throw err
+        throw err;
       }
 
       console.log("Prepared to create tables");
@@ -224,7 +224,7 @@ prompt.get(schema, function(er, result) {
         ),
         function(err) {
           if (err) {
-            throw err
+            throw err;
           }
 
           console.log("Created " + table + " table");

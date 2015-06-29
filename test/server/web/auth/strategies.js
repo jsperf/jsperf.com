@@ -72,7 +72,7 @@ lab.beforeEach(function(done) {
     port: Config.get("/port/web")
   });
 
-  server.register([ AuthCookiePlugin, AuthPlugin ], function(){
+  server.register([ AuthCookiePlugin, AuthPlugin ], function() {
     server.register(plugins, done);
   });
 });
@@ -82,7 +82,7 @@ lab.experiment("strategies", function() {
   lab.experiment("github strategy", function() {
 
     lab.test("auth to 200 if all is good", function(done) {
-      Code.expect(function () {
+      Code.expect(function() {
         server.inject("/test/cookie", function() {
           done();
         });

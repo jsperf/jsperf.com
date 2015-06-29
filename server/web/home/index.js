@@ -113,7 +113,7 @@ exports.register = function(server, options, next) {
           try {
             var valErr = er.details[0];
 
-            switch(valErr.path) {
+            switch (valErr.path) {
               case "title":
                 errObj.titleError = "You must enter a title for this test case.";
                 break;
@@ -128,7 +128,7 @@ exports.register = function(server, options, next) {
                 var testErr = valErr.context.reason[0];
                 var idx = testErr.path.split(".")[1];
 
-                switch(testErr.context.key) {
+                switch (testErr.context.key) {
                   case "title":
                     request.payload.test[idx].codeTitleError = "Please enter a title for this code snippet.";
                     break;
