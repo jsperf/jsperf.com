@@ -27,6 +27,9 @@ lab.experiment("Pages Repository", function() {
 
       return {
         query: queryStub,
+        escape: function(val) {
+          return "`" + val + "`";
+        },
         end: function() {}
       };
     };
