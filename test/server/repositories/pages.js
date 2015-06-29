@@ -227,6 +227,28 @@ lab.experiment("Pages Repository", function() {
     });
   });
 
+  lab.experiment("find", function() {
+
+    lab.test("returns search results", function(done) {
+      var searchTerms = "test query";
+      var wc = "%" + searchTerms + "%";
+      queryStub.callsArgWith(2, null, []);
+
+      pages.find(searchTerms, function(err, page) {
+
+        Code.expect(err).to.be.null();
+        Code.expect(page).to.be.array();
+        Code.expect(queryStub.calledWithExactly(
+          "SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;",
+          [wc, wc],
+          sinon.match.func
+        )).to.be.true();
+
+        done();
+      });
+    });
+  });
+
   lab.experiment("getSitemap", function() {
     lab.test("returns an error when query fails", function(done) {
       var testErrMsg = "testing";

@@ -260,4 +260,25 @@ lab.experiment("Pages Service", function() {
       });
     });
   });
+
+  lab.experiment("find", function() {
+    lab.beforeEach(function(done) {
+      pagesRepoStub.find = s.stub();
+
+      done();
+    });
+
+    lab.test("calls through to repo method of same name", function(done) {
+      var testErr = null;
+      var testRes = [];
+      pagesRepoStub.find.callsArgWith(1, testErr, testRes);
+
+      pages.find("query", function(err, results) {
+        Code.expect(err).to.equal(testErr);
+        Code.expect(results).to.equal(testRes);
+
+        done();
+      });
+    });
+  });
 });

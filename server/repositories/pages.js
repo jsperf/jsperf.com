@@ -7,13 +7,7 @@ var table = "pages";
 var genericQuery = function(q, cb) {
   var conn = db.createConnection();
 
-  conn.query(q, function(err, results) {
-    if (err) {
-      cb(err);
-    } else {
-      cb(null, results);
-    }
-  });
+  conn.query(q, cb);
 
   conn.end();
 };
@@ -125,6 +119,35 @@ module.exports = {
     conn.query(
       "SELECT *, (SELECT MAX(revision) FROM pages WHERE slug = ?? ) AS maxRev FROM pages WHERE slug = ?? AND rev = ??",
       [slug, slug, rev],
+      cb
+    );
+
+    conn.end();
+  },
+
+  find: function(searchTerms, cb) {
+    // SELECT * FROM (
+    //   SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.updated, COUNT(x.slug) AS revisionCount
+    //   FROM pages x
+    //   WHERE x.title LIKE "%' . $db->real_escape_string($search) . '%" OR x.info LIKE "%' . $db->real_escape_string($search) . '%"
+    //   GROUP BY x.slug
+    //   ORDER BY updated DESC
+    //   LIMIT 0, 50
+    // )
+    // y LEFT JOIN (
+    //   SELECT t.pageid, COUNT(t.pageid) AS testCount
+    //   FROM tests t
+    //   GROUP BY t.pageid
+    // )
+    // z ON z.pageid = y.pID';
+
+    var q = "%" + searchTerms + "%";
+
+    var conn = db.createConnection();
+
+    conn.query(
+      "SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;",
+      [q, q],
       cb
     );
 

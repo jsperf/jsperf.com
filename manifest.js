@@ -71,17 +71,18 @@ var manifest = {
     {"./server/web/auth/strategies": {}},
     {"./server/api/json": {}},
     {"./server/api/jsonp": {}},
+    {"./server/web/auth/github": {}},
     {"./server/web/browse": {}},
     {"./server/web/contributors": {}},
     {"./server/web/dart": {}},
+    {"./server/web/errors": {}},
     {"./server/web/faq": {}},
     {"./server/web/home": {}},
     {"./server/web/popular": {}},
     {"./server/web/public": {}},
     {"./server/web/redirects": {}},
-    {"./server/web/sitemap/xml": {}},
-    {"./server/web/auth/github": {}},
-    {"./server/web/errors": {}}
+    {"./server/web/search": {}},
+    {"./server/web/sitemap/xml": {}}
   ]
 };
 
