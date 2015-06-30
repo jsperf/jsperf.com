@@ -127,15 +127,41 @@ lab.experiment("search", function() {
     });
   });
 
-  // lab.test("it responds with error", function(done) {
-  //   pagesServiceStub.find = function() {
-  //     return Promise.reject(new Error("Test error"));
-  //   };
-  //
-  //   server.inject(request, function(response) {
-  //     Code.expect(response.statusCode).to.equal(500);
-  //
-  //     done();
-  //   });
-  // });
+  lab.experiment("atom", function() {
+    lab.test("it ignores non-atom extensions", function(done) {
+      request.url += ".php";
+
+      server.inject(request, function(response) {
+        Code.expect(response.statusCode).to.equal(404);
+        done();
+      });
+    });
+
+    lab.test("it responds w/ atom feed", function(done) {
+      var currentTime = new Date();
+      var testUrl = "http://example.com";
+      var testTitle = "Test result";
+      pagesServiceStub.find = function(searchTerms, cb) {
+        cb(null, [{
+          url: testUrl,
+          revision: 1,
+          title: testTitle,
+          revisionCount: 1,
+          testCount: 1,
+          updated: currentTime,
+          published: currentTime
+        }]);
+      };
+
+      request.url += ".atom?q=test";
+
+      server.inject(request, function(response) {
+        Code.expect(response.statusCode).to.equal(200);
+        Code.expect(response.result).to.include([
+          "<title>" + testTitle + "</title>"
+        ]);
+        done();
+      });
+    });
+  });
 });

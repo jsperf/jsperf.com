@@ -54,7 +54,7 @@ exports.register = function(server, options, next) {
           reply
             .view("browse/index-atom", {
               updated: updated.toISOString(),
-              entries: rows
+              pages: rows
             }, {
               layout: false
             })
@@ -106,7 +106,7 @@ exports.register = function(server, options, next) {
           reply.view("browse/author-atom", {
             author: request.params.authorSlug,
             update: updated.toISOString,
-            entries: rows
+            pages: rows
           }, {
             layout: false
           })

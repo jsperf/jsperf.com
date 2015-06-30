@@ -242,7 +242,7 @@ lab.experiment("Pages Repository", function() {
         Code.expect(err).to.be.null();
         Code.expect(page).to.be.array();
         Code.expect(queryStub.calledWithExactly(
-          "SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;",
+          "SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;",
           [wc, wc],
           sinon.match.func
         )).to.be.true();
@@ -274,7 +274,7 @@ lab.experiment("Pages Repository", function() {
       pages.getSitemap(function(err, results) {
 
         Code.expect(err).to.be.null();
-        Code.expect(results).to.be.instanceof(Array);
+        Code.expect(results).to.be.array();
 
         done();
       });
@@ -303,7 +303,7 @@ lab.experiment("Pages Repository", function() {
       pages.getPopularRecent(function(err, results) {
 
         Code.expect(err).to.be.null();
-        Code.expect(results).to.be.instanceof(Array);
+        Code.expect(results).to.be.array();
 
         done();
       });
@@ -332,7 +332,7 @@ lab.experiment("Pages Repository", function() {
       pages.getPopularAllTime(function(err, results) {
 
         Code.expect(err).to.be.null();
-        Code.expect(results).to.be.instanceof(Array);
+        Code.expect(results).to.be.array();
 
         done();
       });
