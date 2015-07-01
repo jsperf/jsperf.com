@@ -10,10 +10,16 @@ var criteria = {
   scheme: process.env.SCHEME
 };
 
+var domain = process.env.DOMAIN;
+
+if (process.env.PORT !== 80) {
+  domain += ':' + process.env.PORT;
+}
+
 var config = {
   $meta: "jsPerf.com",
   scheme: process.env.SCHEME,
-  domain: process.env.DOMAIN,
+  domain: domain,
   auth: {
     oauth: {
       secure: {
