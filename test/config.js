@@ -7,6 +7,7 @@ var Config = require("../config");
 var lab = exports.lab = Lab.script();
 
 lab.experiment("Config", function() {
+
   lab.test("it gets config data", function(done) {
     Code.expect(Config.get("/")).to.be.an.object();
     done();
@@ -39,4 +40,5 @@ lab.experiment("Config", function() {
     });
 
   });
+
 });

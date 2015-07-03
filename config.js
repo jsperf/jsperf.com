@@ -4,22 +4,19 @@ require("dotenv").load();
 
 var Confidence = require("confidence");
 var _ = require("lodash");
+var configLib = require("./server/lib/config");
+
+configLib.normalizeDomain();
 
 var criteria = {
   env: process.env.NODE_ENV,
   scheme: process.env.SCHEME
 };
 
-var domain = process.env.DOMAIN;
-
-if (process.env.PORT !== 80) {
-  domain += ':' + process.env.PORT;
-}
-
 var config = {
   $meta: "jsPerf.com",
   scheme: process.env.SCHEME,
-  domain: domain,
+  domain: process.env.DOMAIN,
   auth: {
     oauth: {
       secure: {

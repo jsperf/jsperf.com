@@ -9,7 +9,7 @@
     "test": "lab -t 100 -c -L -r lcov -o lcov.info",
     "test-cov": "lab -t 100 -c -L",
     "test-cov-html": "lab -r html -o coverage.html && open coverage.html",
-    "test-fast": "lab -v",
+    "test-fast": "lab",
     "test-lint": "lab -L"
   },
   "repository": {
