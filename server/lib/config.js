@@ -1,18 +1,25 @@
 "use strict";
 
+// strings because comparing to process.env which is always strings
+const HTTPS_PORT = "443";
+const HTTP_PORT = "80";
+
 exports.normalizeDomain = function() {
+  // for github oauth ...
   if (
-    // for github oauth, if someone didn't include the port in their domain ...
+    // ... anywhere but production environments ...
+    process.env.NODE_ENV !== "production" &&
+    // ... if someone didn't include the port in their domain ...
     process.env.DOMAIN.indexOf(":") < 0 &&
     (
       // ... and they aren't using a default port w/ scheme ...
       (
         process.env.SCHEME === "https" &&
-        process.env.PORT !== "443"
+        process.env.PORT !== HTTPS_PORT
       ) ||
       (
         process.env.SCHEME === "http" &&
-        process.env.PORT !== "80"
+        process.env.PORT !== HTTP_PORT
       )
     )
   ) {
