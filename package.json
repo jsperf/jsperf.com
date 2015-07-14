@@ -53,6 +53,7 @@
     "sinon": "^1.13.0"
   },
   "engines": {
-    "iojs": "2.x.x"
+    "iojs": "2.x.x",
+    "npm": "2.x.x"
   }
 }
