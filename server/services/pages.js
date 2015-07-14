@@ -38,7 +38,7 @@ module.exports = {
       if (er) {
         cb(er);
       } else {
-        var page = _.omit(payload, "question", "test");
+        var page = _.omit(payload, "test");
         page.browserscopeID = testKey;
         page.published = new Date();
 

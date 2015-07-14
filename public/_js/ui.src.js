@@ -232,9 +232,6 @@
         setHTML('user-agent', Benchmark.platform);
         setStatus(texts.status.ready);
 
-        // answer spammer question
-        $('question').value = 'no';
-
         // prefill author details
         if (has.localStorage) {
           each([$('author'), $('author-email'), $('author-url')], function(element) {

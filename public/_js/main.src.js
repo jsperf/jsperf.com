@@ -143,9 +143,6 @@ $(function() {
 		});
 	}
 
-	// Anti-spam, kinda
-	$('#question').val('no');
-
 	// Beautify
 	$beautify.click(function(event) {
 		$jsFields.add('.code-js').each(beautify);

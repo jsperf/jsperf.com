@@ -7,9 +7,27 @@ var regex = require("../../lib/regex");
 
 var pagesService = require("../../services/pages");
 
-exports.register = function(server, options, next) {
+const mediumTextLength = 16777215;
+const mediumText = Joi.string().allow("").max(mediumTextLength);
+const pageProperties = Joi.object().keys({
+  author: Joi.string().allow("").min(1),
+  authorEmail: Joi.string().allow("").email(),
+  authorURL: Joi.string().allow("").regex(new RegExp(regex.url, "i"), "url"),
+  title: Joi.string().required().trim().min(1).max(255),
+  slug: Joi.string().required().trim().min(1).max(55).regex(new RegExp(regex.slug), "slug"),
+  visible: Joi.string().default("n").valid("y", "n"),
+  info: mediumText,
+  initHTML: mediumText,
+  setup: mediumText,
+  teardown: mediumText,
+  test: Joi.array().required().min(2).includes(Joi.object().required().keys({
+    title: Joi.string().required().trim().min(1).max(255),
+    defer: Joi.string().default("n").valid("y", "n"),
+    code: Joi.string().required().trim().min(1).max(mediumTextLength)
+  }))
+});
 
-  var mediumTextLength = 16777215;
+exports.register = function(server, options, next) {
 
   var defaultContext = {
     home: true,
@@ -20,7 +38,6 @@ exports.register = function(server, options, next) {
     mainJS: true,
     mediumTextLength: mediumTextLength,
     titleError: null,
-    spamError: null,
     slugError: null,
     genError: null,
     slugPattern: regex.slug,
@@ -82,29 +99,6 @@ exports.register = function(server, options, next) {
         reply.view("home/index", _.assign(defaultContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
-      var mediumText = Joi.string().allow("").max(mediumTextLength);
-
-      var pageProperties = Joi.object().keys({
-        author: Joi.string().allow("").min(1),
-        authorEmail: Joi.string().allow("").email(),
-        authorURL: Joi.string().allow("").regex(new RegExp(regex.url, "i"), "url"),
-        title: Joi.string().required().trim().min(1).max(255),
-        slug: Joi.string().required().trim().min(1).max(55).regex(new RegExp(regex.slug), "slug"),
-        visible: Joi.string().default("n").valid("y", "n"),
-        info: mediumText,
-        question: Joi.required().valid("no"),
-        initHTML: mediumText,
-        setup: mediumText,
-        teardown: mediumText,
-        test: Joi.array().required().min(2).includes(Joi.object().required().keys({
-          title: Joi.string().required().trim().min(1).max(255),
-          defer: Joi.string().default("n").valid("y", "n"),
-          code: Joi.string().required().trim().min(1).max(mediumTextLength)
-        }))
-      });
-
-      var payload;
-
       Joi.validate(request.payload, pageProperties, function(er, pageWithTests) {
         if (er) {
           var errObj = {};
@@ -116,9 +110,6 @@ exports.register = function(server, options, next) {
             switch (valErr.path) {
               case "title":
                 errObj.titleError = "You must enter a title for this test case.";
-                break;
-              case "question":
-                errObj.spamError = "Please enter ‘no’ to prove you’re not a spammer.";
                 break;
               case "slug":
                 errObj.slugError = "The slug can only contain alphanumeric characters and hyphens.";
@@ -146,7 +137,7 @@ exports.register = function(server, options, next) {
           errResp(errObj);
         } else {
           // Joi defaults any properties not present in `request.payload` so use `payload` from here on out
-          payload = pageWithTests;
+          var payload = pageWithTests;
 
           pagesService.checkIfSlugAvailable(server, payload.slug, function(err, isAvail) {
             if (err) {
