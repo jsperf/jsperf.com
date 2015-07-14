@@ -121,7 +121,6 @@ lab.experiment("home", function() {
           initHTML: "",
           setup: "",
           teardown: "",
-          question: "no",
           test: [
             {
               title: "t1",
@@ -147,18 +146,6 @@ lab.experiment("home", function() {
           Code.expect(response.statusCode).to.equal(400);
 
           Code.expect(response.result).to.include("You must enter a title for this test case.");
-
-          done();
-        });
-      });
-
-      lab.test("question required", function(done) {
-        delete request.payload.question;
-
-        server.inject(request, function(response) {
-          Code.expect(response.statusCode).to.equal(400);
-
-          Code.expect(response.result).to.include("spammer");
 
           done();
         });
