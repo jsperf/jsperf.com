@@ -15,6 +15,7 @@ var lab = exports.lab = Lab.script();
 
 lab.experiment("Pages Repository", function() {
   var queryStub;
+  const table = "pages";
 
   lab.beforeEach(function(done) {
     queryStub = sinon.stub();
@@ -220,8 +221,8 @@ lab.experiment("Pages Repository", function() {
         Code.expect(err).to.be.null();
         Code.expect(page).to.be.object();
         Code.expect(queryStub.calledWithExactly(
-          "SELECT *, (SELECT MAX(revision) FROM pages WHERE slug = ?? ) AS maxRev FROM pages WHERE slug = ?? AND rev = ??",
-          [slug, slug, rev],
+          "SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ?",
+          [table, slug, table, slug, rev],
           sinon.match.func
         )).to.be.true();
 
@@ -245,6 +246,25 @@ lab.experiment("Pages Repository", function() {
           "SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;",
           [wc, wc],
           sinon.match.func
+        )).to.be.true();
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment("findBySlug", function() {
+    lab.test("returns query results", function(done) {
+      var slug = "oh-yea";
+      queryStub.callsArgWith(2, null, []);
+
+      pages.findBySlug(slug, function(err, p) {
+        Code.expect(err).to.be.null();
+        Code.expect(p).to.be.array();
+        Code.expect(queryStub.calledWithExactly(
+            "SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC",
+            [slug],
+            sinon.match.func
         )).to.be.true();
 
         done();

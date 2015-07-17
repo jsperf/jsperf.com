@@ -1,5 +1,7 @@
 "use strict";
 
+var debug = require("debug")("jsperf:web:errors");
+
 exports.register = function(server, options, next) {
 
   server.ext("onPreResponse", function(request, reply) {
@@ -15,6 +17,7 @@ exports.register = function(server, options, next) {
       })) {
       return reply.view("errors/" + statusCode).code(statusCode);
     } else {
+      debug(request.response);
       return reply.view("errors/general");
     }
 

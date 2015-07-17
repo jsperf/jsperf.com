@@ -11,10 +11,13 @@ var testsRepoStub = {};
 
 var bsRepoStub = {};
 
+var commentsRepoStub = {};
+
 var pages = proxyquire("../../../server/services/pages", {
   "../repositories/pages": pagesRepoStub,
   "../repositories/tests": testsRepoStub,
-  "../repositories/browserscope": bsRepoStub
+  "../repositories/browserscope": bsRepoStub,
+  "../repositories/comments": commentsRepoStub
 });
 
 var lab = exports.lab = Lab.script();
@@ -276,6 +279,109 @@ lab.experiment("Pages Service", function() {
       pages.find("query", function(err, results) {
         Code.expect(err).to.equal(testErr);
         Code.expect(results).to.equal(testRes);
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment("getBySlug", function() {
+    var slug = "example";
+    var rev = 1;
+
+    lab.beforeEach(function(done) {
+      pagesRepoStub.getBySlug = s.stub();
+      testsRepoStub.findByPageID = s.stub();
+      pagesRepoStub.findBySlug = s.stub();
+      commentsRepoStub.findByPageID = s.stub();
+
+      done();
+    });
+
+    lab.test("calls back with error from getting page by stub", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+      pagesRepoStub.getBySlug.callsArgWith(2, testErr);
+
+      pages.getBySlug(slug, rev, function(err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("calls back with error if page not found", function(done) {
+      pagesRepoStub.getBySlug.callsArgWith(2, null, []);
+
+      pages.getBySlug(slug, rev, function(err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal("Not found");
+
+        done();
+      });
+    });
+
+    lab.test("calls back with error from finding tests", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1 }]);
+      testsRepoStub.findByPageID.callsArgWith(1, testErr);
+
+      pages.getBySlug(slug, rev, function(err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("calls back with error from finding other pages", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1 }]);
+      testsRepoStub.findByPageID.callsArgWith(1, null);
+      pagesRepoStub.findBySlug.callsArgWith(1, testErr);
+
+      pages.getBySlug(slug, rev, function(err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("calls back with error from finding comments", function(done) {
+      var testErrMsg = "testing";
+      var testErr = new Error(testErrMsg);
+      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1 }]);
+      testsRepoStub.findByPageID.callsArgWith(1, null);
+      pagesRepoStub.findBySlug.callsArgWith(1, null);
+      commentsRepoStub.findByPageID.callsArgWith(1, testErr);
+
+      pages.getBySlug(slug, rev, function(err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test("calls back with page, tests, revisions, and comments", function(done) {
+      const mockTests = [];
+      const mockPages = [];
+      const mockComments = [];
+      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1 }]);
+      testsRepoStub.findByPageID.callsArgWith(1, null, mockTests);
+      pagesRepoStub.findBySlug.callsArgWith(1, null, mockPages);
+      commentsRepoStub.findByPageID.callsArgWith(1, null, mockComments);
+
+      pages.getBySlug(slug, rev, function(err, page, tests, revisions, comments) {
+        Code.expect(err).to.be.null();
+        Code.expect(page.id).to.equal(1);
+        Code.expect(tests).to.equal(mockTests);
+        Code.expect(revisions).to.equal(mockPages);
+        Code.expect(comments).to.equal(mockComments);
 
         done();
       });

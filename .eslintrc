@@ -22,6 +22,6 @@
   },
   "ecmaFeatures": {
     "blockBindings": true,
-    "templateStrings": true
+    "templateStrings": false
   }
 }

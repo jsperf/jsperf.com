@@ -76,7 +76,6 @@ lab.experiment("Tests Repository", function() {
           )
         ).to.be.true();
 
-
         done();
       });
     });
@@ -104,6 +103,26 @@ lab.experiment("Tests Repository", function() {
 
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment("findByPageID", function() {
+    lab.test("selects all from tests where pageID", function(done) {
+      var pageID = 1;
+      queryStub.callsArgWith(2, null, []);
+
+      tests.findByPageID(pageID, function(err) {
+        Code.expect(err).to.be.null();
+        Code.expect(
+          queryStub.calledWithExactly(
+            "SELECT * FROM ?? WHERE pageID = ?",
+            ["tests", pageID],
+            sinon.match.func
+          )
+        ).to.be.true();
 
         done();
       });

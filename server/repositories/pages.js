@@ -1,5 +1,6 @@
 "use strict";
 
+var debug = require("debug")("jsperf:repositories:pages");
 var db = require("../lib/db");
 
 var table = "pages";
@@ -107,6 +108,7 @@ module.exports = {
   },
 
   getBySlug: function(slug, rev, cb) {
+    debug("getBySlug", arguments);
     // SELECT
     //   *,
     //   (SELECT MAX(revision) FROM pages WHERE slug = {{slug}}) AS maxRev
@@ -117,8 +119,8 @@ module.exports = {
     var conn = db.createConnection();
 
     conn.query(
-      "SELECT *, (SELECT MAX(revision) FROM pages WHERE slug = ?? ) AS maxRev FROM pages WHERE slug = ?? AND rev = ??",
-      [slug, slug, rev],
+      "SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ?",
+      [table, slug, table, slug, rev],
       cb
     );
 
@@ -147,6 +149,19 @@ module.exports = {
     conn.query(
       "SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;",
       [q, q],
+      cb
+    );
+
+    conn.end();
+  },
+
+  findBySlug: function(slug, cb) {
+    debug("findBySlug", arguments);
+    var conn = db.createConnection();
+
+    conn.query(
+      "SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC",
+      [slug],
       cb
     );
 

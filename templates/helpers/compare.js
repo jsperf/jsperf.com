@@ -1,12 +1,15 @@
 "use strict";
 
+let relativeDate = require("./relativeDate");
+
 module.exports = function(left, right, options) {
   var operator = options.hash.operator || "<";
 
   var operators = {
     "<": function(l, r) { return l < r; },
     "===": function(l, r) { return l === r; },
-    "includes": function(l, r) { return l.indexOf(r) !== -1; }
+    "includes": function(l, r) { return l.indexOf(r) !== -1; },
+    "relativeDate": relativeDate
   };
 
   if (!operators[operator]) {

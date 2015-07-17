@@ -1,10 +1,12 @@
 "use strict";
 
 var _ = require("lodash");
+var debug = require("debug")("jsperf:services:pages");
 
 var pagesRepo = require("../repositories/pages");
 var testsRepo = require("../repositories/tests");
 var browserscopeRepo = require("../repositories/browserscope");
+var commentsRepo = require("../repositories/comments");
 
 module.exports = {
   checkIfSlugAvailable: function(server, slug, cb) {
@@ -74,5 +76,44 @@ module.exports = {
 
   find: function(searchTerms, cb) {
     pagesRepo.find(searchTerms, cb);
+  },
+
+  getBySlug: function(slug, rev, cb) {
+    debug("getBySlug", arguments);
+    // this waterfall is the most naive way to translate the PHP correctly
+
+    // can we find the page?
+    pagesRepo.getBySlug(slug, rev, function(er, pages) {
+      if (er) {
+        cb(er);
+      } else {
+        if (pages.length === 0) {
+          cb(new Error("Not found"));
+        } else {
+          // find its tests
+          testsRepo.findByPageID(pages[0].id, function(err, tests) {
+            if (err) {
+              cb(err);
+            } else {
+              // find other revisions of page
+              pagesRepo.findBySlug(slug, function(errr, revisions) {
+                if (errr) {
+                  cb(errr);
+                } else {
+                  // find comments for page
+                  commentsRepo.findByPageID(pages[0].id, function(errrr, comments) {
+                    if (errrr) {
+                      cb(errrr);
+                    } else {
+                      cb(null, pages[0], tests, revisions, comments);
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      }
+    });
   }
 };

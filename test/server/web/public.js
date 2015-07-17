@@ -39,7 +39,7 @@ lab.experiment("Public", function() {
   });
 
   lab.test("it serves apple-touch-icon.png", function(done) {
-    request.url = "/apple-touch-icon.png";
+    request.url = "/public/apple-touch-icon.png";
     server.inject(request, function(response) {
       Code.expect(response.statusCode).to.equal(200);
 
@@ -48,7 +48,7 @@ lab.experiment("Public", function() {
   });
 
   lab.test("it serves favicon.ico", function(done) {
-    request.url = "/favicon.ico";
+    request.url = "/public/favicon.ico";
     server.inject(request, function(response) {
       Code.expect(response.statusCode).to.equal(200);
 
@@ -67,7 +67,7 @@ lab.experiment("Public", function() {
 
   lab.experiment("_css", function() {
     lab.test("it serves main.css", function(done) {
-      request.url = "/_css/main.css";
+      request.url = "/public/_css/main.css";
       server.inject(request, function(response) {
         Code.expect(response.statusCode).to.equal(200);
 
@@ -78,7 +78,7 @@ lab.experiment("Public", function() {
 
   lab.experiment("_js", function() {
     lab.test("it serves main.js", function(done) {
-      request.url = "/_js/main.js";
+      request.url = "/public/_js/main.js";
       server.inject(request, function(response) {
         Code.expect(response.statusCode).to.equal(200);
 

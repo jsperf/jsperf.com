@@ -1,0 +1,89 @@
+<hgroup>
+  <h1>{{addCode title}}</h1>
+  <h2>JavaScript performance comparison</h2>
+</hgroup>
+
+<p class="meta">
+  {{!-- <?php if ($item->revision > 1) { ?>Revision <?php echo $item->revision; ?> of this test case<?php } else { ?>Test case<?php } ?> created <?php echo author($item->author, $item->authorURL); ?><time datetime="<?php echo date('c', strtotime($item->published)); ?>" pubdate><?php echo relativeDate($item->published); ?></time><?php if (relativeDate($item->published) !== relativeDate($item->updated)) { ?> and last updated <time datetime="<?php echo date('c', strtotime($item->updated)); ?>"><?php echo relativeDate($item->updated); ?></time><?php } if ($item->visible === 'n' && (isset($_SESSION['own'][$item->id]) || isset($_SESSION['admin']))) { ?> <strong><a href="/<?php echo $slug . ($item->revision > 1 ? '/' . $item->revision : '') . '/publish'; ?>">Not published yet!</a></strong> · <a href="/<?php echo $slug . ($item->revision > 1 ? '/' . $item->revision : '') . '/edit'; ?>">Edit</a><?php } ?> --}}
+</p>
+
+{{#if info}}
+  <section>
+    <h2>Info</h2>
+    {{!-- TODO: markdown info --}}
+  </section>
+{{/if}}
+
+<section id="runner">
+  <h2>Test runner</h2>
+  <p id="firebug"><strong>Warning! For accurate results, please disable Firebug before running the tests. <a href="/faq#firebug-warning">(Why?)</a></strong></p>
+  <p id="java"><strong>Java applet disabled.</strong></p>
+  <p id="status"><noscript><strong>To run the tests, please <a href="//enable-javascript.com/">enable JavaScript</a> and reload the page.</strong></noscript></p>
+  <div id="controls"><button id="run" type="button"></button></div>
+  <table id="test-table">
+	<caption>Testing in <span id="user-agent"><?php echo userAgent(); ?></span></caption>
+	<thead>
+		<tr>
+			<th colspan="2">Test</th>
+			<th title="Operations per second (higher is better)">Ops/sec</th>
+		</tr>
+	</thead>
+	<tbody>
+      {{#each test}}
+        <tr>
+          <th scope="row" id="title-{{inc @index}}">
+            <div>
+              <?php echo addCode(he($test->title));
+              if (strstr($item->initHTML, 'function init()')) { ?>
+                <span id="extra-<?php echo $i; ?>"></span>
+              <?php } ?>
+            </div>
+          </th>
+          <td class="code">
+            <pre><code><?php if ('y' == $test->defer) { ?><strong class="co1">// async test</strong><br><?php } echo highlight($test->code); ?></code></pre>
+          </td>
+          <td id="results-{{inc @index}}" class="results">pending…</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  {{#compare maxRev 2}}
+    <p>You can <a href="/{{slug}}{{#compare 1 rev}}/{{rev}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
+  {{/compare}}
+</section>
+
+{{#if browserscopeID}}
+  <section>
+    <h2 id="results">Compare results of other browsers</h2>
+    <div id="bs-results"></div>
+  </section>
+{{/if}}
+
+{{#compare 1 maxRev}}
+  <section>
+    <h2>Revisions</h2>
+    <p>You can <a href="/{{slug}}{{#compare 1 rev}}/{{rev}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
+    <ul>
+      {{#each revision}}
+        {{#if visible "y" operator="==="}}
+        {{!-- TODO: add "or admin session" --}}
+          <li class={{#compare revision ../revision operator="==="}}current{{/compare}}>
+            <a href="/{{slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{#if author}}by {{author}}{{/if}}
+            <time datetime="{{DatetoISOString published}}" pubdate>
+              {{relativeDate published}}
+            </time>
+            {{#compare published updated operator="relativeDate"}}
+              and last updated
+              <time datetime="{{DatetoISOString updated}}">
+                {{relativeDate updated}}
+              </time>
+            {{/compare}}
+          </li>
+        {{/if}}
+      {{/each}}
+    </ul>
+  </section>
+{{/compare}}
+
+{{!-- TODO: include comments --}}

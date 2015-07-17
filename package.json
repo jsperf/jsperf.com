@@ -4,8 +4,9 @@
   "description": "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
   "main": "index.js",
   "scripts": {
+    "lint": "lab -d -L",
     "setup": "node setup",
-    "start": "./node_modules/nodemon/bin/nodemon.js --ext js,hbs server.js",
+    "start": "nodemon --ext js,hbs server.js",
     "test": "lab -t 100 -c -L -r lcov -o lcov.info",
     "test-cov": "lab -t 100 -c -L",
     "test-cov-html": "lab -r html -o coverage.html && open coverage.html",
@@ -31,6 +32,7 @@
     "blipp": "^2.0.1",
     "boom": "^2.8.0",
     "confidence": "^1.0.0",
+    "debug": "^2.2.0",
     "dotenv": "^0.5.1",
     "glue": "^2.0.0",
     "good": "^5.1.2",

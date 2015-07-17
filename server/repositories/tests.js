@@ -1,5 +1,6 @@
 "use strict";
 
+var debug = require("debug")("jsperf:repositories:tests");
 var db = require("../lib/db");
 
 var table = "tests";
@@ -27,6 +28,19 @@ module.exports = {
         cb(null);
       }
     });
+
+    conn.end();
+  },
+
+  findByPageID: function(pageID, cb) {
+    debug("findByPageID", arguments);
+    var conn = db.createConnection();
+
+    conn.query(
+      "SELECT * FROM ?? WHERE pageID = ?",
+      [table, pageID],
+      cb
+    );
 
     conn.end();
   }

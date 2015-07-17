@@ -28,22 +28,22 @@
 
   {{#if benchmark}}
     {{#if debug}}
-      <script src="/_js/platform.src.js"></script>
-      <script src="/_js/benchmark.src.js"></script>
-      <script src="/_js/ui.src.js"></script>
-      <script src="/_js/ui.browserscope.src.js"></script>
+      <script src="/public/_js/platform.src.js"></script>
+      <script src="/public/_js/benchmark.src.js"></script>
+      <script src="/public/_js/ui.src.js"></script>
+      <script src="/public/_js/ui.browserscope.src.js"></script>
     {{else}}
-      <script src="/_js/benchmark.js"></script>
+      <script src="/public/_js/benchmark.js"></script>
     {{/if}}
   {{else}}
     {{#if mainJS}}
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
 
       {{#if debug}}
-        <script src="/_js/beautify.js"></script>
-        <script src="/_js/main.src.js"></script>
+        <script src="/public/_js/beautify.js"></script>
+        <script src="/public/_js/main.src.js"></script>
       {{else}}
-        <script src="/_js/main.js"></script>
+        <script src="/public/_js/main.js"></script>
       {{/if}}
 
     {{else}}
