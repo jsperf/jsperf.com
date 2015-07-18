@@ -14,26 +14,10 @@ var pages = proxyquire("../../../server/repositories/pages", {
 var lab = exports.lab = Lab.script();
 
 lab.experiment("Pages Repository", function() {
-  var queryStub;
   const table = "pages";
 
   lab.beforeEach(function(done) {
-    queryStub = sinon.stub();
-
-    done();
-  });
-
-  lab.before(function(done) {
-    dbStub.createConnection = function() {
-
-      return {
-        query: queryStub,
-        escape: function(val) {
-          return "`" + val + "`";
-        },
-        end: function() {}
-      };
-    };
+    dbStub.genericQuery = sinon.stub();
 
     done();
   });
@@ -53,13 +37,13 @@ lab.experiment("Pages Repository", function() {
     });
 
     lab.test("inserts payload", function(done) {
-      queryStub.callsArgWith(2, null, { insertId: insertId });
+      dbStub.genericQuery.callsArgWith(2, null, { insertId: insertId });
 
       pages.create(payload, function(err, newId) {
 
         Code.expect(err).to.be.null();
         Code.expect(
-          queryStub.calledWithExactly(
+          dbStub.genericQuery.calledWithExactly(
             "INSERT INTO ?? SET ?",
             [
               "pages",
@@ -79,7 +63,7 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(2, testErr);
+      dbStub.genericQuery.callsArgWith(2, testErr);
 
       pages.create(payload, function(err) {
 
@@ -107,13 +91,13 @@ lab.experiment("Pages Repository", function() {
     });
 
     lab.test("returns single row", function(done) {
-      queryStub.callsArgWith(2, null, [{ id: id }]);
+      dbStub.genericQuery.callsArgWith(2, null, [{ id: id }]);
 
       pages.get(testFields, testWhere, function(err, row) {
 
         Code.expect(err).to.be.null();
         Code.expect(
-          queryStub.calledWithExactly(
+          dbStub.genericQuery.calledWithExactly(
             "SELECT ?? FROM ?? WHERE ? LIMIT 1",
             [
               testFields,
@@ -135,7 +119,7 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(2, testErr);
+      dbStub.genericQuery.callsArgWith(2, testErr);
 
       pages.get(testFields, testWhere, function(err) {
 
@@ -152,7 +136,7 @@ lab.experiment("Pages Repository", function() {
   lab.experiment("getLatestVisible", function() {
 
     lab.test("returns number of rows of latest, visible pages", function(done) {
-      queryStub.callsArgWith(2, null, []);
+      dbStub.genericQuery.callsArgWith(2, null, []);
 
       pages.getLatestVisible(250, function(err, rows) {
 
@@ -167,7 +151,7 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(2, testErr);
+      dbStub.genericQuery.callsArgWith(2, testErr);
 
       pages.getLatestVisible(250, function(err) {
 
@@ -182,7 +166,7 @@ lab.experiment("Pages Repository", function() {
   lab.experiment("getLatestVisibleForAuthor", function() {
 
     lab.test("returns number of rows of latest, visible pages for author", function(done) {
-      queryStub.callsArgWith(2, null, []);
+      dbStub.genericQuery.callsArgWith(2, null, []);
 
       pages.getLatestVisibleForAuthor("test-author", function(err, rows) {
 
@@ -197,7 +181,7 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(2, testErr);
+      dbStub.genericQuery.callsArgWith(2, testErr);
 
       pages.getLatestVisibleForAuthor("test-author", function(err) {
 
@@ -214,13 +198,13 @@ lab.experiment("Pages Repository", function() {
     lab.test("returns page given slug", function(done) {
       var slug = "test-slug";
       var rev = 1;
-      queryStub.callsArgWith(2, null, {});
+      dbStub.genericQuery.callsArgWith(2, null, {});
 
       pages.getBySlug(slug, rev, function(err, page) {
 
         Code.expect(err).to.be.null();
         Code.expect(page).to.be.object();
-        Code.expect(queryStub.calledWithExactly(
+        Code.expect(dbStub.genericQuery.calledWithExactly(
           "SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ?",
           [table, slug, table, slug, rev],
           sinon.match.func
@@ -236,13 +220,13 @@ lab.experiment("Pages Repository", function() {
     lab.test("returns search results", function(done) {
       var searchTerms = "test query";
       var wc = "%" + searchTerms + "%";
-      queryStub.callsArgWith(2, null, []);
+      dbStub.genericQuery.callsArgWith(2, null, []);
 
       pages.find(searchTerms, function(err, page) {
 
         Code.expect(err).to.be.null();
         Code.expect(page).to.be.array();
-        Code.expect(queryStub.calledWithExactly(
+        Code.expect(dbStub.genericQuery.calledWithExactly(
           "SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;",
           [wc, wc],
           sinon.match.func
@@ -256,12 +240,12 @@ lab.experiment("Pages Repository", function() {
   lab.experiment("findBySlug", function() {
     lab.test("returns query results", function(done) {
       var slug = "oh-yea";
-      queryStub.callsArgWith(2, null, []);
+      dbStub.genericQuery.callsArgWith(2, null, []);
 
       pages.findBySlug(slug, function(err, p) {
         Code.expect(err).to.be.null();
         Code.expect(p).to.be.array();
-        Code.expect(queryStub.calledWithExactly(
+        Code.expect(dbStub.genericQuery.calledWithExactly(
             "SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC",
             [slug],
             sinon.match.func
@@ -277,7 +261,7 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(1, testErr);
+      dbStub.genericQuery.callsArgWith(1, testErr);
 
       pages.getSitemap(function(err) {
 
@@ -289,7 +273,7 @@ lab.experiment("Pages Repository", function() {
     });
 
     lab.test("returns tests to use for sitemap", function(done) {
-      queryStub.callsArgWith(1, null, []);
+      dbStub.genericQuery.callsArgWith(1, null, []);
 
       pages.getSitemap(function(err, results) {
 
@@ -306,7 +290,7 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(1, testErr);
+      dbStub.genericQuery.callsArgWith(1, testErr);
 
       pages.getPopularRecent(function(err) {
 
@@ -318,7 +302,7 @@ lab.experiment("Pages Repository", function() {
     });
 
     lab.test("returns at most 30 recent popular tests", function(done) {
-      queryStub.callsArgWith(1, null, new Array(30));
+      dbStub.genericQuery.callsArgWith(1, null, new Array(30));
 
       pages.getPopularRecent(function(err, results) {
 
@@ -335,7 +319,7 @@ lab.experiment("Pages Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(1, testErr);
+      dbStub.genericQuery.callsArgWith(1, testErr);
 
       pages.getPopularAllTime(function(err) {
 
@@ -347,7 +331,7 @@ lab.experiment("Pages Repository", function() {
     });
 
     lab.test("returns at most 30 recent popular tests", function(done) {
-      queryStub.callsArgWith(1, null, new Array(30));
+      dbStub.genericQuery.callsArgWith(1, null, new Array(30));
 
       pages.getPopularAllTime(function(err, results) {
 

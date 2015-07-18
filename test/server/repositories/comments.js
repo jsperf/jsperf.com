@@ -14,25 +14,9 @@ var comments = proxyquire("../../../server/repositories/comments", {
 var lab = exports.lab = Lab.script();
 
 lab.experiment("Comments Repository", function() {
-  var queryStub;
-
-  lab.before(function(done) {
-    dbStub.createConnection = function() {
-
-      return {
-        query: queryStub,
-        escape: function(val) {
-          return "`" + val + "`";
-        },
-        end: function() {}
-      };
-    };
-
-    done();
-  });
 
   lab.beforeEach(function(done) {
-    queryStub = sinon.stub();
+    dbStub.genericQuery = sinon.stub();
 
     done();
   });
@@ -40,12 +24,12 @@ lab.experiment("Comments Repository", function() {
   lab.experiment("findByPageID", function() {
     lab.test("selects all from comments where pageID", function(done) {
       var pageID = 1;
-      queryStub.callsArgWith(2, null, []);
+      dbStub.genericQuery.callsArgWith(2, null, []);
 
       comments.findByPageID(pageID, function(err) {
         Code.expect(err).to.be.null();
         Code.expect(
-          queryStub.calledWithExactly(
+          dbStub.genericQuery.calledWithExactly(
             "SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC",
             ["comments", pageID],
             sinon.match.func
