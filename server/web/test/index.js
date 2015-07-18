@@ -1,6 +1,6 @@
 "use strict";
 
-// var debug = require("debug")("jsperf:web:test");
+var debug = require("debug")("jsperf:web:test");
 var pagesService = require("../../services/pages");
 
 exports.register = function(server, options, next) {
@@ -19,13 +19,18 @@ exports.register = function(server, options, next) {
             reply(err);
           }
         } else {
-          // TODO: update pages hits, set has hit in session
-          /*
-          if (!isset($_SESSION['hits'][$item->id])) {
-            $db->query('UPDATE pages SET hits = hits + 1 WHERE id = ' . $item->id);
-            $_SESSION['hits'][$item->id] = true;
+          let hits = request.session.get("hits");
+          if (!(hits && hits[page.id])) {
+            pagesService.updateHits(page.id, function(e) {
+              // TODO: report error some place useful
+              if (e) {
+                debug(e);
+              }
+
+              hits[page.id] = true;
+              request.session.set("hits", hits);
+            });
           }
-          */
 
           // TODO: update browserscopeID for page if missing
           /*

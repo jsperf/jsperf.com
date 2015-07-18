@@ -342,4 +342,23 @@ lab.experiment("Pages Repository", function() {
       });
     });
   });
+
+  lab.experiment("updateHits", function() {
+    lab.test("update query for hits + 1", function(done) {
+      var pageID = 1;
+      dbStub.genericQuery.callsArgWith(2, null);
+
+      pages.updateHits(pageID, function(err) {
+        Code.expect(err).to.be.null();
+
+        Code.expect(dbStub.genericQuery.calledWithExactly(
+          "UPDATE ?? SET hits = hits + 1 WHERE id = ?",
+          [table, pageID],
+          sinon.match.func
+        )).to.be.true();
+
+        done();
+      });
+    });
+  });
 });

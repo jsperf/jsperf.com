@@ -285,6 +285,26 @@ lab.experiment("Pages Service", function() {
     });
   });
 
+  lab.experiment("updateHits", function() {
+    lab.beforeEach(function(done) {
+      pagesRepoStub.updateHits = s.stub();
+
+      done();
+    });
+
+    lab.test("calls through to repo method of same name", function(done) {
+      var pageID = 1;
+      pagesRepoStub.updateHits.callsArgWith(1, null);
+
+      pages.updateHits(pageID, function(err) {
+        Code.expect(err).to.be.null();
+        Code.expect(pagesRepoStub.updateHits.calledWith(pageID)).to.be.true();
+
+        done();
+      });
+    });
+  });
+
   lab.experiment("getBySlug", function() {
     var slug = "example";
     var rev = 1;

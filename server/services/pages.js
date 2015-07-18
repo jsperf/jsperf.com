@@ -78,6 +78,10 @@ module.exports = {
     pagesRepo.find(searchTerms, cb);
   },
 
+  updateHits: function(pageID, cb) {
+    pagesRepo.updateHits(pageID, cb);
+  },
+
   getBySlug: function(slug, rev, cb) {
     debug("getBySlug", arguments);
     // this waterfall is the most naive way to translate the PHP correctly
