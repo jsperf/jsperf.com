@@ -29,6 +29,7 @@
   "dependencies": {
     "bell": "^3.0.0",
     "blipp": "^2.0.1",
+    "boom": "^2.8.0",
     "confidence": "^1.0.0",
     "dotenv": "^0.5.1",
     "glue": "^2.0.0",
@@ -45,7 +46,6 @@
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "boom": "^2.8.0",
     "code": "^1.4.1",
     "lab": "^5.11.1",
     "nodemon": "^1.3.7",
