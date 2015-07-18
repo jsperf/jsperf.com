@@ -4,7 +4,7 @@ require("dotenv").load();
 
 var Confidence = require("confidence");
 var _ = require("lodash");
-var configLib = require("./server/lib/config");
+var configLib = require("./lib/config");
 
 configLib.normalizeDomain();
 
