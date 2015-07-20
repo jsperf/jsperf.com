@@ -1,5 +1,6 @@
 "use strict";
 
+var Boom = require("boom");
 var debug = require("debug")("jsperf:web:test");
 var pagesService = require("../../services/pages");
 
@@ -7,19 +8,29 @@ exports.register = function(server, options, next) {
 
   server.route({
     method: "GET",
-    path: "/{testSlug}",
+    path: "/{testSlug}/{rev?}",
     handler: function(request, reply) {
-      // TODO: get rev from params or query or ???
-      var rev = 1;
+      var rev = request.params.rev ? request.params.rev : 1;
+
       pagesService.getBySlug(request.params.testSlug, rev, function(err, page, tests, revisions, comments) {
         if (err) {
           if (err.message === "Not found") {
-            reply("The page was not found").code(404);
+            reply(Boom.notFound("The page was not found"));
           } else {
             reply(err);
           }
         } else {
-          let hits = request.session.get("hits");
+          let context = {
+            benchmark: true,
+            showAtom: {
+              slug: request.path.slice(1) // remove slash
+            },
+            jsClass: true,
+            userAgent: request.headers["user-agent"]
+          };
+
+          // update hits once per page per session
+          let hits = request.session.get("hits") || {};
           if (!(hits && hits[page.id])) {
             pagesService.updateHits(page.id, function(e) {
               // TODO: report error some place useful
@@ -32,27 +43,23 @@ exports.register = function(server, options, next) {
             });
           }
 
-          // TODO: update browserscopeID for page if missing
-          /*
-          if (in_array($item->browserscopeID, array(NULL, ''))) {
-  $item->browserscopeID = addBrowserscopeTest($item->title, $item->info, 'http://' . DOMAIN . '/' . $item->slug . ($item->revision > 1 ? '/' . $item->revision : ''));
-  $sql = 'UPDATE pages SET browserscopeID = "' . $db->real_escape_string($item->browserscopeID) . '" WHERE id = ' . $item->id . "\n";
-  $db->query($sql);
-  }
-          */
+          context.isAdmin = request.session.get("admin");
 
-          // TODO: Don’t let robots index non-published test cases
-          /*
-          if ($item->visible === 'n' && (isset($_SESSION['own'][$item->id]) || isset($_SESSION['admin']))) {
-            $noIndex = true;
+          // Don’t let robots index non-published test cases
+          if (page.visible === "n" && (request.session.get("own")[page.id] || context.isAdmin)) {
+            context.noIndex = true;
           }
-          */
-          // TODO: fix collisions between `page` properties and associations
+
+          if (page.initHTML.includes("function init()")) {
+            context.pageInit = true;
+          }
+
+          context.page = page;
           page.test = tests;
           page.revision = revisions;
           page.comment = comments;
 
-          reply.view("test/index", page);
+          reply.view("test/index", context);
         }
       });
     }

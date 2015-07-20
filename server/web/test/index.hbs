@@ -1,16 +1,32 @@
 <hgroup>
-  <h1>{{addCode title}}</h1>
+  <h1>{{addCode page.title}}</h1>
   <h2>JavaScript performance comparison</h2>
 </hgroup>
 
 <p class="meta">
-  {{!-- <?php if ($item->revision > 1) { ?>Revision <?php echo $item->revision; ?> of this test case<?php } else { ?>Test case<?php } ?> created <?php echo author($item->author, $item->authorURL); ?><time datetime="<?php echo date('c', strtotime($item->published)); ?>" pubdate><?php echo relativeDate($item->published); ?></time><?php if (relativeDate($item->published) !== relativeDate($item->updated)) { ?> and last updated <time datetime="<?php echo date('c', strtotime($item->updated)); ?>"><?php echo relativeDate($item->updated); ?></time><?php } if ($item->visible === 'n' && (isset($_SESSION['own'][$item->id]) || isset($_SESSION['admin']))) { ?> <strong><a href="/<?php echo $slug . ($item->revision > 1 ? '/' . $item->revision : '') . '/publish'; ?>">Not published yet!</a></strong> · <a href="/<?php echo $slug . ($item->revision > 1 ? '/' . $item->revision : '') . '/edit'; ?>">Edit</a><?php } ?> --}}
+  {{#compare 1 page.revision}}
+    Revision {{page.revision}} of this test case
+  {{else}}
+    Test case
+  {{/compare}}
+  created {{author page.author page.authorURL}}
+  <time datetime="{{DatetoISOString page.published}}" pubdate>{{relativeDate page.published}}</time>
+
+  {{#compare page.published page.updated operator="diffRelativeDate"}}
+    and last updated <time datetime="{{DatetoISOString page.updated}}">{{relativeDate page.updated}}</time>
+  {{/compare}}
+
+  {{#if noIndex}}
+    <strong><a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/publish">Not published yet!</a></strong>
+    &middot;
+    <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/edit">Edit</a>
+  {{/if}}
 </p>
 
 {{#if info}}
   <section>
     <h2>Info</h2>
-    {{!-- TODO: markdown info --}}
+    {{markdown info}}
   </section>
 {{/if}}
 
@@ -21,26 +37,26 @@
   <p id="status"><noscript><strong>To run the tests, please <a href="//enable-javascript.com/">enable JavaScript</a> and reload the page.</strong></noscript></p>
   <div id="controls"><button id="run" type="button"></button></div>
   <table id="test-table">
-	<caption>Testing in <span id="user-agent"><?php echo userAgent(); ?></span></caption>
-	<thead>
-		<tr>
-			<th colspan="2">Test</th>
-			<th title="Operations per second (higher is better)">Ops/sec</th>
-		</tr>
-	</thead>
-	<tbody>
-      {{#each test}}
+	<caption>Testing in <span id="user-agent">{{userAgent userAgent}}</span></caption>
+  	<thead>
+  		<tr>
+  			<th colspan="2">Test</th>
+  			<th title="Operations per second (higher is better)">Ops/sec</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+      {{#each page.test}}
         <tr>
           <th scope="row" id="title-{{inc @index}}">
             <div>
-              <?php echo addCode(he($test->title));
-              if (strstr($item->initHTML, 'function init()')) { ?>
-                <span id="extra-<?php echo $i; ?>"></span>
-              <?php } ?>
+              {{addCode title}}
+              {{#if pageInit}}
+                <span id="extra-{{inc @index}}"></span>
+              {{/if}}
             </div>
           </th>
           <td class="code">
-            <pre><code><?php if ('y' == $test->defer) { ?><strong class="co1">// async test</strong><br><?php } echo highlight($test->code); ?></code></pre>
+            <pre><code>{{#compare defer "y" operator="==="}}<strong class="col1">// async test</strong><br>{{/compare}}{{highlight code "js"}}</code></pre>
           </td>
           <td id="results-{{inc @index}}" class="results">pending…</td>
         </tr>
@@ -48,39 +64,39 @@
     </tbody>
   </table>
 
-  {{#compare maxRev 2}}
+  {{#compare page.maxRev 2}}
     <p>You can <a href="/{{slug}}{{#compare 1 rev}}/{{rev}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
   {{/compare}}
 </section>
 
-{{#if browserscopeID}}
+{{#if page.browserscopeID}}
   <section>
     <h2 id="results">Compare results of other browsers</h2>
     <div id="bs-results"></div>
   </section>
 {{/if}}
 
-{{#compare 1 maxRev}}
+{{#compare 1 page.maxRev}}
   <section>
     <h2>Revisions</h2>
     <p>You can <a href="/{{slug}}{{#compare 1 rev}}/{{rev}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
     <ul>
-      {{#each revision}}
-        {{#if visible "y" operator="==="}}
+      {{#each page.revision}}
+        {{#compare visible "y" operator="==="}}
         {{!-- TODO: add "or admin session" --}}
-          <li class={{#compare revision ../revision operator="==="}}current{{/compare}}>
-            <a href="/{{slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{#if author}}by {{author}}{{/if}}
+          <li {{#compare revision ../revision operator="==="}}class="current"{{/compare}}>
+            <a href="/{{slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{author author authorURL}}
             <time datetime="{{DatetoISOString published}}" pubdate>
               {{relativeDate published}}
             </time>
-            {{#compare published updated operator="relativeDate"}}
+            {{#compare published updated operator="diffRelativeDate"}}
               and last updated
               <time datetime="{{DatetoISOString updated}}">
                 {{relativeDate updated}}
               </time>
             {{/compare}}
           </li>
-        {{/if}}
+        {{/compare}}
       {{/each}}
     </ul>
   </section>

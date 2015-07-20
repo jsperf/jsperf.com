@@ -3,7 +3,9 @@
   <footer>
     <a href="/">Add test</a> &middot;
 
-    {{!-- TODO: this is never added to the context, but set on session after test added --}}
+    {{!-- TODO: this is never added to the context, but set on session after test added
+    https://github.com/mtharrison/hapi-context-credentials/blob/master/index.js
+    --}}
     {{#if authorSlug}}
       <a href="/browse/{{authorSlug}}">My tests</a> &middot;
     {{/if}}

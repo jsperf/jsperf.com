@@ -148,5 +148,9 @@ module.exports = {
 
   updateHits: function(pageID, cb) {
     db.genericQuery("UPDATE ?? SET hits = hits + 1 WHERE id = ?", [table, pageID], cb);
+  },
+
+  update: function(modify, where, cb) {
+    db.genericQuery("UPDATE ?? SET ? WHERE ?", [table, modify, where], cb);
   }
 };

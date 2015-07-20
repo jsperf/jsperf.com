@@ -9,7 +9,7 @@ module.exports = function(left, right, options) {
     "<": function(l, r) { return l < r; },
     "===": function(l, r) { return l === r; },
     "includes": function(l, r) { return l.indexOf(r) !== -1; },
-    "relativeDate": relativeDate
+    "diffRelativeDate": function(l, r) { return relativeDate(l) !== relativeDate(r); }
   };
 
   if (!operators[operator]) {

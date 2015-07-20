@@ -40,10 +40,13 @@
     "handlebars": "^3.0.0",
     "hapi": "^8.2.0",
     "hapi-auth-cookie": "^3.0.1",
+    "highlight.js": "^8.6.0",
     "joi": "^5.1.0",
     "lodash": "^3.3.1",
+    "marked": "^0.3.3",
     "mysql": "^2.5.5",
     "prompt": "^0.2.14",
+    "ua-parser-js": "^0.7.9",
     "visionary": "^2.0.0",
     "yar": "^3.0.3"
   },
