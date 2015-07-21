@@ -29,15 +29,6 @@ lab.experiment("Public", function() {
     done();
   });
 
-  lab.test("it serves apple-touch-icon-precomposed.png", function(done) {
-    request.url = "/apple-touch-icon-precomposed.png";
-    server.inject(request, function(response) {
-      Code.expect(response.statusCode).to.equal(200);
-
-      done();
-    });
-  });
-
   lab.test("it serves apple-touch-icon.png", function(done) {
     request.url = "/public/apple-touch-icon.png";
     server.inject(request, function(response) {
