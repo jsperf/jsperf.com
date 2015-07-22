@@ -30,6 +30,45 @@
   </section>
 {{/if}}
 
+{{#if hasPrep}}
+  <section id="prep-code">
+    <h2>Preparation code </h2>
+
+    <pre><code>{{{page.initHTMLHighlighted}}}
+    {{#if hasSetupOrTeardown}}
+    {{!-- TODO: what are classes: sc2, kw2, etc. --}}
+      {{#if highlightedAbove}}<br>{{/if}}
+      <span class="sc2">&lt;<span class="kw2">script</span>></span><br>
+      {{#if page.setup.length}}
+        Benchmark.<span class="me1">prototype</span>.<span class="me1">setup</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>
+          highlight(indent(indent($item->setup)))
+        <br>  <span class="br0">}</span><span class="sy0">;</span>
+        {{#if page.teardown.length}}
+          <br><br>
+        {{/if}}
+      {{/if}}
+
+      {{#if page.teardown.length}}
+        Benchmark.<span class="me1">prototype</span>.<span class="me1">teardown</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>
+          highlight(indent(indent($item->teardown)))
+        <br>  <span class="br0">}</span><span class="sy0">;</span>
+      {{/if}}
+
+      <br><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>></span>
+    {{/if}}
+    </code></pre>
+  </section>
+
+  {{#if strippedAbove}}
+    <section>
+      <h2>Preparation code output</h2>
+      <div class="user-output">
+        {{stripped}}
+      </div>
+    </section>
+  {{/if}}
+{{/if}}
+
 <section id="runner">
   <h2>Test runner</h2>
   <p id="firebug"><strong>Warning! For accurate results, please disable Firebug before running the tests. <a href="/faq#firebug-warning">(Why?)</a></strong></p>

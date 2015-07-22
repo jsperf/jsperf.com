@@ -2,7 +2,9 @@
 
 var Boom = require("boom");
 var debug = require("debug")("jsperf:web:test");
+var hljs = require("highlight.js");
 var pagesService = require("../../services/pages");
+var regex = require("../../lib/regex");
 
 exports.register = function(server, options, next) {
 
@@ -20,18 +22,33 @@ exports.register = function(server, options, next) {
             reply(err);
           }
         } else {
-          let context = {
-            benchmark: true,
-            showAtom: {
-              slug: request.path.slice(1) // remove slash
-            },
-            jsClass: true,
-            userAgent: request.headers["user-agent"]
-          };
+          page.test = tests;
+          page.revision = revisions;
+          page.comment = comments;
+
+          let isAdmin = request.session.get("admin");
+
+          let hasSetupOrTeardown = page.setup.length || page.teardown.length;
+          let stripped = false;
+
+          if (page.initHTML.length || hasSetupOrTeardown) {
+            let reScripts = new RegExp(regex.script, "i");
+            stripped = page.initHTML.replace(reScripts, "");
+
+            let swappedScripts = [];
+
+            page.initHTMLHighlighted = hljs(page.initHTML.replace(reScripts, function(match, open, contents, close) {
+              let highlightedContents = hljs(contents, "js").value;
+              swappedScripts.unshift(highlightedContents.replace(/&nbsp;%/, ""));
+              return open + "@jsPerfTagToken" + close;
+            }), "html").value.replace(/@jsPerfTagToken/, function() {
+              return swappedScripts.pop();
+            });
+          }
 
           // update hits once per page per session
           let hits = request.session.get("hits") || {};
-          if (!(hits && hits[page.id])) {
+          if (!hits[page.id]) {
             pagesService.updateHits(page.id, function(e) {
               // TODO: report error some place useful
               if (e) {
@@ -43,23 +60,21 @@ exports.register = function(server, options, next) {
             });
           }
 
-          context.isAdmin = request.session.get("admin");
-
-          // Don’t let robots index non-published test cases
-          if (page.visible === "n" && (request.session.get("own")[page.id] || context.isAdmin)) {
-            context.noIndex = true;
-          }
-
-          if (page.initHTML.includes("function init()")) {
-            context.pageInit = true;
-          }
-
-          context.page = page;
-          page.test = tests;
-          page.revision = revisions;
-          page.comment = comments;
-
-          reply.view("test/index", context);
+          reply.view("test/index", {
+            benchmark: true,
+            showAtom: {
+              slug: request.path.slice(1) // remove slash
+            },
+            jsClass: true,
+            userAgent: request.headers["user-agent"],
+            // Don’t let robots index non-published test cases
+            noIndex: page.visible === "n" && (request.session.get("own")[page.id] || isAdmin),
+            pageInit: page.initHTML.includes("function init()"),
+            hasPrep: page.initHTML.length || hasSetupOrTeardown,
+            hasSetupOrTeardown: hasSetupOrTeardown,
+            stripped: stripped,
+            page: page
+          });
         }
       });
     }
