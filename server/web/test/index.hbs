@@ -104,7 +104,7 @@
   </table>
 
   {{#compare page.maxRev 2}}
-    <p>You can <a href="/{{slug}}{{#compare 1 rev}}/{{rev}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
+    <p>You can <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
   {{/compare}}
 </section>
 
@@ -118,7 +118,7 @@
 {{#compare 1 page.maxRev}}
   <section>
     <h2>Revisions</h2>
-    <p>You can <a href="/{{slug}}{{#compare 1 rev}}/{{rev}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
+    <p>You can <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
     <ul>
       {{#each page.revision}}
         {{#compare visible "y" operator="==="}}
@@ -141,4 +141,65 @@
   </section>
 {{/compare}}
 
-{{!-- TODO: include comments --}}
+<section id="comments">
+  <h1>{{pluralize page.comments "Comment"}}</h1>
+
+  <div id="comments-wrapper">
+    {{#each page.comments}}
+      <article id="comment-{{inc @index}}" {{#compare page this operator="isOwner"}}class="owner"{{/compare}}>
+        <p class="meta">
+          <img src="//gravatar.com/avatar/{{md5 authorEmail}}?s=26" width="26" height="26">
+          {{author author authorURL true}}
+
+          {{#if owner}}
+            (revision owner)
+          {{/if}}
+
+          commented <time datetime="{{DatetoISOString published}}" pubdate>{{relativeDate published}}</time>: <a href="#comment-{{inc @index}}" title="Permanent link to this comment">∞</a>
+          {{#if isAdmin}}
+            <a href="/edit-comment/{{id}}">edit</a>
+          {{/if}}
+        </p>
+
+        <div>{{markdown content}}</div>
+      </article>
+    {{/each}}
+  </div>
+
+  {{!-- TODO: implement adding comments in v2.1 (remove disabled from submit btn)
+  <?php echo $item->slug . ($item->revision > 1 ? '/' . $item->revision : ''); ?>#comment-form
+  --}}
+  <form action="/comments" method="post" id="comment-form">
+  	<fieldset>
+  		<h2>Add a comment</h2>
+  		<div>
+        <label for="author">Name <em title="This field is required">*</em> </label>
+        <input type="text" name="author" id="author" {{#if author}}value={{author}}{{/if}} required>
+        {{#if nameError}} {{nameError}}{{/if}}
+      </div>
+  		<div>
+        <label for="author-email">Email <em title="This field is required">*</em> </label>
+        {{#unless mailError}}<label class="inline">{{/unless}}
+          <input type="email" name="author-email" id="author-email" {{#if authorEmail}}value={{authorEmail}}{{/if}} required>
+          {{#if mailError}} {{mailError}}{{else}}(only used for Gravatar)</label>{{/if}}
+      </div>
+  		<div>
+        <label for="author-url">URL </label>
+        <input type="url" name="author-url" id="author-url" {{#if authorURL}}value={{authorURL}}{{/if}}>
+      </div>
+  		<div>
+        <label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label>
+        <textarea name="message" id="message" maxlength="16777215" required>{{#if message}}{{message}}{{/if}}</textarea>
+        {{#if msgError}} {{msgError}}{{/if}}
+      </div>
+  		<div class="question">
+        <label for="question">Are you a spammer? <span>(just answer the question)</span> </label>
+        <input type="text" name="question" id="question" {{#if question}}value={{question}}{{/if}}>
+        {{#if spamError}} {{spamError}}{{/if}}
+      </div>
+  		<div class="buttons">
+        <input type="submit" class="submit" value="Add comment" disabled>
+      </div>
+  	</fieldset>
+  </form>
+</section>

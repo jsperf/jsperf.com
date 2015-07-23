@@ -24,7 +24,7 @@ exports.register = function(server, options, next) {
         } else {
           page.test = tests;
           page.revision = revisions;
-          page.comment = comments;
+          page.comments = comments;
 
           let isAdmin = request.session.get("admin");
 
@@ -66,6 +66,7 @@ exports.register = function(server, options, next) {
               slug: request.path.slice(1) // remove slash
             },
             jsClass: true,
+            isAdmin: isAdmin,
             // Don’t let robots index non-published test cases
             noIndex: page.visible === "n" && (request.session.get("own")[page.id] || isAdmin),
             pageInit: page.initHTML.includes("function init()"),
