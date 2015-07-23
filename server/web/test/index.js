@@ -66,7 +66,6 @@ exports.register = function(server, options, next) {
               slug: request.path.slice(1) // remove slash
             },
             jsClass: true,
-            userAgent: request.headers["user-agent"],
             // Don’t let robots index non-published test cases
             noIndex: page.visible === "n" && (request.session.get("own")[page.id] || isAdmin),
             pageInit: page.initHTML.includes("function init()"),
