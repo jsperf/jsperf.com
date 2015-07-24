@@ -4,20 +4,9 @@ var Lab = require("lab");
 var Code = require("code");
 var proxyquire = require("proxyquire");
 
-function SafeString(string) {
-  this.string = string;
-}
-
-SafeString.prototype.toString = function() {
-  return "" + this.string;
-};
-
 var markdown = proxyquire("../../../templates/helpers/markdown", {
   "marked": function() {
     return "<strong>word</strong>";
-  },
-  "handlebars": {
-    SafeString: SafeString
   }
 });
 

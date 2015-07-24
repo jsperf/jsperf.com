@@ -4,14 +4,6 @@ var Lab = require("lab");
 var Code = require("code");
 var proxyquire = require("proxyquire");
 
-function SafeString(string) {
-  this.string = string;
-}
-
-SafeString.prototype.toString = function() {
-  return "" + this.string;
-};
-
 var highlight = proxyquire("../../../templates/helpers/highlight", {
   "highlight.js": {
     highlight: function(lang, code) {
@@ -19,9 +11,6 @@ var highlight = proxyquire("../../../templates/helpers/highlight", {
         value: "<span class=\"pretty\">" + code + "</span>"
       };
     }
-  },
-  "handlebars": {
-    SafeString: SafeString
   }
 });
 

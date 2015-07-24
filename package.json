@@ -45,15 +45,14 @@
     "lodash": "^3.3.1",
     "marked": "^0.3.3",
     "mysql": "^2.5.5",
-    "prompt": "^0.2.14",
     "visionary": "^2.0.0",
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "boom": "^2.8.0",
     "code": "^1.4.1",
     "lab": "^5.11.1",
     "nodemon": "^1.3.7",
+    "prompt": "^0.2.14",
     "proxyquire": "^1.4.0",
     "sinon": "^1.13.0"
   },

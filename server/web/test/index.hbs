@@ -36,12 +36,11 @@
 
     <pre><code>{{{page.initHTMLHighlighted}}}
     {{#if hasSetupOrTeardown}}
-    {{!-- TODO: what are classes: sc2, kw2, etc. --}}
-      {{#if highlightedAbove}}<br>{{/if}}
+      {{#if page.initHTMLHighlighted}}<br>{{/if}}
       <span class="sc2">&lt;<span class="kw2">script</span>></span><br>
       {{#if page.setup.length}}
         Benchmark.<span class="me1">prototype</span>.<span class="me1">setup</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>
-          highlight(indent(indent($item->setup)))
+          highlight(indent(page.setup))
         <br>  <span class="br0">}</span><span class="sy0">;</span>
         {{#if page.teardown.length}}
           <br><br>
@@ -50,7 +49,7 @@
 
       {{#if page.teardown.length}}
         Benchmark.<span class="me1">prototype</span>.<span class="me1">teardown</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>
-          highlight(indent(indent($item->teardown)))
+          highlight(indent(page.teardown))
         <br>  <span class="br0">}</span><span class="sy0">;</span>
       {{/if}}
 
@@ -59,7 +58,7 @@
     </code></pre>
   </section>
 
-  {{#if strippedAbove}}
+  {{#if stripped}}
     <section>
       <h2>Preparation code output</h2>
       <div class="user-output">

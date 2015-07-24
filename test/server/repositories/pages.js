@@ -361,4 +361,24 @@ lab.experiment("Pages Repository", function() {
       });
     });
   });
+
+  lab.experiment("update", function() {
+    lab.test("generic update query", function(done) {
+      var modify = { browserscopeID: "abc123" };
+      var where = { id: 1 };
+      dbStub.genericQuery.callsArgWith(2, null);
+
+      pages.update(modify, where, function(err) {
+        Code.expect(err).to.be.null();
+
+        Code.expect(dbStub.genericQuery.calledWithExactly(
+          "UPDATE ?? SET ? WHERE ?",
+          [table, modify, where],
+          sinon.match.func
+        )).to.be.true();
+
+        done();
+      });
+    });
+  });
 });

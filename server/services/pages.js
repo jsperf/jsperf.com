@@ -104,14 +104,18 @@ module.exports = {
             } else {
               let s = page.revision > 1 ? page.slug + "/" + page.revision : page.slug;
               browserscopeRepo.addTest(page.title, page.info, s, function(e, testKey) {
-                page.browserscopeID = testKey;
-                pagesRepo.update({ browserscopeID: testKey }, { id: page.id }, function(ee) {
-                  if (ee) {
-                    reject(ee);
-                  } else {
-                    resolve();
-                  }
-                });
+                if (e) {
+                  reject(e);
+                } else {
+                  page.browserscopeID = testKey;
+                  pagesRepo.update({ browserscopeID: testKey }, { id: page.id }, function(ee) {
+                    if (ee) {
+                      reject(ee);
+                    } else {
+                      resolve();
+                    }
+                  });
+                }
               });
             }
           });
@@ -139,7 +143,7 @@ module.exports = {
                 });
               }
             });
-          });
+          }).catch(cb);
         }
       }
     });

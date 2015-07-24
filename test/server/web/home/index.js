@@ -41,14 +41,12 @@ lab.beforeEach(function(done) {
 
   server.register([ AuthPlugin ], function() {
     server.auth.strategy("session", "cookie", {
-      password: process.env.COOKIE_PASS,
+      password: "testing",
       cookie: "sid-jsperf",
       redirectTo: false,
       isSecure: false
     });
   });
-
-
 
   server.views({
     engines: {
@@ -60,8 +58,8 @@ lab.beforeEach(function(done) {
     partialsPath: "templates/partials",
     relativeTo: path.join(__dirname, "..", "..", "..", "..")
   });
-  server.register(plugins, done);
 
+  server.register(plugins, done);
 });
 
 lab.experiment("home", function() {
