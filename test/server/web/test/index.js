@@ -3,6 +3,7 @@
 var path = require("path");
 
 var Lab = require("lab");
+var sinon = require("sinon");
 var Code = require("code");
 var Hapi = require("hapi");
 var proxyquire = require("proxyquire");
@@ -10,12 +11,19 @@ var proxyquire = require("proxyquire");
 var Config = require("../../../../config");
 
 var pagesServiceStub = {
-  updateHits: function() {},
+  updateHits: function(id, cb) {
+    if (Number(id) === 999) {
+      cb(new Error("TODO"));
+    }
+    cb(null);
+  },
   getBySlug: function() {}
 };
+var debugSpy = sinon.spy();
 
 var TestPlugin = proxyquire("../../../../server/web/test/index", {
-  "../../services/pages": pagesServiceStub
+  "../../services/pages": pagesServiceStub,
+  "debug": function() { return debugSpy; }
 });
 
 var YarPlugin = {
@@ -157,6 +165,77 @@ lab.experiment("test", function() {
       Code.expect(response.statusCode).to.equal(200);
 
       done();
+    });
+  });
+
+  lab.experiment("Page Hits", function() {
+    lab.beforeEach(function(done) {
+      // Add a method of adding session data
+      server.route({
+        method: "GET", path: "/setsession",
+        config: {
+          handler: function(req, reply) {
+            var hits = {123: true};
+            req.session.set("hits", hits);
+            return reply("session set");
+          }
+        }
+      });
+
+      done();
+    });
+    lab.test("updates unique page hits", function(done) {
+      server.inject("/setsession", function(res) {
+        var header = res.headers["set-cookie"];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = "session=" + cookie[1];
+        server.inject(request, function(response) {
+          var hits = response.request.session.get("hits");
+          Code.expect(hits[1]).to.equal(true);
+
+          done();
+        });
+      });
+    });
+
+    lab.test("catches errors from page service", function(done) {
+      let now = new Date();
+      pagesServiceStub.getBySlug = function(s, r, cb) {
+        cb(null, {
+          id: 999,
+          slug: slug,
+          revision: 1,
+          browserscopeID: "abc123",
+          title: "Oh Yea",
+          info: "Sample test",
+          setup: "",
+          teardown: "",
+          initHTML: "",
+          visible: "y",
+          author: "Max",
+          authorEmail: "m@b.co",
+          authorURL: "b.co",
+          hits: 0,
+          published: now,
+          updated: now
+        }, [], [], []);
+      };
+
+      server.inject("/setsession", function(res) {
+        var header = res.headers["set-cookie"];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = "session=" + cookie[1];
+        server.inject(request, function() {
+          let debugCall = debugSpy.getCall(0).args[0];
+          let expectedError = new Error("TODO");
+
+          Code.expect(debugCall.message).to.equal(expectedError.message);
+
+          done();
+        });
+      });
     });
   });
 });
