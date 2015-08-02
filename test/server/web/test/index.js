@@ -199,6 +199,43 @@ lab.experiment("test", function() {
       });
     });
 
+    lab.test("ignores duplicate page hits", function(done) {
+      let now = new Date();
+      pagesServiceStub.getBySlug = function(s, r, cb) {
+        cb(null, {
+          id: 123,
+          slug: slug,
+          revision: 1,
+          browserscopeID: "abc123",
+          title: "Oh Yea",
+          info: "Sample test",
+          setup: "",
+          teardown: "",
+          initHTML: "",
+          visible: "y",
+          author: "Max",
+          authorEmail: "m@b.co",
+          authorURL: "b.co",
+          hits: 0,
+          published: now,
+          updated: now
+        }, [], [], []);
+      };
+
+      server.inject("/setsession", function(res) {
+        var header = res.headers["set-cookie"];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = "session=" + cookie[1];
+        server.inject(request, function(response) {
+          var hits = response.request.session.get("hits");
+          Code.expect(hits[123]).to.equal(true);
+
+          done();
+        });
+      });
+    });
+
     lab.test("catches errors from page service", function(done) {
       let now = new Date();
       pagesServiceStub.getBySlug = function(s, r, cb) {
@@ -237,5 +274,83 @@ lab.experiment("test", function() {
         });
       });
     });
+  });
+
+  lab.experiment("No Index Flag", function() {
+    lab.beforeEach(function(done) {
+      let now = new Date();
+      pagesServiceStub.getBySlug = function(s, r, cb) {
+        cb(null, {
+          id: 1,
+          slug: slug,
+          revision: 1,
+          browserscopeID: "abc123",
+          title: "Oh Yea",
+          info: "Sample test",
+          setup: "",
+          teardown: "",
+          initHTML: "",
+          visible: "n",
+          author: "Max",
+          authorEmail: "m@b.co",
+          authorURL: "b.co",
+          hits: 0,
+          published: now,
+          updated: now
+        }, [], [], []);
+      };
+
+      done();
+    });
+    lab.test("sets noIndex to true if page is flaged as 'owned' in the session", function(done) {
+      server.route({
+        method: "GET", path: "/setsession",
+        config: {
+          handler: function(req, reply) {
+            var owns = {1: true};
+            req.session.set("own", owns);
+            return reply("session set");
+          }
+        }
+      });
+      server.inject("/setsession", function(res) {
+        var header = res.headers["set-cookie"];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = "session=" + cookie[1];
+        server.inject(request, function(response) {
+          Code.expect(response.payload.indexOf("Not published yet!")).to.be.at.least(0);
+
+          done();
+        });
+      });
+    });
+
+    lab.test("sets noIndex to true if page is being viewed by an admin", function(done) {
+      server.route({
+        method: "GET", path: "/setsession",
+        config: {
+          handler: function(req, reply) {
+            var owns = {2: true};
+            req.session.set("own", owns);
+            req.session.set("admin", true);
+            return reply("session set");
+          }
+        }
+      });
+
+      server.inject("/setsession", function(res) {
+        var header = res.headers["set-cookie"];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\"\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = "session=" + cookie[1];
+        server.inject(request, function(response) {
+          Code.expect(response.payload.indexOf("Not published yet!")).to.be.at.least(0);
+
+          done();
+        });
+      });
+    });
+
   });
 });
