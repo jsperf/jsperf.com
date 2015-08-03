@@ -16,7 +16,7 @@ lab.experiment("Template Helper author", function() {
   });
 
   lab.test("follow Mathias links", function(done) {
-    Code.expect(author("Mathias", "http://mathiasbynens.be/").toString()).to.not.include("nofollow");
+    Code.expect(author("Mathias", "https://mathiasbynens.be/").toString()).to.not.include("nofollow");
 
     done();
   });
