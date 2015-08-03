@@ -1,10 +1,12 @@
 "use strict";
 
 var _ = require("lodash");
+var debug = require("debug")("jsperf:services:pages");
 
 var pagesRepo = require("../repositories/pages");
 var testsRepo = require("../repositories/tests");
 var browserscopeRepo = require("../repositories/browserscope");
+var commentsRepo = require("../repositories/comments");
 
 module.exports = {
   checkIfSlugAvailable: function(server, slug, cb) {
@@ -74,5 +76,76 @@ module.exports = {
 
   find: function(searchTerms, cb) {
     pagesRepo.find(searchTerms, cb);
+  },
+
+  updateHits: function(pageID, cb) {
+    pagesRepo.updateHits(pageID, cb);
+  },
+
+  getBySlug: function(slug, rev, cb) {
+    debug("getBySlug", arguments);
+    // this waterfall w/ Promises mixed in was the most naive way to translate the PHP correctly
+    // candidate for future refactoring
+
+    // can we find the page?
+    pagesRepo.getBySlug(slug, rev, function(er, pages) {
+      if (er) {
+        cb(er);
+      } else {
+        if (pages.length === 0) {
+          cb(new Error("Not found"));
+        } else {
+          let page = pages[0];
+
+          let p1 = new Promise(function(resolve, reject) {
+            // update browserscopeID for page if missing
+            if (page.browserscopeID && page.browserscopeID !== "") {
+              resolve();
+            } else {
+              let s = page.revision > 1 ? page.slug + "/" + page.revision : page.slug;
+              browserscopeRepo.addTest(page.title, page.info, s, function(e, testKey) {
+                if (e) {
+                  reject(e);
+                } else {
+                  page.browserscopeID = testKey;
+                  pagesRepo.update({ browserscopeID: testKey }, { id: page.id }, function(ee) {
+                    if (ee) {
+                      reject(ee);
+                    } else {
+                      resolve();
+                    }
+                  });
+                }
+              });
+            }
+          });
+
+          p1.then(function() {
+            // find its tests
+            testsRepo.findByPageID(page.id, function(err, tests) {
+              if (err) {
+                cb(err);
+              } else {
+                // find other revisions of page
+                pagesRepo.findBySlug(slug, function(errr, revisions) {
+                  if (errr) {
+                    cb(errr);
+                  } else {
+                    // find comments for page
+                    commentsRepo.findByPageID(page.id, function(errrr, comments) {
+                      if (errrr) {
+                        cb(errrr);
+                      } else {
+                        cb(null, page, tests, revisions, comments);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }).catch(cb);
+        }
+      }
+    });
   }
 };

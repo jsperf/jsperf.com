@@ -121,7 +121,7 @@ var unbuildVars = function() {
       let nestedProp;
 
       for (nestedProp in p.properties) {
-        overrides[prop][nestedProp] = process.env[`${prop.toUpperCase()}_${nestedProp.toUpperCase()}`];
+        overrides[prop][nestedProp] = process.env[prop.toUpperCase() + "_" + nestedProp.toUpperCase()];
       }
     } else {
       overrides[prop] = process.env[prop.toUpperCase()];

@@ -1,6 +1,13 @@
 <head>
   <meta charset="utf-8">
   <title>{{headTitle}}</title>
+  <link rel="apple-touch-icon" href="/public/apple-touch-icon.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  {{#if noIndex}}
+    <meta name="robots" content="noindex">
+    <meta name="referrer" content="origin">
+  {{/if}}
 
   {{#if home}}
     <meta name="description" content="A performance playground for JavaScript developers. Easily create and share test cases and run cross-browser benchmarks to find out which code snippet is most efficient.">
@@ -11,7 +18,8 @@
     <link href="/{{showAtom.slug}}.atom" rel="alternate" type="application/atom+xml" title="Atom feed for {{#compare showAtom.slug "browse" operator="includes"}}new or updated test cases{{else}}revisions of this test case{{/compare}}">
   {{/if}}
 
-  <link rel="stylesheet" href="/_css/{{cssFile}}">
+  <link rel="stylesheet" href="/public/_css/{{cssFile}}">
+  <link rel="stylesheet" href="/public/_css/hljs.8.6.min.css">
 
   <!--[if lt IE 9]>
     <script src="/html5.js"></script>

@@ -82,7 +82,8 @@ var manifest = {
     {"./server/web/public": {}},
     {"./server/web/redirects": {}},
     {"./server/web/search": {}},
-    {"./server/web/sitemap/xml": {}}
+    {"./server/web/sitemap/xml": {}},
+    {"./server/web/test": {}}
   ]
 };
 

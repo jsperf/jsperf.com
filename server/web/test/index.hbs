@@ -1,0 +1,204 @@
+<hgroup>
+  <h1>{{addCode page.title}}</h1>
+  <h2>JavaScript performance comparison</h2>
+</hgroup>
+
+<p class="meta">
+  {{#compare 1 page.revision}}
+    Revision {{page.revision}} of this test case
+  {{else}}
+    Test case
+  {{/compare}}
+  created {{author page.author page.authorURL}}
+  <time datetime="{{DatetoISOString page.published}}" pubdate>{{relativeDate page.published}}</time>
+
+  {{#compare page.published page.updated operator="diffRelativeDate"}}
+    and last updated <time datetime="{{DatetoISOString page.updated}}">{{relativeDate page.updated}}</time>
+  {{/compare}}
+
+  {{#if noIndex}}
+    <strong><a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/publish">Not published yet!</a></strong>
+    &middot;
+    <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/edit">Edit</a>
+  {{/if}}
+</p>
+
+{{#if info}}
+  <section>
+    <h2>Info</h2>
+    {{markdown info}}
+  </section>
+{{/if}}
+
+{{#if hasPrep}}
+  <section id="prep-code">
+    <h2>Preparation code </h2>
+
+    <pre><code>{{{page.initHTMLHighlighted}}}
+    {{#if hasSetupOrTeardown}}
+      {{#if page.initHTMLHighlighted}}<br>{{/if}}
+      <span class="sc2">&lt;<span class="kw2">script</span>></span><br>
+      {{#if page.setup.length}}
+        Benchmark.<span class="me1">prototype</span>.<span class="me1">setup</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>
+          highlight(indent(page.setup))
+        <br>  <span class="br0">}</span><span class="sy0">;</span>
+        {{#if page.teardown.length}}
+          <br><br>
+        {{/if}}
+      {{/if}}
+
+      {{#if page.teardown.length}}
+        Benchmark.<span class="me1">prototype</span>.<span class="me1">teardown</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>
+          highlight(indent(page.teardown))
+        <br>  <span class="br0">}</span><span class="sy0">;</span>
+      {{/if}}
+
+      <br><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>></span>
+    {{/if}}
+    </code></pre>
+  </section>
+
+  {{#if stripped}}
+    <section>
+      <h2>Preparation code output</h2>
+      <div class="user-output">
+        {{stripped}}
+      </div>
+    </section>
+  {{/if}}
+{{/if}}
+
+<section id="runner">
+  <h2>Test runner</h2>
+  <p id="firebug"><strong>Warning! For accurate results, please disable Firebug before running the tests. <a href="/faq#firebug-warning">(Why?)</a></strong></p>
+  <p id="java"><strong>Java applet disabled.</strong></p>
+  <p id="status"><noscript><strong>To run the tests, please <a href="//enable-javascript.com/">enable JavaScript</a> and reload the page.</strong></noscript></p>
+  <div id="controls"><button id="run" type="button"></button></div>
+  <table id="test-table">
+	<caption>Testing in <span id="user-agent"></span></caption>
+  	<thead>
+  		<tr>
+  			<th colspan="2">Test</th>
+  			<th title="Operations per second (higher is better)">Ops/sec</th>
+  		</tr>
+  	</thead>
+  	<tbody>
+      {{#each page.test}}
+        <tr>
+          <th scope="row" id="title-{{inc @index}}">
+            <div>
+              {{addCode title}}
+              {{#if pageInit}}
+                <span id="extra-{{inc @index}}"></span>
+              {{/if}}
+            </div>
+          </th>
+          <td class="code">
+            <pre><code>{{#compare defer "y" operator="==="}}<strong class="col1">// async test</strong><br>{{/compare}}{{highlight code "js"}}</code></pre>
+          </td>
+          <td id="results-{{inc @index}}" class="results">pending…</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+  {{#compare page.maxRev 2}}
+    <p>You can <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
+  {{/compare}}
+</section>
+
+{{#if page.browserscopeID}}
+  <section>
+    <h2 id="results">Compare results of other browsers</h2>
+    <div id="bs-results"></div>
+  </section>
+{{/if}}
+
+{{#compare 1 page.maxRev}}
+  <section>
+    <h2>Revisions</h2>
+    <p>You can <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
+    <ul>
+      {{#each page.revision}}
+        {{#compare visible "y" operator="==="}}
+        {{!-- TODO: add "or admin session" --}}
+          <li {{#compare revision ../revision operator="==="}}class="current"{{/compare}}>
+            <a href="/{{slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{author author authorURL}}
+            <time datetime="{{DatetoISOString published}}" pubdate>
+              {{relativeDate published}}
+            </time>
+            {{#compare published updated operator="diffRelativeDate"}}
+              and last updated
+              <time datetime="{{DatetoISOString updated}}">
+                {{relativeDate updated}}
+              </time>
+            {{/compare}}
+          </li>
+        {{/compare}}
+      {{/each}}
+    </ul>
+  </section>
+{{/compare}}
+
+<section id="comments">
+  <h1>{{pluralize page.comments "Comment"}}</h1>
+
+  <div id="comments-wrapper">
+    {{#each page.comments}}
+      <article id="comment-{{inc @index}}" {{#compare page this operator="isOwner"}}class="owner"{{/compare}}>
+        <p class="meta">
+          <img src="//gravatar.com/avatar/{{md5 authorEmail}}?s=26" width="26" height="26">
+          {{author author authorURL true}}
+
+          {{#if owner}}
+            (revision owner)
+          {{/if}}
+
+          commented <time datetime="{{DatetoISOString published}}" pubdate>{{relativeDate published}}</time>: <a href="#comment-{{inc @index}}" title="Permanent link to this comment">∞</a>
+          {{#if isAdmin}}
+            <a href="/edit-comment/{{id}}">edit</a>
+          {{/if}}
+        </p>
+
+        <div>{{markdown content}}</div>
+      </article>
+    {{/each}}
+  </div>
+
+  {{!-- TODO: implement adding comments in v2.1 (remove disabled from submit btn)
+  <?php echo $item->slug . ($item->revision > 1 ? '/' . $item->revision : ''); ?>#comment-form
+  --}}
+  <form action="/comments" method="post" id="comment-form">
+  	<fieldset>
+  		<h2>Add a comment</h2>
+  		<div>
+        <label for="author">Name <em title="This field is required">*</em> </label>
+        <input type="text" name="author" id="author" {{#if author}}value={{author}}{{/if}} required>
+        {{#if nameError}} {{nameError}}{{/if}}
+      </div>
+  		<div>
+        <label for="author-email">Email <em title="This field is required">*</em> </label>
+        {{#unless mailError}}<label class="inline">{{/unless}}
+          <input type="email" name="author-email" id="author-email" {{#if authorEmail}}value={{authorEmail}}{{/if}} required>
+          {{#if mailError}} {{mailError}}{{else}}(only used for Gravatar)</label>{{/if}}
+      </div>
+  		<div>
+        <label for="author-url">URL </label>
+        <input type="url" name="author-url" id="author-url" {{#if authorURL}}value={{authorURL}}{{/if}}>
+      </div>
+  		<div>
+        <label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label>
+        <textarea name="message" id="message" maxlength="16777215" required>{{#if message}}{{message}}{{/if}}</textarea>
+        {{#if msgError}} {{msgError}}{{/if}}
+      </div>
+  		<div class="question">
+        <label for="question">Are you a spammer? <span>(just answer the question)</span> </label>
+        <input type="text" name="question" id="question" {{#if question}}value={{question}}{{/if}}>
+        {{#if spamError}} {{spamError}}{{/if}}
+      </div>
+  		<div class="buttons">
+        <input type="submit" class="submit" value="Add comment" disabled>
+      </div>
+  	</fieldset>
+  </form>
+</section>

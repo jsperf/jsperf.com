@@ -1,5 +1,6 @@
 "use strict";
 
+var Boom = require("boom");
 var pagesRepo = require("../../repositories/pages");
 
 var getUpdatedDate = function(results) {
@@ -75,7 +76,7 @@ exports.register = function(server, options, next) {
           reply(err);
         } else {
           if (rows.length === 0) {
-            reply("The author was not found").code(404);
+            reply(Boom.notFound("The author was not found"));
           } else {
             reply.view("browse/author", {
               headTitle: "Test cases by " + request.params.authorSlug,

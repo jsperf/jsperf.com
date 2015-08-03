@@ -5,7 +5,11 @@ var Code = require("code");
 var proxyquire = require("proxyquire");
 var sinon = require("sinon");
 
-var dbStub = {};
+var dbStub = {
+  escape: function(val) {
+    return "`" + val + "`";
+  }
+};
 
 var tests = proxyquire("../../../server/repositories/tests", {
   "../lib/db": dbStub
@@ -14,25 +18,9 @@ var tests = proxyquire("../../../server/repositories/tests", {
 var lab = exports.lab = Lab.script();
 
 lab.experiment("Tests Repository", function() {
-  var queryStub;
-
-  lab.before(function(done) {
-    dbStub.createConnection = function() {
-
-      return {
-        query: queryStub,
-        escape: function(val) {
-          return "`" + val + "`";
-        },
-        end: function() {}
-      };
-    };
-
-    done();
-  });
 
   lab.beforeEach(function(done) {
-    queryStub = sinon.stub();
+    dbStub.genericQuery = sinon.stub();
 
     done();
   });
@@ -60,13 +48,13 @@ lab.experiment("Tests Repository", function() {
     });
 
     lab.test("inserts multiple values", function(done) {
-      queryStub.callsArgWith(2, null, { affectedRows: t.length });
+      dbStub.genericQuery.callsArgWith(2, null, { affectedRows: t.length });
 
       tests.bulkCreate(pageID, t, function(err) {
 
         Code.expect(err).to.be.null();
         Code.expect(
-          queryStub.calledWithExactly(
+          dbStub.genericQuery.calledWithExactly(
             "INSERT INTO ?? (??) VALUES (1, `t1`, `n`, `a = 1`), (1, `t2`, `n`, `a = 2`)",
             [
               "tests",
@@ -76,14 +64,13 @@ lab.experiment("Tests Repository", function() {
           )
         ).to.be.true();
 
-
         done();
       });
     });
 
     lab.test("returns an error when not enough rows inserted", function(done) {
 
-      queryStub.callsArgWith(2, null, { affectedRows: t.length - 1 });
+      dbStub.genericQuery.callsArgWith(2, null, { affectedRows: t.length - 1 });
 
       tests.bulkCreate(pageID, t, function(err) {
 
@@ -98,12 +85,32 @@ lab.experiment("Tests Repository", function() {
       var testErrMsg = "testing";
       var testErr = new Error(testErrMsg);
 
-      queryStub.callsArgWith(2, testErr);
+      dbStub.genericQuery.callsArgWith(2, testErr);
 
       tests.bulkCreate(pageID, t, function(err) {
 
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment("findByPageID", function() {
+    lab.test("selects all from tests where pageID", function(done) {
+      var pageID = 1;
+      dbStub.genericQuery.callsArgWith(2, null, []);
+
+      tests.findByPageID(pageID, function(err) {
+        Code.expect(err).to.be.null();
+        Code.expect(
+          dbStub.genericQuery.calledWithExactly(
+            "SELECT * FROM ?? WHERE pageID = ?",
+            ["tests", pageID],
+            sinon.match.func
+          )
+        ).to.be.true();
 
         done();
       });

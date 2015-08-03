@@ -1,5 +1,6 @@
 "use strict";
 
+var Boom = require("boom");
 var pagesService = require("../../services/pages");
 
 exports.register = function(server, options, next) {
@@ -9,7 +10,7 @@ exports.register = function(server, options, next) {
     path: "/search{ext?}",
     handler: function(request, reply) {
       if (request.params.ext && request.params.ext !== ".atom") {
-        return reply().code(404);
+        return reply(Boom.notFound());
       }
 
       var defaultContext = {

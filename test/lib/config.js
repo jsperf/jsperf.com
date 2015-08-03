@@ -2,7 +2,7 @@
 
 var Lab = require("lab");
 var Code = require("code");
-var Config = require("../../server/lib/config");
+var Config = require("../../lib/config");
 
 var lab = exports.lab = Lab.script();
 

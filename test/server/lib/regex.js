@@ -60,4 +60,30 @@ lab.experiment("Regex Lib", function() {
       done();
     });
   });
+
+  lab.experiment("script", function() {
+
+    lab.test("is a string", function(done) {
+
+      Code.expect(regex.script).to.be.a.string();
+
+      done();
+    });
+
+    lab.test("matches script tag", function(done) {
+      var re = new RegExp(regex.script);
+
+      Code.expect(re.test("<script>console.log('hi')</script>")).to.be.true();
+
+      done();
+    });
+
+    lab.test("does not match invalid script tag", function(done) {
+      var re = new RegExp(regex.script);
+
+      Code.expect(re.test("<script href='//elsewhe.re' />")).to.be.false();
+
+      done();
+    });
+  });
 });
