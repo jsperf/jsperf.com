@@ -4,14 +4,12 @@
   "description": "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
   "main": "index.js",
   "scripts": {
+    "clean": "rm npm-debug.log lcov.info coverage.html",
     "lint": "lab -d -L",
     "setup": "node setup",
     "start": "nodemon --ext js,hbs server.js",
     "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout",
-    "test-cov": "lab -t 100 -c -L",
-    "test-cov-html": "lab -r html -o coverage.html && open coverage.html",
-    "test-fast": "lab",
-    "test-lint": "lab -L"
+    "test-cov-html": "lab -r html -o coverage.html && open coverage.html"
   },
   "repository": {
     "type": "git",

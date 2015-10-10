@@ -1,24 +1,20 @@
-"use strict";
-
-exports.register = function(server, options, next) {
-
+exports.register = function (server, options, next) {
   server.route({
-    method: "GET",
-    path: "/auth/github",
+    method: 'GET',
+    path: '/auth/github',
     config: {
-      auth: "github",
-      handler: function loginHandler(request, reply) {
-        request.auth.session.clear();
-        request.auth.session.set(request.auth.credentials.profile);
-        return reply.redirect("/");
+      auth: 'github',
+      handler: function (request, reply) {
+        request.auth.session.clear()
+        request.auth.session.set(request.auth.credentials.profile)
+        return reply.redirect('/')
       }
     }
-  });
+  })
 
-  return next();
-
-};
+  return next()
+}
 
 exports.register.attributes = {
-  name: "web/auth/github"
-};
+  name: 'web/auth/github'
+}

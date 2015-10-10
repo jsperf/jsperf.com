@@ -1,22 +1,18 @@
-"use strict";
-
-exports.register = function(server, options, next) {
-
+exports.register = function (server, options, next) {
   server.route({
-    method: "GET",
-    path: "/contributors",
-    handler: function(request, reply) {
-      reply.view("contributors/index", {
-        headTitle: "Contributors",
+    method: 'GET',
+    path: '/contributors',
+    handler: function (request, reply) {
+      reply.view('contributors/index', {
+        headTitle: 'Contributors',
         ga: true
-      });
+      })
     }
-  });
+  })
 
-  return next();
-
-};
+  return next()
+}
 
 exports.register.attributes = {
-  name: "web/contributors"
-};
+  name: 'web/contributors'
+}

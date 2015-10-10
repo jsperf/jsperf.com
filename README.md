@@ -8,7 +8,7 @@
 
 ### Prerequisites
 
-You’ll need [io.js](https://iojs.org/en/index.html) and [MySQL](https://www.mysql.com/downloads/) installed.
+You’ll need [node.js](https://nodejs.org/en/) and [MySQL](https://www.mysql.com/downloads/) installed.
 
 1. Clone the repository (`git clone https://github.com/jsperf/jsperf.com.git`).
 2. Install dependencies (`npm install`).
@@ -24,36 +24,22 @@ npm start
 
 ## Testing
 
-We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab enforces linting with [eslint](http://eslint.org/). To run the test suite:
+We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab lints with [eslint](http://eslint.org/) using the [standard style](http://standardjs.com/). 100% code coverage by unit tests is required. To run the test suite:
 
 ```
 # everything
-npm run test-lint
+npm test
 
 # directory
-npm run test-lint -- test/server/web
+npm test -- test/server/web
 
 # file
-npm run test-lint -- test/server/web/contributors/index.js
+npm test -- test/server/web/contributors/index.js
 ```
 
-_If you're in a hurry, use `npm run test-fast` to test but not lint or `npm run lint` to lint but not test_
+_If you'd just like to lint and save a little time, you can run `npm run lint` which skips the tests._
 
-### Coverage
-
-When [travis-ci](https://travis-ci.org/) runs the tests, it enforces 100% code coverage. You can run this locally with:
-
-```
-npm test
-```
-
-#### HTML Report
-
-To generate an HTML report with code coverage, run:
-
-```
-npm run test-cov-html
-```
+_If you'd like an HTML report with code coverage, you can run `npm run test-cov-html` which will create `coverage.html` in the root of the project._
 
 ## Gotchas
 

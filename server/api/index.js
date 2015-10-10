@@ -1,18 +1,16 @@
-"use strict";
-
-exports.register = function(server, options, next) {
+exports.register = function (server, options, next) {
   server.route({
-    method: "GET",
-    path: "/api",
-    handler: function(request, reply) {
+    method: 'GET',
+    path: '/api',
+    handler: function (request, reply) {
       // TODO: track google analytics
-      reply("API");
+      reply('API')
     }
-  });
+  })
 
-  return next();
-};
+  return next()
+}
 
 exports.register.attributes = {
-  name: "api/index"
-};
+  name: 'api/index'
+}

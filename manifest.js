@@ -1,22 +1,20 @@
-"use strict";
-
-var Confidence = require("confidence");
-var _ = require("lodash");
-var config = require("./config");
+var Confidence = require('confidence')
+var _ = require('lodash')
+var config = require('./config')
 
 var criteria = {
   env: process.env.NODE_ENV
-};
+}
 
 var visionaryContextDefault = {
-  cssFile: "main.css",
-  headTitle: "jsPerf: JavaScript performance playground",
-  scheme: config.get("/scheme"),
-  domain: config.get("/domain")
-};
+  cssFile: 'main.css',
+  headTitle: 'jsPerf: JavaScript performance playground',
+  scheme: config.get('/scheme'),
+  domain: config.get('/domain')
+}
 
 var manifest = {
-  $meta: "jsPerf backend",
+  $meta: 'jsPerf backend',
   server: {
     connections: {
       routes: {
@@ -25,74 +23,74 @@ var manifest = {
     }
   },
   connections: [{
-    port: config.get("/port/web"),
-    labels: ["web"]
+    port: config.get('/port/web'),
+    labels: ['web']
   }],
   plugins: [
-    {"blipp": {}},
-    {"good": {
+    {'blipp': {}},
+    {'good': {
       reporters: [{
-        reporter: "good-console",
+        reporter: 'good-console',
         args: [{
-          log: "*",
-          response: "*"
+          log: '*',
+          response: '*'
         }]
       }]
     }},
-    {"visionary": {
+    {'visionary': {
       engines: {
-        hbs: "handlebars"
+        hbs: 'handlebars'
       },
       relativeTo: __dirname,
-      path: "./server/web",
+      path: './server/web',
       layout: true,
-      helpersPath: "templates/helpers",
-      partialsPath: "templates/partials",
+      helpersPath: 'templates/helpers',
+      partialsPath: 'templates/partials',
       context: {
-        $filter: "env",
+        $filter: 'env',
         development: _.assign(visionaryContextDefault, {
           debug: true,
-          cssFile: "main.src.css?" + Date.now(),
-          headTitle: "jsPerf-dev"
+          cssFile: 'main.src.css?' + Date.now(),
+          headTitle: 'jsPerf-dev'
         }),
         $default: visionaryContextDefault
       }
     }},
-    {"yar": {
+    {'yar': {
       cookieOptions: {
-        // name: "jsPerf", FIXME
-        password: config.get("/browserscope"),
-        isSecure: !config.get("/debug"),
+        // name: 'jsPerf', FIXME
+        password: config.get('/browserscope'),
+        isSecure: !config.get('/debug'),
         isHttpOnly: true
       }
     }},
-    {"bell": {}},
-    {"hapi-auth-cookie": {}},
-    {"./server/web/auth/strategies": {}},
-    {"./server/api/json": {}},
-    {"./server/api/jsonp": {}},
-    {"./server/web/auth/github": {}},
-    {"./server/web/browse": {}},
-    {"./server/web/contributors": {}},
-    {"./server/web/dart": {}},
-    {"./server/web/errors": {}},
-    {"./server/web/faq": {}},
-    {"./server/web/home": {}},
-    {"./server/web/popular": {}},
-    {"./server/web/public": {}},
-    {"./server/web/redirects": {}},
-    {"./server/web/search": {}},
-    {"./server/web/sitemap/xml": {}},
-    {"./server/web/test": {}}
+    {'bell': {}},
+    {'hapi-auth-cookie': {}},
+    {'./server/web/auth/strategies': {}},
+    {'./server/api/json': {}},
+    {'./server/api/jsonp': {}},
+    {'./server/web/auth/github': {}},
+    {'./server/web/browse': {}},
+    {'./server/web/contributors': {}},
+    {'./server/web/dart': {}},
+    {'./server/web/errors': {}},
+    {'./server/web/faq': {}},
+    {'./server/web/home': {}},
+    {'./server/web/popular': {}},
+    {'./server/web/public': {}},
+    {'./server/web/redirects': {}},
+    {'./server/web/search': {}},
+    {'./server/web/sitemap/xml': {}},
+    {'./server/web/test': {}}
   ]
-};
+}
 
-var store = new Confidence.Store(manifest);
+var store = new Confidence.Store(manifest)
 
-exports.get = function(key) {
-  return store.get(key, criteria);
-};
+exports.get = function (key) {
+  return store.get(key, criteria)
+}
 
-exports.meta = function(key) {
-  return store.meta(key, criteria);
-};
+exports.meta = function (key) {
+  return store.meta(key, criteria)
+}

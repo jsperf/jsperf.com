@@ -1,30 +1,28 @@
-"use strict";
+var Handlebars = require('handlebars')
 
-var Handlebars = require("handlebars");
+module.exports = function (name, url, isComment) {
+  name = Handlebars.Utils.escapeExpression(name)
+  url = Handlebars.Utils.escapeExpression(url)
 
-module.exports = function(name, url, isComment) {
-  name = Handlebars.Utils.escapeExpression(name);
-  url = Handlebars.Utils.escapeExpression(url);
+  var str = ''
 
-  var str = "";
-
-  if (name !== "") {
+  if (name !== '') {
     if (isComment === undefined) {
-      isComment = false;
+      isComment = false
     }
 
     if (!isComment) {
-      str += "by ";
+      str += 'by '
     }
 
-    if (url !== "") {
-      str += "<a href=\"" + url + "\"";
-      str += url === "https://mathiasbynens.be/" ? "" : " rel=\"nofollow\"";
-      str += ">" + name + "</a>";
+    if (url !== '') {
+      str += '<a href=\'' + url + '\''
+      str += url === 'https://mathiasbynens.be/' ? '' : ' rel=\'nofollow\''
+      str += '>' + name + '</a>'
     } else {
-      str += name + " ";
+      str += name + ' '
     }
   }
 
-  return new Handlebars.SafeString(str);
-};
+  return new Handlebars.SafeString(str)
+}
