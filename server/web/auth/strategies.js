@@ -1,4 +1,4 @@
-var config = require('../../../config')
+var config = require('../../../config');
 
 exports.register = function (server, options, next) {
   server.auth.strategy('session', 'cookie', {
@@ -6,7 +6,7 @@ exports.register = function (server, options, next) {
     cookie: config.get('/auth/session/name'),
     redirectTo: false,
     isSecure: config.get('/auth/session/secure')
-  })
+  });
 
   server.auth.strategy('github', 'bell', {
     provider: 'github',
@@ -15,11 +15,11 @@ exports.register = function (server, options, next) {
     clientSecret: config.get('/auth/oauth/github/secret'),
     isSecure: config.get('/auth/oauth/secure'),
     location: config.get('/scheme') + '://' + config.get('/domain')
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/auth/strategies'
-}
+};

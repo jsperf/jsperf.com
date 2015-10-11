@@ -4,13 +4,13 @@ exports.register = function (server, options, next) {
     path: '/api',
     handler: function (request, reply) {
       // TODO: track google analytics
-      reply('API')
+      reply('API');
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'api/index'
-}
+};

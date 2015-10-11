@@ -1,51 +1,51 @@
-var Lab = require('lab')
-var Code = require('code')
-var Hapi = require('hapi')
+var Lab = require('lab');
+var Code = require('code');
+var Hapi = require('hapi');
 
-var Config = require('../../../config')
+var Config = require('../../../config');
 
-var WebRedirectsPlugin = require('../../../server/web/redirects')
+var WebRedirectsPlugin = require('../../../server/web/redirects');
 
-var lab = exports.lab = Lab.script()
-var request, server
+var lab = exports.lab = Lab.script();
+var request, server;
 
 lab.beforeEach(function (done) {
-  var plugins = [ WebRedirectsPlugin ]
-  server = new Hapi.Server()
+  var plugins = [ WebRedirectsPlugin ];
+  server = new Hapi.Server();
   server.connection({
     port: Config.get('/port/web')
-  })
-  server.register(plugins, done)
-})
+  });
+  server.register(plugins, done);
+});
 
 lab.experiment('redirects', function () {
   lab.beforeEach(function (done) {
     request = {
       method: 'GET'
-    }
+    };
 
-    done()
-  })
+    done();
+  });
 
   lab.test('it redirects @ to twitter profile', function (done) {
-    request.url = '/@'
+    request.url = '/@';
 
     server.inject(request, function (response) {
-      Code.expect(response.statusCode).to.equal(301)
-      Code.expect(response.headers.location).to.equal('https://twitter.com/jsperf')
+      Code.expect(response.statusCode).to.equal(301);
+      Code.expect(response.headers.location).to.equal('https://twitter.com/jsperf');
 
-      done()
-    })
-  })
+      done();
+    });
+  });
 
   lab.test('it redirects aliases to relative URLs', function (done) {
-    request.url = '/dart-disclaimer'
+    request.url = '/dart-disclaimer';
 
     server.inject(request, function (response) {
-      Code.expect(response.statusCode).to.equal(301)
-      Code.expect(response.headers.location).to.equal('/dart')
+      Code.expect(response.statusCode).to.equal(301);
+      Code.expect(response.headers.location).to.equal('/dart');
 
-      done()
-    })
-  })
-})
+      done();
+    });
+  });
+});

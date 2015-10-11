@@ -86,4 +86,4 @@ module.exports = {
     '(?:/\\S*)?' + '$',
   slug: '[A-Za-z0-9](?:-?[A-Za-z0-9])*',
   script: '(<script[^>]*?>)([\\s\\S]*?)(<\/script>)'
-}
+};

@@ -1,4 +1,4 @@
-var pagesRepo = require('../../repositories/pages')
+var pagesRepo = require('../../repositories/pages');
 
 exports.register = function (server, options, next) {
   server.route({
@@ -7,7 +7,7 @@ exports.register = function (server, options, next) {
     handler: function (request, reply) {
       pagesRepo.getSitemap(function (err, items) {
         if (err) {
-          reply(err)
+          reply(err);
         } else {
           reply
             .view('sitemap/xml', {
@@ -15,15 +15,15 @@ exports.register = function (server, options, next) {
             }, {
               layout: false
             })
-            .header('Content-Type', 'application/xml;charset=UTF-8')
+            .header('Content-Type', 'application/xml;charset=UTF-8');
         }
-      })
+      });
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/sitemap'
-}
+};

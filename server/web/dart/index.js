@@ -37,13 +37,13 @@ exports.register = function (server, options, next) {
             answer: 'From <a href="//infrequently.org/2011/09/google-the-future-of-javascript/" rel="nofollow">Alex’s blog</a>:<blockquote><p>Making the rounds is an accidentally leaked early draft of notes from a meeting last year that discusses both Dart and JavaScript. I work on many web platform-related things at Google, including serving as a representative to TC39, the body that standardizes the JavaScript language. I wasn’t at the meetings having previously committed to presenting at <a href="//2010.full-frontal.org/" rel="nofollow">FFJS</a>, but my views were represented by others and my name is on the document. As I said, though, it was a draft and doesn’t reflect either the reality of what has happened in the meantime or even the decisions that were taken as a result. And it certainly doesn’t reflect my personal views.</p></blockquote>He continues:<blockquote><p>So what’s the deal with Google and JavaScript?</p><p>Simply stated, Google is absolutely committed to making JavaScript better, and we’re pushing hard to make it happen.</p><p>Erik Arvidsson, Mark Miller, Waldemar Horwat, Andreas Rossberg, Nebojša Ćirić, Mark Davis, Jungshik Shin and I attend TC39 meetings, work on implementations, and try to push JS forward in good faith. And boy, does it need a push.</p></blockquote>'
           }
         ]
-      })
+      });
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/dart'
-}
+};

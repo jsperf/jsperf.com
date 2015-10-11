@@ -1,1 +1,1 @@
-module.exports = (str) => str.split('\n').map((str) => '  ' + str).join('\n')
+module.exports = (str) => str.split('\n').map((str) => '  ' + str).join('\n');

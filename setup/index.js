@@ -1,7 +1,7 @@
-var fs = require('fs')
-var path = require('path')
-var prompt = require('prompt')
-var mysql = require('mysql')
+var fs = require('fs');
+var path = require('path');
+var prompt = require('prompt');
+var mysql = require('mysql');
 
 var schema = {
   properties: {
@@ -100,120 +100,120 @@ var schema = {
       }
     }
   }
-}
+};
 
 // use existing env vars
-require('dotenv').load()
+require('dotenv').load();
 
 // process.env.DB_HOST => { db: { host: '' } }
 // warning: nested prompts not supported yet https://github.com/flatiron/prompt/issues/47
 var unbuildVars = function () {
-  var overrides = {}
-  let prop
+  var overrides = {};
+  let prop;
 
   for (prop in schema.properties) {
-    let p = schema.properties[prop]
+    let p = schema.properties[prop];
 
     if (p.properties) {
-      overrides[prop] = {}
-      let nestedProp
+      overrides[prop] = {};
+      let nestedProp;
 
       for (nestedProp in p.properties) {
-        overrides[prop][nestedProp] = process.env[prop.toUpperCase() + '_' + nestedProp.toUpperCase()]
+        overrides[prop][nestedProp] = process.env[prop.toUpperCase() + '_' + nestedProp.toUpperCase()];
       }
     } else {
-      overrides[prop] = process.env[prop.toUpperCase()]
+      overrides[prop] = process.env[prop.toUpperCase()];
     }
   }
 
-  return overrides
-}
+  return overrides;
+};
 
-prompt.override = unbuildVars()
+prompt.override = unbuildVars();
 
-prompt.start()
+prompt.start();
 
 // { db: { host: 'localhost' } } => DB_HOST=localhost
 var buildVars = function (dest, obj, prefix) {
   if (!prefix) {
-    prefix = ''
+    prefix = '';
   }
 
   for (var prop in obj) {
-    var k = prop.toUpperCase()
-    var v = obj[prop]
+    var k = prop.toUpperCase();
+    var v = obj[prop];
 
     if (v instanceof Object) {
-      dest = buildVars(dest, v, k + '_')
+      dest = buildVars(dest, v, k + '_');
     } else {
-      dest += prefix + k + '=' + v + '\n'
+      dest += prefix + k + '=' + v + '\n';
     }
   }
 
-  return dest
-}
+  return dest;
+};
 
 prompt.get(schema, function (er, result) {
   if (er) {
-    throw er
+    throw er;
   }
 
-  fs.writeFileSync('.env', buildVars('NODE_ENV=development\n', result))
+  fs.writeFileSync('.env', buildVars('NODE_ENV=development\n', result));
 
-  console.log('Thanks! You can change these later in the .env file')
+  console.log('Thanks! You can change these later in the .env file');
 
   var conn = mysql.createConnection({
     host: result.db.host,
     port: result.db.port,
     user: result.db.user,
     password: result.db.pass
-  })
+  });
 
   conn.connect(function (e) {
     if (e) {
-      console.error('failed to connect to database:', e.stack)
-      throw e
+      console.error('failed to connect to database:', e.stack);
+      throw e;
     }
 
-    console.log('Connected to database...')
+    console.log('Connected to database...');
 
     conn.query('CREATE DATABASE IF NOT EXISTS ' + result.db.name, function (err) {
       if (err) {
-        throw err
+        throw err;
       }
 
-      console.log('Successfully created database')
-    })
+      console.log('Successfully created database');
+    });
 
-    var grantQuery = 'GRANT ALL ON ' + result.db.name + '.* TO ' + conn.escape(result.db.user) + '@' + conn.escape(result.db.host)
+    var grantQuery = 'GRANT ALL ON ' + result.db.name + '.* TO ' + conn.escape(result.db.user) + '@' + conn.escape(result.db.host);
     if (result.db.pass.length > 0) {
-      grantQuery += ' IDENTIFIED BY ' + conn.escape(result.db.pass)
+      grantQuery += ' IDENTIFIED BY ' + conn.escape(result.db.pass);
     }
 
     conn.query(grantQuery, function (err) {
       if (err) {
-        throw err
+        throw err;
       }
 
-      console.log('Granted permissions to your user')
-    })
+      console.log('Granted permissions to your user');
+    });
 
     conn.query('FLUSH PRIVILEGES', function (err) {
       if (err) {
-        throw err
+        throw err;
       }
-    })
+    });
 
     conn.query('USE ' + result.db.name, function (err) {
       if (err) {
-        throw err
+        throw err;
       }
 
-      console.log('Prepared to create tables')
+      console.log('Prepared to create tables');
     });
 
     ['comments', 'pages', 'tests'].forEach(function (table) {
-      var fileName = 'create_' + table + '.sql'
+      var fileName = 'create_' + table + '.sql';
 
       conn.query(
         fs.readFileSync(
@@ -222,14 +222,14 @@ prompt.get(schema, function (er, result) {
         ),
         function (err) {
           if (err) {
-            throw err
+            throw err;
           }
 
-          console.log('Created ' + table + ' table')
+          console.log('Created ' + table + ' table');
         }
-      )
-    })
+      );
+    });
 
-    conn.end()
-  })
-})
+    conn.end();
+  });
+});

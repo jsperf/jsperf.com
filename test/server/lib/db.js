@@ -1,77 +1,77 @@
-var Lab = require('lab')
-var Code = require('code')
-var proxyquire = require('proxyquire')
-var sinon = require('sinon')
+var Lab = require('lab');
+var Code = require('code');
+var proxyquire = require('proxyquire');
+var sinon = require('sinon');
 
-var mysqlStub = {}
-var configStub = {}
+var mysqlStub = {};
+var configStub = {};
 
 var db = proxyquire('../../../server/lib/db', {
   'mysql': mysqlStub,
   '../../config': configStub
-})
+});
 
-var lab = exports.lab = Lab.script()
+var lab = exports.lab = Lab.script();
 
 lab.experiment('Database Lib', function () {
   lab.experiment('escape', function () {
     lab.test('exports mysql.escape', function (done) {
-      Code.expect(db).to.include('escape')
-      Code.expect(db.escape).to.be.a.function()
+      Code.expect(db).to.include('escape');
+      Code.expect(db.escape).to.be.a.function();
 
-      done()
-    })
-  })
+      done();
+    });
+  });
 
   lab.experiment('genericQuery', function () {
-    var queryStub
+    var queryStub;
 
     lab.before(function (done) {
       mysqlStub.createConnection = function () {
         return {
           query: queryStub,
           escape: function (val) {
-            return '`' + val + '`'
+            return '`' + val + '`';
           },
           end: function () {}
-        }
-      }
+        };
+      };
 
-      done()
-    })
+      done();
+    });
 
     lab.beforeEach(function (done) {
-      queryStub = sinon.stub()
+      queryStub = sinon.stub();
 
-      done()
-    })
+      done();
+    });
 
     lab.test('creates a MySQL connection and makes a query', function (done) {
-      queryStub.callsArgWith(2, null)
+      queryStub.callsArgWith(2, null);
       db.genericQuery('SELECT ?;', [1], function (err) {
-        Code.expect(err).to.be.null()
-        done()
-      })
-    })
+        Code.expect(err).to.be.null();
+        done();
+      });
+    });
 
     lab.test('values param is optional', function (done) {
-      queryStub.callsArgWith(2, null)
+      queryStub.callsArgWith(2, null);
       db.genericQuery('SELECT 1;', function () {
-        Code.expect(queryStub.args[0]).to.have.length(3)
-        done()
-      })
-    })
+        Code.expect(queryStub.args[0]).to.have.length(3);
+        done();
+      });
+    });
 
     lab.test('enables debug for MySQL connection when config debug enabled', function (done) {
-      configStub.get = function () { return true }
-      sinon.spy(mysqlStub, 'createConnection')
-      queryStub.callsArgWith(2, null)
+      configStub.get = function () { return true; };
+      sinon.spy(mysqlStub, 'createConnection');
+      queryStub.callsArgWith(2, null);
       db.genericQuery('SELECT 1;', function () {
-        Code.expect(mysqlStub.createConnection.args[0][0].debug).to.be.array()
+        Code.expect(mysqlStub.createConnection.args[0][0].debug).to.be.array();
         // cleanup
-        delete configStub.get
-        done()
-      })
-    })
-  })
-})
+        delete configStub.get;
+        done();
+      });
+    });
+  });
+});

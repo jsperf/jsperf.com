@@ -24,7 +24,7 @@ npm start
 
 ## Testing
 
-We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab lints with [eslint](http://eslint.org/) using the [standard style](http://standardjs.com/). 100% code coverage by unit tests is required. To run the test suite:
+We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab lints with [eslint](http://eslint.org/) using the [semistandard style](https://github.com/Flet/semistandard). 100% code coverage by unit tests is required. To run the test suite:
 
 ```
 # everything

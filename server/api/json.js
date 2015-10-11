@@ -3,13 +3,13 @@ exports.register = function (server, options, next) {
     method: 'GET',
     path: '/api/json',
     handler: function (request, reply) {
-      reply({ content: 'test' })
+      reply({ content: 'test' });
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'api/json'
-}
+};

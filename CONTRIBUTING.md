@@ -13,4 +13,4 @@
 These guidelines help keep the codebase consistent.
 * All features or bugs must be tested
 * Code coverage shall remain at 100% after any new feature or bug fix
-* Code should pass ESLint which follows the [standard style](http://standardjs.com/)
+* Code should pass ESLint which follows the [semistandard style](https://github.com/Flet/semistandard)

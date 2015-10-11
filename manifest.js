@@ -1,17 +1,17 @@
-var Confidence = require('confidence')
-var _ = require('lodash')
-var config = require('./config')
+var Confidence = require('confidence');
+var _ = require('lodash');
+var config = require('./config');
 
 var criteria = {
   env: process.env.NODE_ENV
-}
+};
 
 var visionaryContextDefault = {
   cssFile: 'main.css',
   headTitle: 'jsPerf: JavaScript performance playground',
   scheme: config.get('/scheme'),
   domain: config.get('/domain')
-}
+};
 
 var manifest = {
   $meta: 'jsPerf backend',
@@ -83,14 +83,14 @@ var manifest = {
     {'./server/web/sitemap/xml': {}},
     {'./server/web/test': {}}
   ]
-}
+};
 
-var store = new Confidence.Store(manifest)
+var store = new Confidence.Store(manifest);
 
 exports.get = function (key) {
-  return store.get(key, criteria)
-}
+  return store.get(key, criteria);
+};
 
 exports.meta = function (key) {
-  return store.meta(key, criteria)
-}
+  return store.meta(key, criteria);
+};

@@ -1,3 +1,3 @@
-var crypto = require('crypto')
+var crypto = require('crypto');
 
-module.exports = (data) => crypto.createHash('md5').update(data).digest('hex')
+module.exports = (data) => crypto.createHash('md5').update(data).digest('hex');

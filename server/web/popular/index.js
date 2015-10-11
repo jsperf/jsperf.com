@@ -1,4 +1,4 @@
-var pagesService = require('../../services/pages')
+var pagesService = require('../../services/pages');
 
 exports.register = function (server, options, next) {
   server.route({
@@ -7,7 +7,7 @@ exports.register = function (server, options, next) {
     handler: function (request, reply) {
       pagesService.getPopular(function (err, popular) {
         if (err) {
-          reply(err)
+          reply(err);
         } else {
           reply.view('popular/index', {
             headTitle: 'Popular test cases',
@@ -15,15 +15,15 @@ exports.register = function (server, options, next) {
             admin: false,
             recent: popular.recent,
             allTime: popular.allTime
-          })
+          });
         }
-      })
+      });
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/popular'
-}
+};

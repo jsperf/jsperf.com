@@ -10,7 +10,7 @@ exports.register = function (server, options, next) {
         redirectToSlash: false
       }
     }
-  })
+  });
 
   server.route({
     method: 'GET',
@@ -18,11 +18,11 @@ exports.register = function (server, options, next) {
     handler: {
       file: 'public/robots.txt'
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/assets'
-}
+};

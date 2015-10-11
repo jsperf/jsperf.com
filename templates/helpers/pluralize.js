@@ -1,7 +1,7 @@
 module.exports = function (num, term) {
   if (num !== 1) {
-    term += 's'
+    term += 's';
   }
 
-  return num.toString() + ' ' + term
-}
+  return num.toString() + ' ' + term;
+};

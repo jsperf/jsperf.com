@@ -6,13 +6,13 @@ exports.register = function (server, options, next) {
       reply.view('contributors/index', {
         headTitle: 'Contributors',
         ga: true
-      })
+      });
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/contributors'
-}
+};

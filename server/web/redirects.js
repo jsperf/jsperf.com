@@ -31,25 +31,25 @@ exports.register = function (server, options, next) {
       path: '/donate',
       redirect: '/faq#donate'
     }
-  ]
+  ];
 
   var handler = function (url) {
     return function (request, reply) {
-      reply.redirect(url).permanent()
-    }
-  }
+      reply.redirect(url).permanent();
+    };
+  };
 
   for (var i = 0, rl = redirects.length; i < rl; i++) {
     server.route({
       method: 'GET',
       path: redirects[i].path,
       handler: handler(redirects[i].redirect)
-    })
+    });
   }
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/redirects'
-}
+};

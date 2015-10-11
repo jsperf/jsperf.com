@@ -6,13 +6,13 @@ exports.register = function (server, options, next) {
       reply.view('testimonials/index', {
         headTitle: 'Testimonials',
         ga: true
-      })
+      });
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/testimonials'
-}
+};

@@ -1,13 +1,13 @@
 // TODO make hapi plugin
-var mysql = require('mysql')
-var config = require('../../config')
+var mysql = require('mysql');
+var config = require('../../config');
 
 module.exports = {
   escape: mysql.escape,
   genericQuery: function (query, values, cb) {
     if (cb === undefined) {
-      cb = values
-      values = []
+      cb = values;
+      values = [];
     }
 
     var conn = mysql.createConnection({
@@ -18,10 +18,10 @@ module.exports = {
       database: config.get('/db/name'),
       // query and rows will print to stdout
       debug: config.get('/debug') ? ['ComQueryPacket', 'RowDataPacket'] : false
-    })
+    });
 
-    conn.query(query, values, cb)
+    conn.query(query, values, cb);
 
-    conn.end()
+    conn.end();
   }
-}
+};

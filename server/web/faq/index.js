@@ -51,7 +51,7 @@ exports.register = function (server, options, next) {
             slug: 'browserscope',
             title: 'The Browserscope results look different from the ones I’m getting. Why?',
             answer: 'Browserscope returns the highest known result for each test. Because each test has a margin of error, we submit the results minus the margin or error (the lower limit of the confidence interval, i.e. the lowest suspected value) to Browserscope.'
-            // Browserscope has a tendency to notch up (but not down) on values. For this reason, jsPerf sends the reported results <em>minus the margin of error</em> (the lower limit confidence interval, i.e. the lowest suspected value) to Browserscope. This way, we report the low end. our mean value is of the time it takes to execute 1 operation, so the margin or error is applied to that and then computed to hz again
+          // Browserscope has a tendency to notch up (but not down) on values. For this reason, jsPerf sends the reported results <em>minus the margin of error</em> (the lower limit confidence interval, i.e. the lowest suspected value) to Browserscope. This way, we report the low end. our mean value is of the time it takes to execute 1 operation, so the margin or error is applied to that and then computed to hz again
           }, {
             slug: 'autorun',
             title: 'I don’t like clicking buttons. Can I make the tests run automatically after opening a page?',
@@ -102,13 +102,13 @@ exports.register = function (server, options, next) {
             answer: 'Why not? I’m <a href="https://github.com/jsperf/jsperf.com/issues" rel="nofollow">open to suggestions</a>, so please let me know if you have an idea that could make jsPerf more awesome.'
           }
         ]
-      })
+      });
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'web/faq'
-}
+};

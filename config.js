@@ -1,15 +1,15 @@
-require('dotenv').load()
+require('dotenv').load();
 
-var Confidence = require('confidence')
-var _ = require('lodash')
-var configLib = require('./lib/config')
+var Confidence = require('confidence');
+var _ = require('lodash');
+var configLib = require('./lib/config');
 
-configLib.normalizeDomain()
+configLib.normalizeDomain();
 
 var criteria = {
   env: process.env.NODE_ENV,
   scheme: process.env.SCHEME
-}
+};
 
 var config = {
   $meta: 'jsPerf.com',
@@ -57,15 +57,15 @@ var config = {
     development: true,
     $default: false
   }
-}
+};
 
-var store = new Confidence.Store(config)
+var store = new Confidence.Store(config);
 
 exports.get = function (key, overrides) {
-  _.assign(criteria, overrides)
-  return store.get(key, criteria)
-}
+  _.assign(criteria, overrides);
+  return store.get(key, criteria);
+};
 
 exports.meta = function (key) {
-  return store.meta(key, criteria)
-}
+  return store.meta(key, criteria);
+};

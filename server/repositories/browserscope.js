@@ -1,8 +1,8 @@
 // TODO make hapi plugin
-var http = require('http')
-var querystring = require('querystring')
+var http = require('http');
+var querystring = require('querystring');
 
-var config = require('../../config')
+var config = require('../../config');
 
 module.exports = {
   addTest: function (title, description, slug, cb) {
@@ -11,22 +11,22 @@ module.exports = {
       name: title,
       description: description.substr(0, 60),
       url: config.get('/scheme') + '://' + config.get('/domain') + '/' + slug
-    })
+    });
 
     http.get('http://www.browserscope.org/user/tests/create?' + qs, function (res) {
-      var str = ''
+      var str = '';
 
       res.on('data', function (chunk) {
-        str += chunk
-      })
+        str += chunk;
+      });
 
       res.on('end', function () {
         try {
-          cb(null, JSON.parse(str).test_key)
+          cb(null, JSON.parse(str).test_key);
         } catch (e) {
-          cb(new Error('Unexpected response from browserscope.org'))
+          cb(new Error('Unexpected response from browserscope.org'));
         }
-      })
-    }).on('error', cb)
+      });
+    }).on('error', cb);
   }
-}
+};

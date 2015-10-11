@@ -3,13 +3,13 @@ exports.register = function (server, options, next) {
     method: 'GET',
     path: '/api/jsonp',
     handler: function (request, reply) {
-      reply({ content: 'test' }).header('Access-Control-Allow-Origin', '*')
+      reply({ content: 'test' }).header('Access-Control-Allow-Origin', '*');
     }
-  })
+  });
 
-  return next()
-}
+  return next();
+};
 
 exports.register.attributes = {
   name: 'api/jsonp'
-}
+};
