@@ -1,7 +1,9 @@
 language: node_js
 node_js:
-- iojs
+- 4
 env: PORT=3000
+before_install:
+- npm install -g npm@latest
 after_script:
 - npm install -g codeclimate-test-reporter
 - codeclimate-test-reporter < lcov.info || echo "Could not upload code coverage to CodeClimate"

@@ -1,27 +1,3 @@
 {
-  "settings": {
-    "ecmascript": 6
-  },
-  "env": {
-    "node": true
-  },
-  "rules": {
-    "eol-last": 2,
-    "no-space-before-semi": 2,
-    "no-spaced-func": 2,
-    "no-trailing-spaces": 2,
-    "no-use-before-define": 2,
-    "one-var": 2,
-    "space-after-keywords": 2,
-    "space-before-blocks": [2, "always"],
-    "space-before-function-paren": [2, "never"],
-    "space-in-parens": [2, "never"],
-    "space-infix-ops": 2,
-    "spaced-line-comment": [2, "always"],
-    "space-return-throw-case": 2
-  },
-  "ecmaFeatures": {
-    "blockBindings": true,
-    "templateStrings": false
-  }
+  "extends": "semistandard"
 }

@@ -4,14 +4,12 @@
   "description": "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
   "main": "index.js",
   "scripts": {
+    "clean": "rm npm-debug.log lcov.info coverage.html",
     "lint": "lab -d -L",
     "setup": "node setup",
     "start": "nodemon --ext js,hbs server.js",
-    "test": "lab -t 100 -c -L -r lcov -o lcov.info",
-    "test-cov": "lab -t 100 -c -L",
-    "test-cov-html": "lab -r html -o coverage.html && open coverage.html",
-    "test-fast": "lab",
-    "test-lint": "lab -L"
+    "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout",
+    "test-cov-html": "lab -r html -o coverage.html && open coverage.html"
   },
   "repository": {
     "type": "git",
@@ -49,19 +47,18 @@
     "yar": "^3.0.3"
   },
   "devDependencies": {
-    "boom": "^2.8.0",
     "code": "^1.4.1",
-    "debug": "^2.2.0",
-    "highlight.js": "^8.7.0",
+    "eslint-config-semistandard": "^5.0.0",
+    "eslint-config-standard": "^4.4.0",
+    "eslint-plugin-standard": "^1.3.1",
     "lab": "^5.11.1",
-    "marked": "^0.3.4",
     "nodemon": "^1.3.7",
     "prompt": "^0.2.14",
     "proxyquire": "^1.4.0",
     "sinon": "^1.15.4"
   },
   "engines": {
-    "iojs": "2.x.x",
-    "npm": "2.x.x"
+    "node": "4.x.x",
+    "npm": "3.x.x"
   }
 }

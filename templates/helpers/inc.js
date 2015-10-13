@@ -1,5 +1,1 @@
-"use strict";
-
-module.exports = function(i) {
-  return i + 1;
-};
+module.exports = (i) => i + 1;

@@ -1,23 +1,20 @@
-"use strict";
+var Boom = require('boom');
+var debug = require('debug')('jsperf:web:test');
+var hljs = require('highlight.js');
+var pagesService = require('../../services/pages');
+var regex = require('../../lib/regex');
 
-var Boom = require("boom");
-var debug = require("debug")("jsperf:web:test");
-var hljs = require("highlight.js");
-var pagesService = require("../../services/pages");
-var regex = require("../../lib/regex");
-
-exports.register = function(server, options, next) {
-
+exports.register = function (server, options, next) {
   server.route({
-    method: "GET",
-    path: "/{testSlug}/{rev?}",
-    handler: function(request, reply) {
+    method: 'GET',
+    path: '/{testSlug}/{rev?}',
+    handler: function (request, reply) {
       const rev = request.params.rev ? request.params.rev : 1;
 
-      pagesService.getBySlug(request.params.testSlug, rev, function(err, page, tests, revisions, comments) {
+      pagesService.getBySlug(request.params.testSlug, rev, function (err, page, tests, revisions, comments) {
         if (err) {
-          if (err.message === "Not found") {
-            reply(Boom.notFound("The page was not found"));
+          if (err.message === 'Not found') {
+            reply(Boom.notFound('The page was not found'));
           } else {
             reply(err);
           }
@@ -29,24 +26,24 @@ exports.register = function(server, options, next) {
           const hasSetupOrTeardown = page.setup.length || page.teardown.length;
           const hasPrep = page.initHTML.length || hasSetupOrTeardown;
 
-          let stripped = false;
+          var stripped = false;
 
           if (hasPrep) {
-            let reScripts = new RegExp(regex.script, "i");
-            stripped = page.initHTML.replace(reScripts, "");
+            const reScripts = new RegExp(regex.script, 'i');
+            stripped = page.initHTML.replace(reScripts, '');
 
-            let swappedScripts = [];
+            var swappedScripts = [];
 
             // highlight the JS inside HTML while highlighting the HTML
-            page.initHTMLHighlighted = hljs.highlight("html",
-              page.initHTML.replace(reScripts, function(match, open, contents, close) {
+            page.initHTMLHighlighted = hljs.highlight('html',
+              page.initHTML.replace(reScripts, function (match, open, contents, close) {
                 // highlight JS inside script tags
-                let highlightedContents = hljs.highlight("js", contents).value;
+                var highlightedContents = hljs.highlight('js', contents).value;
                 // store to put back in place later
-                swappedScripts.unshift(highlightedContents.replace(/&nbsp;$/, ""));
+                swappedScripts.unshift(highlightedContents.replace(/&nbsp;$/, ''));
                 // insert marker to replace shortly
-                return open + "@jsPerfTagToken" + close;
-              })).value.replace(/@jsPerfTagToken/, function() {
+                return open + '@jsPerfTagToken' + close;
+              })).value.replace(/@jsPerfTagToken/, function () {
                 // put highlighted JS into highlighted HTML
                 return swappedScripts.pop();
               }
@@ -54,24 +51,24 @@ exports.register = function(server, options, next) {
           }
 
           // update hits once per page per session
-          let hits = request.session.get("hits") || {};
+          var hits = request.session.get('hits') || {};
           if (!hits[page.id]) {
-            pagesService.updateHits(page.id, function(e) {
+            pagesService.updateHits(page.id, function (e) {
               // TODO: report error some place useful
               if (e) {
                 debug(e);
               }
 
               hits[page.id] = true;
-              request.session.set("hits", hits);
+              request.session.set('hits', hits);
             });
           }
 
-          let own = request.session.get("own") || {};
+          var own = request.session.get('own') || {};
           const isOwn = own[page.id];
-          const isAdmin = request.session.get("admin");
+          const isAdmin = request.session.get('admin');
 
-          reply.view("test/index", {
+          reply.view('test/index', {
             benchmark: true,
             showAtom: {
               slug: request.path.slice(1) // remove slash
@@ -79,8 +76,8 @@ exports.register = function(server, options, next) {
             jsClass: true,
             isAdmin: isAdmin,
             // Don’t let robots index non-published test cases
-            noIndex: page.visible === "n" && (isOwn || isAdmin),
-            pageInit: page.initHTML.includes("function init()"),
+            noIndex: page.visible === 'n' && (isOwn || isAdmin),
+            pageInit: page.initHTML.includes('function init()'),
             hasPrep: hasPrep,
             hasSetupOrTeardown: hasSetupOrTeardown,
             stripped: stripped,
@@ -94,9 +91,8 @@ exports.register = function(server, options, next) {
   // TODO: atom feed
 
   return next();
-
 };
 
 exports.register.attributes = {
-  name: "web/test"
+  name: 'web/test'
 };

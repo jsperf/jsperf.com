@@ -1,109 +1,107 @@
-"use strict";
+var path = require('path');
 
-var path = require("path");
+var Lab = require('lab');
+var Code = require('code');
+var Hapi = require('hapi');
+var proxyquire = require('proxyquire');
 
-var Lab = require("lab");
-var Code = require("code");
-var Hapi = require("hapi");
-var proxyquire = require("proxyquire");
-
-var Config = require("../../../../config");
+var Config = require('../../../../config');
 
 var pagesServiceStub = {};
 
-var SearchPlugin = proxyquire("../../../../server/web/search/index", {
-  "../../services/pages": pagesServiceStub
+var SearchPlugin = proxyquire('../../../../server/web/search/index', {
+  '../../services/pages': pagesServiceStub
 });
 
 var lab = exports.lab = Lab.script();
 var request, server;
 
-lab.beforeEach(function(done) {
+lab.beforeEach(function (done) {
   var plugins = [ SearchPlugin ];
   server = new Hapi.Server();
   server.connection({
-    port: Config.get("/port/web")
+    port: Config.get('/port/web')
   });
   server.views({
     engines: {
-      hbs: require("handlebars")
+      hbs: require('handlebars')
     },
-    path: "./server/web",
-    relativeTo: path.join(__dirname, "..", "..", "..", "..")
+    path: './server/web',
+    relativeTo: path.join(__dirname, '..', '..', '..', '..')
   });
   server.register(plugins, done);
 });
 
-lab.experiment("search", function() {
-  lab.beforeEach(function(done) {
+lab.experiment('search', function () {
+  lab.beforeEach(function (done) {
     request = {
-      method: "GET",
-      url: "/search"
+      method: 'GET',
+      url: '/search'
     };
 
     done();
   });
 
-  lab.test("it responds with search form", function(done) {
-    server.inject(request, function(response) {
+  lab.test('it responds with search form', function (done) {
+    server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
       Code.expect(response.result).to.include([
-        "Search jsPerf",
-        "<form"
+        'Search jsPerf',
+        '<form'
       ]);
 
       done();
     });
   });
 
-  lab.test("it responds with search form from empty form submission", function(done) {
-    request.url += "?q=";
+  lab.test('it responds with search form from empty form submission', function (done) {
+    request.url += '?q=';
 
-    server.inject(request, function(response) {
+    server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
       Code.expect(response.result).to.include([
-        "Search jsPerf",
-        "<form"
+        'Search jsPerf',
+        '<form'
       ]);
 
       done();
     });
   });
 
-  lab.test("it responds with an error from querying", function(done) {
-    pagesServiceStub.find = function(q, cb) {
+  lab.test('it responds with an error from querying', function (done) {
+    pagesServiceStub.find = function (q, cb) {
       cb(new Error());
     };
 
-    request.url += "?q=a";
+    request.url += '?q=a';
 
-    server.inject(request, function(response) {
+    server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(500);
 
       done();
     });
   });
 
-  lab.test("it responds with no results from querying", function(done) {
-    pagesServiceStub.find = function(q, cb) {
+  lab.test('it responds with no results from querying', function (done) {
+    pagesServiceStub.find = function (q, cb) {
       cb(null, []);
     };
 
-    request.url += "?q=a";
+    request.url += '?q=a';
 
-    server.inject(request, function(response) {
+    server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
-      Code.expect(response.result).to.include("No results found for query: ");
+      Code.expect(response.result).to.include('No results found for query: ');
 
       done();
     });
   });
 
-  lab.test("it responds with search results", function(done) {
+  lab.test('it responds with search results', function (done) {
     var currentTime = new Date();
-    var testUrl = "http://example.com";
-    var testTitle = "Test result";
-    pagesServiceStub.find = function(searchTerms, cb) {
+    var testUrl = 'http://example.com';
+    var testTitle = 'Test result';
+    pagesServiceStub.find = function (searchTerms, cb) {
       cb(null, [{
         url: testUrl,
         revision: 1,
@@ -114,9 +112,9 @@ lab.experiment("search", function() {
       }]);
     };
 
-    request.url += "?q=test";
+    request.url += '?q=test';
 
-    server.inject(request, function(response) {
+    server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
       Code.expect(response.result).to.include([
         testUrl,
@@ -127,21 +125,21 @@ lab.experiment("search", function() {
     });
   });
 
-  lab.experiment("atom", function() {
-    lab.test("it ignores non-atom extensions", function(done) {
-      request.url += ".php";
+  lab.experiment('atom', function () {
+    lab.test('it ignores non-atom extensions', function (done) {
+      request.url += '.php';
 
-      server.inject(request, function(response) {
+      server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(404);
         done();
       });
     });
 
-    lab.test("it responds w/ atom feed", function(done) {
+    lab.test('it responds w/ atom feed', function (done) {
       var currentTime = new Date();
-      var testUrl = "http://example.com";
-      var testTitle = "Test result";
-      pagesServiceStub.find = function(searchTerms, cb) {
+      var testUrl = 'http://example.com';
+      var testTitle = 'Test result';
+      pagesServiceStub.find = function (searchTerms, cb) {
         cb(null, [{
           url: testUrl,
           revision: 1,
@@ -153,12 +151,12 @@ lab.experiment("search", function() {
         }]);
       };
 
-      request.url += ".atom?q=test";
+      request.url += '.atom?q=test';
 
-      server.inject(request, function(response) {
+      server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
         Code.expect(response.result).to.include([
-          "<title>" + testTitle + "</title>"
+          '<title>' + testTitle + '</title>'
         ]);
         done();
       });

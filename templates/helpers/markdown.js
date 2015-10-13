@@ -1,8 +1,4 @@
-"use strict";
+var marked = require('marked');
+var Handlebars = require('handlebars');
 
-var marked = require("marked");
-var Handlebars = require("handlebars");
-
-module.exports = function(content) {
-  return new Handlebars.SafeString(marked(content));
-};
+module.exports = (content) => new Handlebars.SafeString(marked(content));
