@@ -35,18 +35,17 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('inserts payload', function (done) {
-      dbStub.genericQuery.callsArgWith(2, null, { insertId: insertId });
+      dbStub.genericQuery.returns(Promise.resolve({ insertId: insertId }));
 
-      pages.create(payload, function (err, newId) {
-        Code.expect(err).to.be.null();
+      pages.create(payload)
+      .then(function (newId) {
         Code.expect(
           dbStub.genericQuery.calledWithExactly(
             'INSERT INTO ?? SET ?',
             [
               'pages',
               payload
-            ],
-            sinon.match.func
+            ]
           )
         ).to.be.true();
         Code.expect(newId).to.equal(insertId);
@@ -59,9 +58,10 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(2, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      pages.create(payload, function (err) {
+      pages.create(payload)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -84,10 +84,10 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns single row', function (done) {
-      dbStub.genericQuery.callsArgWith(2, null, [{ id: id }]);
+      dbStub.genericQuery.returns(Promise.resolve([{ id: id }]));
 
-      pages.get(testFields, testWhere, function (err, row) {
-        Code.expect(err).to.be.null();
+      pages.get(testFields, testWhere)
+      .then(function (row) {
         Code.expect(
           dbStub.genericQuery.calledWithExactly(
             'SELECT ?? FROM ?? WHERE ? LIMIT 1',
@@ -95,8 +95,7 @@ lab.experiment('Pages Repository', function () {
               testFields,
               'pages',
               testWhere
-            ],
-            sinon.match.func
+            ]
           )
         ).to.be.true();
         Code.expect(row).to.be.object();
@@ -110,9 +109,10 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(2, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      pages.get(testFields, testWhere, function (err) {
+      pages.get(testFields, testWhere)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -123,10 +123,10 @@ lab.experiment('Pages Repository', function () {
 
   lab.experiment('getLatestVisible', function () {
     lab.test('returns number of rows of latest, visible pages', function (done) {
-      dbStub.genericQuery.callsArgWith(2, null, []);
+      dbStub.genericQuery.returns(Promise.resolve([]));
 
-      pages.getLatestVisible(250, function (err, rows) {
-        Code.expect(err).to.be.null();
+      pages.getLatestVisible(250)
+      .then(function (rows) {
         Code.expect(rows).to.be.array();
 
         done();
@@ -137,9 +137,10 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(2, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      pages.getLatestVisible(250, function (err) {
+      pages.getLatestVisible(250)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -150,10 +151,10 @@ lab.experiment('Pages Repository', function () {
 
   lab.experiment('getLatestVisibleForAuthor', function () {
     lab.test('returns number of rows of latest, visible pages for author', function (done) {
-      dbStub.genericQuery.callsArgWith(2, null, []);
+      dbStub.genericQuery.returns(Promise.resolve([]));
 
-      pages.getLatestVisibleForAuthor('test-author', function (err, rows) {
-        Code.expect(err).to.be.null();
+      pages.getLatestVisibleForAuthor('test-author')
+      .then(function (rows) {
         Code.expect(rows).to.be.array();
 
         done();
@@ -164,9 +165,10 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(2, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      pages.getLatestVisibleForAuthor('test-author', function (err) {
+      pages.getLatestVisibleForAuthor('test-author')
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -179,15 +181,14 @@ lab.experiment('Pages Repository', function () {
     lab.test('returns page given slug', function (done) {
       var slug = 'test-slug';
       var rev = 1;
-      dbStub.genericQuery.callsArgWith(2, null, {});
+      dbStub.genericQuery.returns(Promise.resolve({}));
 
-      pages.getBySlug(slug, rev, function (err, page) {
-        Code.expect(err).to.be.null();
+      pages.getBySlug(slug, rev)
+      .then(function (page) {
         Code.expect(page).to.be.object();
         Code.expect(dbStub.genericQuery.calledWithExactly(
           'SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ?',
-          [table, slug, table, slug, rev],
-          sinon.match.func
+          [table, slug, table, slug, rev]
         )).to.be.true();
 
         done();
@@ -199,15 +200,14 @@ lab.experiment('Pages Repository', function () {
     lab.test('returns search results', function (done) {
       var searchTerms = 'test query';
       var wc = '%' + searchTerms + '%';
-      dbStub.genericQuery.callsArgWith(2, null, []);
+      dbStub.genericQuery.returns(Promise.resolve([]));
 
-      pages.find(searchTerms, function (err, page) {
-        Code.expect(err).to.be.null();
+      pages.find(searchTerms)
+      .then(function (page) {
         Code.expect(page).to.be.array();
         Code.expect(dbStub.genericQuery.calledWithExactly(
           'SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;',
-          [wc, wc],
-          sinon.match.func
+          [wc, wc]
         )).to.be.true();
 
         done();
@@ -218,15 +218,14 @@ lab.experiment('Pages Repository', function () {
   lab.experiment('findBySlug', function () {
     lab.test('returns query results', function (done) {
       var slug = 'oh-yea';
-      dbStub.genericQuery.callsArgWith(2, null, []);
+      dbStub.genericQuery.returns(Promise.resolve([]));
 
-      pages.findBySlug(slug, function (err, p) {
-        Code.expect(err).to.be.null();
+      pages.findBySlug(slug)
+      .then(function (p) {
         Code.expect(p).to.be.array();
         Code.expect(dbStub.genericQuery.calledWithExactly(
           'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
-          [slug],
-          sinon.match.func
+          [slug]
         )).to.be.true();
 
         done();
@@ -239,9 +238,10 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(1, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      pages.getSitemap(function (err) {
+      pages.getSitemap()
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -250,10 +250,10 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns tests to use for sitemap', function (done) {
-      dbStub.genericQuery.callsArgWith(1, null, []);
+      dbStub.genericQuery.returns(Promise.resolve([]));
 
-      pages.getSitemap(function (err, results) {
-        Code.expect(err).to.be.null();
+      pages.getSitemap()
+      .then(function (results) {
         Code.expect(results).to.be.array();
 
         done();
@@ -266,9 +266,10 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(1, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      pages.getPopularRecent(function (err) {
+      pages.getPopularRecent()
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -277,10 +278,10 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns at most 30 recent popular tests', function (done) {
-      dbStub.genericQuery.callsArgWith(1, null, new Array(30));
+      dbStub.genericQuery.returns(Promise.resolve(new Array(30)));
 
-      pages.getPopularRecent(function (err, results) {
-        Code.expect(err).to.be.null();
+      pages.getPopularRecent()
+      .then(function (results) {
         Code.expect(results).to.be.array();
 
         done();
@@ -293,9 +294,10 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(1, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      pages.getPopularAllTime(function (err) {
+      pages.getPopularAllTime()
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -304,10 +306,10 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns at most 30 recent popular tests', function (done) {
-      dbStub.genericQuery.callsArgWith(1, null, new Array(30));
+      dbStub.genericQuery.returns(Promise.resolve(new Array(30)));
 
-      pages.getPopularAllTime(function (err, results) {
-        Code.expect(err).to.be.null();
+      pages.getPopularAllTime()
+      .then(function (results) {
         Code.expect(results).to.be.array();
 
         done();
@@ -318,15 +320,13 @@ lab.experiment('Pages Repository', function () {
   lab.experiment('updateHits', function () {
     lab.test('update query for hits + 1', function (done) {
       var pageID = 1;
-      dbStub.genericQuery.callsArgWith(2, null);
+      dbStub.genericQuery.returns(Promise.resolve());
 
-      pages.updateHits(pageID, function (err) {
-        Code.expect(err).to.be.null();
-
+      pages.updateHits(pageID)
+      .then(function () {
         Code.expect(dbStub.genericQuery.calledWithExactly(
           'UPDATE ?? SET hits = hits + 1 WHERE id = ?',
-          [table, pageID],
-          sinon.match.func
+          [table, pageID]
         )).to.be.true();
 
         done();
@@ -338,15 +338,13 @@ lab.experiment('Pages Repository', function () {
     lab.test('generic update query', function (done) {
       var modify = { browserscopeID: 'abc123' };
       var where = { id: 1 };
-      dbStub.genericQuery.callsArgWith(2, null);
+      dbStub.genericQuery.returns(Promise.resolve());
 
-      pages.update(modify, where, function (err) {
-        Code.expect(err).to.be.null();
-
+      pages.update(modify, where)
+      .then(function () {
         Code.expect(dbStub.genericQuery.calledWithExactly(
           'UPDATE ?? SET ? WHERE ?',
-          [table, modify, where],
-          sinon.match.func
+          [table, modify, where]
         )).to.be.true();
 
         done();

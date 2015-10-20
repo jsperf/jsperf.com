@@ -48,15 +48,21 @@ lab.experiment('Database Lib', function () {
 
     lab.test('creates a MySQL connection and makes a query', function (done) {
       queryStub.callsArgWith(2, null);
-      db.genericQuery('SELECT ?;', [1], function (err) {
-        Code.expect(err).to.be.null();
+      db.genericQuery('SELECT ?;', [1]).then(done);
+    });
+
+    lab.test('rejects promise when query errors', function (done) {
+      queryStub.callsArgWith(2, new Error());
+      db.genericQuery('SELECT ?;', [1]).catch(function (err) {
+        Code.expect(err).to.be.instanceof(Error);
         done();
       });
     });
 
     lab.test('values param is optional', function (done) {
       queryStub.callsArgWith(2, null);
-      db.genericQuery('SELECT 1;', function () {
+      db.genericQuery('SELECT 1;')
+      .then(function () {
         Code.expect(queryStub.args[0]).to.have.length(3);
         done();
       });
@@ -66,7 +72,8 @@ lab.experiment('Database Lib', function () {
       configStub.get = function () { return true; };
       sinon.spy(mysqlStub, 'createConnection');
       queryStub.callsArgWith(2, null);
-      db.genericQuery('SELECT 1;', function () {
+      db.genericQuery('SELECT 1;')
+      .then(function () {
         Code.expect(mysqlStub.createConnection.args[0][0].debug).to.be.array();
         // cleanup
         delete configStub.get;

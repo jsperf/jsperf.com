@@ -8,143 +8,114 @@ var browserscopeRepo = require('../repositories/browserscope');
 var commentsRepo = require('../repositories/comments');
 
 module.exports = {
-  checkIfSlugAvailable: function (server, slug, cb) {
-    // routes registered by the app should be considered reserved
-    var routeTable = server.table();
+  checkIfSlugAvailable: function (server, slug) {
+    return new Promise(function (resolve, reject) {
+      // routes registered by the app should be considered reserved
+      var routeTable = server.table();
 
-    for (var i = 0, rtl = routeTable.length; i < rtl; i++) {
-      for (var j = 0, rttl = routeTable[i].table.length; j < rttl; j++) {
-        if (routeTable[i].table[j].path.substr(1) === slug) {
-          return cb(null, false);
+      for (var i = 0, rtl = routeTable.length; i < rtl; i++) {
+        for (var j = 0, rttl = routeTable[i].table.length; j < rttl; j++) {
+          if (routeTable[i].table[j].path.substr(1) === slug) {
+            return resolve(false);
+          }
         }
       }
-    }
 
-    // does it exist in table?
-    pagesRepo.get('id', { slug: slug }, function (err, row) {
-      if (err) {
-        cb(err);
-      } else {
-        if (row) {
-          cb(null, false);
-        } else {
-          cb(null, true);
-        }
-      }
+      // does it exist in table?
+      pagesRepo.get('id', { slug: slug })
+      .then(function (row) {
+        resolve(!row);
+      })
+      .catch(reject);
     });
   },
 
-  create: function (payload, cb) {
-    browserscopeRepo.addTest(payload.title, payload.info, payload.slug, function (er, testKey) {
-      if (er) {
-        cb(er);
-      } else {
-        var page = _.omit(payload, 'test');
-        page.browserscopeID = testKey;
-        page.published = new Date();
+  create: function (payload) {
+    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
+    .then(function (testKey) {
+      var page = _.omit(payload, 'test');
+      page.browserscopeID = testKey;
+      page.published = new Date();
 
-        pagesRepo.create(page, function (err, pageID) {
-          if (err) {
-            cb(err);
-          } else {
-            testsRepo.bulkCreate(pageID, payload.test, cb);
-          }
-        });
-      }
+      return pagesRepo.create(page);
+    })
+    .then(function (pageID) {
+      return testsRepo.bulkCreate(pageID, payload.test);
     });
   },
 
-  getPopular: function (cb) {
-    pagesRepo.getPopularRecent(function (er, recent) {
-      if (er) {
-        cb(er);
-      } else {
-        pagesRepo.getPopularAllTime(function (err, allTime) {
-          if (err) {
-            cb(err);
-          } else {
-            cb(null, {
-              recent: recent,
-              allTime: allTime
-            });
-          }
-        });
-      }
+  getPopular: function () {
+    return Promise.all([
+      pagesRepo.getPopularRecent(),
+      pagesRepo.getPopularAllTime()
+    ])
+    .then(function (values) {
+      return {
+        recent: values[0],
+        allTime: values[1]
+      };
     });
   },
 
-  find: function (searchTerms, cb) {
-    pagesRepo.find(searchTerms, cb);
+  find: function (searchTerms) {
+    return pagesRepo.find(searchTerms);
   },
 
-  updateHits: function (pageID, cb) {
-    pagesRepo.updateHits(pageID, cb);
+  updateHits: function (pageID) {
+    return pagesRepo.updateHits(pageID);
   },
 
-  getBySlug: function (slug, rev, cb) {
+  getBySlug: function (slug, rev) {
     debug('getBySlug', arguments);
-    // this waterfall w/ Promises mixed in was the most naive way to translate the PHP correctly
-    // candidate for future refactoring
+    var page;
+    const values = [];
 
     // can we find the page?
-    pagesRepo.getBySlug(slug, rev, function (er, pages) {
-      if (er) {
-        cb(er);
-      } else {
-        if (pages.length === 0) {
-          cb(new Error('Not found'));
-        } else {
-          var page = pages[0];
-
-          const p1 = new Promise(function (resolve, reject) {
-            // update browserscopeID for page if missing
-            if (page.browserscopeID && page.browserscopeID !== '') {
-              resolve();
-            } else {
-              const s = page.revision > 1 ? page.slug + '/' + page.revision : page.slug;
-              browserscopeRepo.addTest(page.title, page.info, s, function (e, testKey) {
-                if (e) {
-                  reject(e);
-                } else {
-                  page.browserscopeID = testKey;
-                  pagesRepo.update({ browserscopeID: testKey }, { id: page.id }, function (ee) {
-                    if (ee) {
-                      reject(ee);
-                    } else {
-                      resolve();
-                    }
-                  });
-                }
-              });
-            }
-          });
-
-          p1.then(function () {
-            // find its tests
-            testsRepo.findByPageID(page.id, function (err, tests) {
-              if (err) {
-                cb(err);
-              } else {
-                // find other revisions of page
-                pagesRepo.findBySlug(slug, function (errr, revisions) {
-                  if (errr) {
-                    cb(errr);
-                  } else {
-                    // find comments for page
-                    commentsRepo.findByPageID(page.id, function (errrr, comments) {
-                      if (errrr) {
-                        cb(errrr);
-                      } else {
-                        cb(null, page, tests, revisions, comments);
-                      }
-                    });
-                  }
-                });
-              }
-            });
-          }).catch(cb);
-        }
+    return pagesRepo.getBySlug(slug, rev)
+    .then(function (pages) {
+      if (pages.length === 0) {
+        throw new Error('Not found');
       }
+
+      page = pages[0];
+      values.push(page);
+
+      return new Promise(function (resolve, reject) {
+        // update browserscopeID for page if missing
+        if (page.browserscopeID && page.browserscopeID !== '') {
+          return resolve();
+        }
+
+        const s = page.revision > 1 ? page.slug + '/' + page.revision : page.slug;
+
+        browserscopeRepo.addTest(page.title, page.info, s)
+        .then(function (testKey) {
+          page.browserscopeID = testKey;
+          return pagesRepo.update({ browserscopeID: testKey }, { id: page.id });
+        })
+        .then(function () {
+          resolve();
+        })
+        .catch(reject);
+      });
+    })
+    .then(function () {
+      // find its tests
+      return testsRepo.findByPageID(page.id);
+    })
+    .then(function (tests) {
+      // find other revisions of page
+      values.push(tests);
+      return pagesRepo.findBySlug(slug);
+    })
+    .then(function (revisions) {
+      // find comments for page
+      values.push(revisions);
+      return commentsRepo.findByPageID(page.id);
+    })
+    .then(function (comments) {
+      values.push(comments);
+      return values;
     });
   }
 };

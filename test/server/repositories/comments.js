@@ -21,15 +21,14 @@ lab.experiment('Comments Repository', function () {
   lab.experiment('findByPageID', function () {
     lab.test('selects all from comments where pageID', function (done) {
       var pageID = 1;
-      dbStub.genericQuery.callsArgWith(2, null, []);
+      dbStub.genericQuery.returns(Promise.resolve([]));
 
-      comments.findByPageID(pageID, function (err) {
-        Code.expect(err).to.be.null();
+      comments.findByPageID(pageID)
+      .then(function () {
         Code.expect(
           dbStub.genericQuery.calledWithExactly(
             'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
-            ['comments', pageID],
-            sinon.match.func
+            ['comments', pageID]
           )
         ).to.be.true();
 

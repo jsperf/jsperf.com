@@ -35,8 +35,8 @@ lab.experiment('Browserscope Repository', function () {
       var testKey = 123;
       var testResp = JSON.stringify({ 'test_key': testKey });
 
-      browserscope.addTest('My Test', 'is great', 'great-test', function (err, key) {
-        Code.expect(err).to.be.null();
+      browserscope.addTest('My Test', 'is great', 'great-test')
+      .then(function (key) {
         Code.expect(key).to.equal(testKey);
 
         done();
@@ -48,7 +48,8 @@ lab.experiment('Browserscope Repository', function () {
     });
 
     lab.test('returns an error when response is wrong', function (done) {
-      browserscope.addTest('My Test', 'is great', 'great-test', function (err) {
+      browserscope.addTest('My Test', 'is great', 'great-test')
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.include('Unexpected response');
 
@@ -62,7 +63,8 @@ lab.experiment('Browserscope Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      browserscope.addTest('My Test', 'is great', 'great-test', function (err) {
+      browserscope.addTest('My Test', 'is great', 'great-test')
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 

@@ -141,7 +141,7 @@
 {{/compare}}
 
 <section id="comments">
-  <h1>{{pluralize page.comments "Comment"}}</h1>
+  <h1>{{pluralize page.comments.length "Comment"}}</h1>
 
   <div id="comments-wrapper">
     {{#each page.comments}}

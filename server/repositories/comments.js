@@ -5,13 +5,12 @@ var db = require('../lib/db');
 const table = 'comments';
 
 module.exports = {
-  findByPageID: function (pageID, cb) {
+  findByPageID: function (pageID) {
     debug('findByPageID', arguments);
 
-    db.genericQuery(
+    return db.genericQuery(
       'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
-      [table, pageID],
-      cb
+      [table, pageID]
     );
   }
 };

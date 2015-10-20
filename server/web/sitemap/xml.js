@@ -5,19 +5,17 @@ exports.register = function (server, options, next) {
     method: 'GET',
     path: '/sitemap.xml',
     handler: function (request, reply) {
-      pagesRepo.getSitemap(function (err, items) {
-        if (err) {
-          reply(err);
-        } else {
-          reply
-            .view('sitemap/xml', {
-              items: items
-            }, {
-              layout: false
-            })
-            .header('Content-Type', 'application/xml;charset=UTF-8');
-        }
-      });
+      pagesRepo.getSitemap()
+      .then(function (items) {
+        reply
+          .view('sitemap/xml', {
+            items: items
+          }, {
+            layout: false
+          })
+          .header('Content-Type', 'application/xml;charset=UTF-8');
+      })
+      .catch(reply);
     }
   });
 

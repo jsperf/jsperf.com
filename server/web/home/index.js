@@ -136,24 +136,21 @@ exports.register = function (server, options, next) {
           // Joi defaults any properties not present in `request.payload` so use `payload` from here on out
           var payload = pageWithTests;
 
-          pagesService.checkIfSlugAvailable(server, payload.slug, function (err, isAvail) {
-            if (err) {
-              errResp(err);
-            } else if (!isAvail) {
+          pagesService.checkIfSlugAvailable(server, payload.slug)
+          .then(function (isAvail) {
+            if (!isAvail) {
               errResp({
                 slugError: 'This slug is already in use. Please choose another one.'
               });
             } else {
-              pagesService.create(payload, function (errr) {
-                if (errr) {
-                  errResp(errr);
-                } else {
-                  request.session.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
-                  reply.redirect('/' + payload.slug);
-                }
-              });
+              return pagesService.create(payload);
             }
-          });
+          })
+          .then(function () {
+            request.session.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+            reply.redirect('/' + payload.slug);
+          })
+          .catch(errResp);
         }
       });
     }

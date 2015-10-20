@@ -213,8 +213,8 @@ lab.experiment('home', function () {
 
       lab.test('handles error', function (done) {
         var errMsg = 'testing-very-unique-msg';
-        pagesServiceStub.checkIfSlugAvailable = function (a, b, cb) {
-          cb(new Error(errMsg));
+        pagesServiceStub.checkIfSlugAvailable = function (a, b) {
+          return Promise.reject(new Error(errMsg));
         };
 
         server.inject(request, function (response) {
@@ -227,8 +227,8 @@ lab.experiment('home', function () {
       });
 
       lab.test('not available', function (done) {
-        pagesServiceStub.checkIfSlugAvailable = function (a, b, cb) {
-          cb(null, false);
+        pagesServiceStub.checkIfSlugAvailable = function (a, b) {
+          return Promise.resolve(false);
         };
 
         server.inject(request, function (response) {
@@ -243,8 +243,8 @@ lab.experiment('home', function () {
 
     lab.experiment('create page', function () {
       lab.beforeEach(function (done) {
-        pagesServiceStub.checkIfSlugAvailable = function (a, b, cb) {
-          cb(null, true);
+        pagesServiceStub.checkIfSlugAvailable = function (a, b) {
+          return Promise.resolve(true);
         };
 
         done();
@@ -259,8 +259,8 @@ lab.experiment('home', function () {
 
       lab.test('handles error', function (done) {
         var errMsg = 'testing-very-very-unique-msg';
-        pagesServiceStub.create = function (a, cb) {
-          cb(new Error(errMsg));
+        pagesServiceStub.create = function (a) {
+          return Promise.reject(new Error(errMsg));
         };
 
         server.inject(request, function (response) {
@@ -273,8 +273,8 @@ lab.experiment('home', function () {
       });
 
       lab.test('redirects to slug', function (done) {
-        pagesServiceStub.create = function (a, cb) {
-          cb(null);
+        pagesServiceStub.create = function (a) {
+          return Promise.resolve();
         };
 
         server.inject(request, function (response) {

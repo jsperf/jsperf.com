@@ -43,8 +43,8 @@ lab.experiment('sitemap', function () {
   });
 
   lab.test('it responds with sitemap XML', function (done) {
-    pagesRepoStub.getSitemap = function (cb) {
-      cb(null, []);
+    pagesRepoStub.getSitemap = function () {
+      return Promise.resolve([]);
     };
 
     server.inject(request, function (response) {
@@ -60,8 +60,8 @@ lab.experiment('sitemap', function () {
   });
 
   lab.test('it responds with error', function (done) {
-    pagesRepoStub.getSitemap = function (cb) {
-      cb(new Error());
+    pagesRepoStub.getSitemap = function () {
+      return Promise.reject(new Error());
     };
 
     server.inject(request, function (response) {

@@ -5,7 +5,7 @@ var db = require('../lib/db');
 const table = 'tests';
 
 module.exports = {
-  bulkCreate: function (pageID, tests, cb) {
+  bulkCreate: function (pageID, tests) {
     var columns = ['pageID', 'title', 'defer', 'code'];
 
     var values = [];
@@ -16,24 +16,17 @@ module.exports = {
 
     values = values.join(', ');
 
-    db.genericQuery('INSERT INTO ?? (??) VALUES ' + values, [table, columns], function (err, result) {
-      if (err) {
-        cb(err);
-      } else if (result.affectedRows !== tests.length) {
-        cb(new Error('Not all tests inserted'));
-      } else {
-        cb(null);
+    return db.genericQuery('INSERT INTO ?? (??) VALUES ' + values, [table, columns])
+    .then(function (result) {
+      if (result.affectedRows !== tests.length) {
+        throw new Error('Not all tests inserted');
       }
     });
   },
 
-  findByPageID: function (pageID, cb) {
+  findByPageID: function (pageID) {
     debug('findByPageID', arguments);
 
-    db.genericQuery(
-      'SELECT * FROM ?? WHERE pageID = ?',
-      [table, pageID],
-      cb
-    );
+    return db.genericQuery('SELECT * FROM ?? WHERE pageID = ?', [table, pageID]);
   }
 };
