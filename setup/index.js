@@ -1,3 +1,5 @@
+'use strict';
+
 var fs = require('fs');
 var path = require('path');
 var prompt = require('prompt');
@@ -166,7 +168,8 @@ prompt.get(schema, function (er, result) {
     host: result.db.host,
     port: result.db.port,
     user: result.db.user,
-    password: result.db.pass
+    password: result.db.pass,
+    charset: 'utf8mb4'
   });
 
   conn.connect(function (e) {
