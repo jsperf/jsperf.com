@@ -69,8 +69,8 @@ lab.experiment('search', function () {
   });
 
   lab.test('it responds with an error from querying', function (done) {
-    pagesServiceStub.find = function (q, cb) {
-      cb(new Error());
+    pagesServiceStub.find = function (q) {
+      return Promise.reject(new Error());
     };
 
     request.url += '?q=a';
@@ -83,8 +83,8 @@ lab.experiment('search', function () {
   });
 
   lab.test('it responds with no results from querying', function (done) {
-    pagesServiceStub.find = function (q, cb) {
-      cb(null, []);
+    pagesServiceStub.find = function (q) {
+      return Promise.resolve([]);
     };
 
     request.url += '?q=a';
@@ -101,8 +101,8 @@ lab.experiment('search', function () {
     var currentTime = new Date();
     var testUrl = 'http://example.com';
     var testTitle = 'Test result';
-    pagesServiceStub.find = function (searchTerms, cb) {
-      cb(null, [{
+    pagesServiceStub.find = function (searchTerms) {
+      return Promise.resolve([{
         url: testUrl,
         revision: 1,
         title: testTitle,
@@ -139,8 +139,8 @@ lab.experiment('search', function () {
       var currentTime = new Date();
       var testUrl = 'http://example.com';
       var testTitle = 'Test result';
-      pagesServiceStub.find = function (searchTerms, cb) {
-        cb(null, [{
+      pagesServiceStub.find = function (searchTerms) {
+        return Promise.resolve([{
           url: testUrl,
           revision: 1,
           title: testTitle,

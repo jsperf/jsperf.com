@@ -21,30 +21,28 @@ exports.register = function (server, options, next) {
       if (q && q.length > 0) {
         defaultContext.q = q;
 
-        pagesService.find(q, function (err, results) {
-          if (err) {
-            reply(err);
+        pagesService.find(q)
+        .then(function (results) {
+          var updated;
+          if (results.length > 0) {
+            defaultContext.pages = results;
+            updated = results[0].updated;
           } else {
-            var updated;
-            if (results.length > 0) {
-              defaultContext.pages = results;
-              updated = results[0].updated;
-            } else {
-              defaultContext.genError = 'No results found for query: ' + q;
-              updated = new Date();
-            }
-
-            if (request.params.ext === '.atom') {
-              reply.view('search/atom', defaultContext, {
-                layout: false
-              })
-                .header('Content-Type', 'application/atom+xml;charset=UTF-8')
-                .header('Last-Modified', updated.toString());
-            } else {
-              reply.view('search/results', defaultContext);
-            }
+            defaultContext.genError = 'No results found for query: ' + q;
+            updated = new Date();
           }
-        });
+
+          if (request.params.ext === '.atom') {
+            reply.view('search/atom', defaultContext, {
+              layout: false
+            })
+              .header('Content-Type', 'application/atom+xml;charset=UTF-8')
+              .header('Last-Modified', updated.toString());
+          } else {
+            reply.view('search/results', defaultContext);
+          }
+        })
+        .catch(reply);
       } else {
         reply.view('search/form', defaultContext);
       }

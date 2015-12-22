@@ -9,12 +9,7 @@ var proxyquire = require('proxyquire');
 var Config = require('../../../../config');
 
 var pagesServiceStub = {
-  updateHits: function (id, cb) {
-    if (Number(id) === 999) {
-      cb(new Error('TODO'));
-    }
-    cb(null);
-  },
+  updateHits: function () {},
   getBySlug: function () {}
 };
 var debugSpy = sinon.spy();
@@ -74,13 +69,14 @@ lab.experiment('test', function () {
       url: '/' + slug
     };
 
+    pagesServiceStub.getBySlug = sinon.stub();
+    pagesServiceStub.updateHits = sinon.stub().returns(Promise.resolve());
+
     done();
   });
 
   lab.test('not found', function (done) {
-    pagesServiceStub.getBySlug = function (s, r, cb) {
-      cb(new Error('Not found'));
-    };
+    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('Not found')));
 
     // adding revision to url here covers true case of rev ternary
     request.url += '/999';
@@ -93,9 +89,7 @@ lab.experiment('test', function () {
   });
 
   lab.test('fail to get by slug', function (done) {
-    pagesServiceStub.getBySlug = function (s, r, cb) {
-      cb(new Error('real helpful'));
-    };
+    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('real helpful')));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(500);
@@ -107,8 +101,8 @@ lab.experiment('test', function () {
   lab.test('it responds with test page for slug', function (done) {
     const now = new Date();
 
-    pagesServiceStub.getBySlug = function (s, r, cb) {
-      cb(null, {
+    pagesServiceStub.getBySlug.returns(
+      Promise.resolve([{
         id: 1,
         slug: slug,
         revision: 1,
@@ -125,8 +119,8 @@ lab.experiment('test', function () {
         hits: 0,
         published: now,
         updated: now
-      }, [], [], []);
-    };
+      }, [], [], []])
+    );
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
@@ -138,26 +132,24 @@ lab.experiment('test', function () {
   lab.test('it responds with highlighted test page for slug', function (done) {
     const now = new Date();
 
-    pagesServiceStub.getBySlug = function (s, r, cb) {
-      cb(null, {
-        id: 1,
-        slug: slug,
-        revision: 1,
-        browserscopeID: 'abc123',
-        title: 'Oh Yea',
-        info: 'Sample test',
-        setup: 'var a = 1',
-        teardown: 'delete a',
-        initHTML: "<div class='test'><script>var b = 2;</script></div>",
-        visible: 'n',
-        author: 'Max',
-        authorEmail: 'm@b.co',
-        authorURL: 'b.co',
-        hits: 0,
-        published: now,
-        updated: now
-      }, [], [], []);
-    };
+    pagesServiceStub.getBySlug.returns(Promise.resolve([{
+      id: 1,
+      slug: slug,
+      revision: 1,
+      browserscopeID: 'abc123',
+      title: 'Oh Yea',
+      info: 'Sample test',
+      setup: 'var a = 1',
+      teardown: 'delete a',
+      initHTML: "<div class='test'><script>var b = 2;</script></div>",
+      visible: 'n',
+      author: 'Max',
+      authorEmail: 'm@b.co',
+      authorURL: 'b.co',
+      hits: 0,
+      published: now,
+      updated: now
+    }, [], [], []]));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
@@ -182,7 +174,30 @@ lab.experiment('test', function () {
 
       done();
     });
+
     lab.test('updates unique page hits', function (done) {
+      const now = new Date();
+      pagesServiceStub.getBySlug.returns(Promise.resolve([{
+        id: 1,
+        slug: slug,
+        revision: 1,
+        browserscopeID: 'abc123',
+        title: 'Oh Yea',
+        info: 'Sample test',
+        setup: 'var a = 1',
+        teardown: 'delete a',
+        initHTML: "<div class='test'><script>var b = 2;</script></div>",
+        visible: 'n',
+        author: 'Max',
+        authorEmail: 'm@b.co',
+        authorURL: 'b.co',
+        hits: 0,
+        published: now,
+        updated: now
+      }, [], [], []]));
+
+      pagesServiceStub.updateHits.returns(Promise.resolve());
+
       server.inject('/setsession', function (res) {
         var header = res.headers['set-cookie'];
         var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
@@ -199,26 +214,24 @@ lab.experiment('test', function () {
 
     lab.test('ignores duplicate page hits', function (done) {
       const now = new Date();
-      pagesServiceStub.getBySlug = function (s, r, cb) {
-        cb(null, {
-          id: 123,
-          slug: slug,
-          revision: 1,
-          browserscopeID: 'abc123',
-          title: 'Oh Yea',
-          info: 'Sample test',
-          setup: '',
-          teardown: '',
-          initHTML: '',
-          visible: 'y',
-          author: 'Max',
-          authorEmail: 'm@b.co',
-          authorURL: 'b.co',
-          hits: 0,
-          published: now,
-          updated: now
-        }, [], [], []);
-      };
+      pagesServiceStub.getBySlug.returns(Promise.resolve([{
+        id: 123,
+        slug: slug,
+        revision: 1,
+        browserscopeID: 'abc123',
+        title: 'Oh Yea',
+        info: 'Sample test',
+        setup: '',
+        teardown: '',
+        initHTML: '',
+        visible: 'y',
+        author: 'Max',
+        authorEmail: 'm@b.co',
+        authorURL: 'b.co',
+        hits: 0,
+        published: now,
+        updated: now
+      }, [], [], []]));
 
       server.inject('/setsession', function (res) {
         var header = res.headers['set-cookie'];
@@ -236,26 +249,27 @@ lab.experiment('test', function () {
 
     lab.test('catches errors from page service', function (done) {
       const now = new Date();
-      pagesServiceStub.getBySlug = function (s, r, cb) {
-        cb(null, {
-          id: 999,
-          slug: slug,
-          revision: 1,
-          browserscopeID: 'abc123',
-          title: 'Oh Yea',
-          info: 'Sample test',
-          setup: '',
-          teardown: '',
-          initHTML: '',
-          visible: 'y',
-          author: 'Max',
-          authorEmail: 'm@b.co',
-          authorURL: 'b.co',
-          hits: 0,
-          published: now,
-          updated: now
-        }, [], [], []);
-      };
+      pagesServiceStub.getBySlug.returns(Promise.resolve([{
+        id: 999,
+        slug: slug,
+        revision: 1,
+        browserscopeID: 'abc123',
+        title: 'Oh Yea',
+        info: 'Sample test',
+        setup: '',
+        teardown: '',
+        initHTML: '',
+        visible: 'y',
+        author: 'Max',
+        authorEmail: 'm@b.co',
+        authorURL: 'b.co',
+        hits: 0,
+        published: now,
+        updated: now
+      }, [], [], []]));
+
+      const expectedError = new Error('TODO');
+      pagesServiceStub.updateHits.returns(Promise.reject(expectedError));
 
       server.inject('/setsession', function (res) {
         var header = res.headers['set-cookie'];
@@ -264,7 +278,6 @@ lab.experiment('test', function () {
         request.headers.cookie = 'session=' + cookie[1];
         server.inject(request, function () {
           const debugCall = debugSpy.getCall(0).args[0];
-          const expectedError = new Error('TODO');
 
           Code.expect(debugCall.message).to.equal(expectedError.message);
 
@@ -277,26 +290,24 @@ lab.experiment('test', function () {
   lab.experiment('No Index Flag', function () {
     lab.beforeEach(function (done) {
       const now = new Date();
-      pagesServiceStub.getBySlug = function (s, r, cb) {
-        cb(null, {
-          id: 1,
-          slug: slug,
-          revision: 1,
-          browserscopeID: 'abc123',
-          title: 'Oh Yea',
-          info: 'Sample test',
-          setup: '',
-          teardown: '',
-          initHTML: '',
-          visible: 'n',
-          author: 'Max',
-          authorEmail: 'm@b.co',
-          authorURL: 'b.co',
-          hits: 0,
-          published: now,
-          updated: now
-        }, [], [], []);
-      };
+      pagesServiceStub.getBySlug.returns(Promise.resolve([{
+        id: 1,
+        slug: slug,
+        revision: 1,
+        browserscopeID: 'abc123',
+        title: 'Oh Yea',
+        info: 'Sample test',
+        setup: '',
+        teardown: '',
+        initHTML: '',
+        visible: 'n',
+        author: 'Max',
+        authorEmail: 'm@b.co',
+        authorURL: 'b.co',
+        hits: 0,
+        published: now,
+        updated: now
+      }, [], [], []]));
 
       done();
     });

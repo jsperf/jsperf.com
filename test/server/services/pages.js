@@ -79,8 +79,8 @@ lab.experiment('Pages Service', function () {
         table: tableStub
       };
 
-      pages.checkIfSlugAvailable(serverMock, testSlug, function (err, isAvail) {
-        Code.expect(err).to.be.null();
+      pages.checkIfSlugAvailable(serverMock, testSlug)
+      .then(function (isAvail) {
         Code.expect(isAvail).to.be.false();
         Code.expect(pagesRepoStub.get.called).to.be.false();
 
@@ -92,9 +92,10 @@ lab.experiment('Pages Service', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      pagesRepoStub.get.callsArgWith(2, testErr);
+      pagesRepoStub.get.returns(Promise.reject(testErr));
 
-      pages.checkIfSlugAvailable(serverMock, testSlug, function (err) {
+      pages.checkIfSlugAvailable(serverMock, testSlug)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -103,10 +104,10 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('returns false if page with slug exists', function (done) {
-      pagesRepoStub.get.callsArgWith(2, null, {});
+      pagesRepoStub.get.returns(Promise.resolve({}));
 
-      pages.checkIfSlugAvailable(serverMock, testSlug, function (err, isAvail) {
-        Code.expect(err).to.be.null();
+      pages.checkIfSlugAvailable(serverMock, testSlug)
+      .then(function (isAvail) {
         Code.expect(isAvail).to.be.false();
 
         done();
@@ -114,10 +115,10 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('returns true if no app route or page exists for given slug', function (done) {
-      pagesRepoStub.get.callsArgWith(2, null, undefined);
+      pagesRepoStub.get.returns(Promise.resolve(undefined));
 
-      pages.checkIfSlugAvailable(serverMock, testSlug, function (err, isAvail) {
-        Code.expect(err).to.be.null();
+      pages.checkIfSlugAvailable(serverMock, testSlug)
+      .then(function (isAvail) {
         Code.expect(isAvail).to.be.true();
 
         done();
@@ -144,9 +145,10 @@ lab.experiment('Pages Service', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      bsRepoStub.addTest.callsArgWith(3, testErr);
+      bsRepoStub.addTest.returns(Promise.reject(testErr));
 
-      pages.create(payload, function (err) {
+      pages.create(payload)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
         Code.expect(pagesRepoStub.create.called).to.be.false();
@@ -159,11 +161,12 @@ lab.experiment('Pages Service', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      bsRepoStub.addTest.callsArgWith(3, null);
+      bsRepoStub.addTest.returns(Promise.resolve());
 
-      pagesRepoStub.create.callsArgWith(1, testErr);
+      pagesRepoStub.create.returns(Promise.reject(testErr));
 
-      pages.create(payload, function (err) {
+      pages.create(payload)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
         Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
@@ -176,13 +179,14 @@ lab.experiment('Pages Service', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      bsRepoStub.addTest.callsArgWith(3, null);
+      bsRepoStub.addTest.returns(Promise.resolve());
 
-      pagesRepoStub.create.callsArgWith(1, null);
+      pagesRepoStub.create.returns(Promise.resolve());
 
-      testsRepoStub.bulkCreate.callsArgWith(2, testErr);
+      testsRepoStub.bulkCreate.returns(Promise.reject(testErr));
 
-      pages.create(payload, function (err) {
+      pages.create(payload)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -191,17 +195,14 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('adds browserscope test, page, and tests', function (done) {
-      bsRepoStub.addTest.callsArgWith(3, null);
+      bsRepoStub.addTest.returns(Promise.resolve());
 
-      pagesRepoStub.create.callsArgWith(1, null);
+      pagesRepoStub.create.returns(Promise.resolve());
 
-      testsRepoStub.bulkCreate.callsArgWith(2, null);
+      testsRepoStub.bulkCreate.returns(Promise.resolve());
 
-      pages.create(payload, function (err) {
-        Code.expect(err).to.be.null();
-
-        done();
-      });
+      pages.create(payload)
+      .then(done);
     });
   });
 
@@ -214,21 +215,23 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('returns error if getting recent fails', function (done) {
-      pagesRepoStub.getPopularRecent.callsArgWith(0, new Error());
+      pagesRepoStub.getPopularRecent.returns(Promise.reject(new Error()));
+      pagesRepoStub.getPopularAllTime.returns(Promise.resolve());
 
-      pages.getPopular(function (err) {
+      pages.getPopular().then(done)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
-        Code.expect(pagesRepoStub.getPopularAllTime.called).to.be.false();
 
         done();
       });
     });
 
     lab.test('returns error if getting all-time fails', function (done) {
-      pagesRepoStub.getPopularRecent.callsArgWith(0, null, []);
-      pagesRepoStub.getPopularAllTime.callsArgWith(0, new Error());
+      pagesRepoStub.getPopularRecent.returns(Promise.resolve([]));
+      pagesRepoStub.getPopularAllTime.returns(Promise.reject(new Error()));
 
-      pages.getPopular(function (err) {
+      pages.getPopular()
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
 
         done();
@@ -236,17 +239,17 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('returns object of recent and all-time pages', function (done) {
-      pagesRepoStub.getPopularRecent.callsArgWith(0, null, []);
-      pagesRepoStub.getPopularAllTime.callsArgWith(0, null, []);
+      pagesRepoStub.getPopularRecent.returns(Promise.resolve([]));
+      pagesRepoStub.getPopularAllTime.returns(Promise.resolve([]));
 
-      pages.getPopular(function (err, results) {
-        Code.expect(err).to.be.null();
+      pages.getPopular()
+      .then(function (results) {
         Code.expect(results).to.be.object();
         Code.expect(results.recent).to.be.array();
         Code.expect(results.allTime).to.be.array();
 
         done();
-      });
+      }).catch(done);
     });
   });
 
@@ -258,12 +261,11 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('calls through to repo method of same name', function (done) {
-      var testErr = null;
       var testRes = [];
-      pagesRepoStub.find.callsArgWith(1, testErr, testRes);
+      pagesRepoStub.find.returns(Promise.resolve(testRes));
 
-      pages.find('query', function (err, results) {
-        Code.expect(err).to.equal(testErr);
+      pages.find('query')
+      .then(function (results) {
         Code.expect(results).to.equal(testRes);
 
         done();
@@ -280,10 +282,10 @@ lab.experiment('Pages Service', function () {
 
     lab.test('calls through to repo method of same name', function (done) {
       var pageID = 1;
-      pagesRepoStub.updateHits.callsArgWith(1, null);
+      pagesRepoStub.updateHits.returns(Promise.resolve());
 
-      pages.updateHits(pageID, function (err) {
-        Code.expect(err).to.be.null();
+      pages.updateHits(pageID)
+      .then(function () {
         Code.expect(pagesRepoStub.updateHits.calledWith(pageID)).to.be.true();
 
         done();
@@ -306,12 +308,13 @@ lab.experiment('Pages Service', function () {
       done();
     });
 
-    lab.test('calls back with error from getting page by stub', function (done) {
+    lab.test('rejects with error from getting page by stub', function (done) {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
-      pagesRepoStub.getBySlug.callsArgWith(2, testErr);
+      pagesRepoStub.getBySlug.returns(Promise.reject(testErr));
 
-      pages.getBySlug(slug, rev, function (err) {
+      pages.getBySlug(slug, rev)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -319,10 +322,11 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('calls back with error if page not found', function (done) {
-      pagesRepoStub.getBySlug.callsArgWith(2, null, []);
+    lab.test('rejects with error if page not found', function (done) {
+      pagesRepoStub.getBySlug.returns(Promise.resolve([]));
 
-      pages.getBySlug(slug, rev, function (err) {
+      pages.getBySlug(slug, rev)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal('Not found');
 
@@ -330,13 +334,14 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('calls back with error from adding browserscope test', function (done) {
+    lab.test('rejects with error from adding browserscope test', function (done) {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
-      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1 }]);
-      bsRepoStub.addTest.callsArgWith(3, testErr);
+      pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1 }]));
+      bsRepoStub.addTest.returns(Promise.reject(testErr));
 
-      pages.getBySlug(slug, rev, function (err) {
+      pages.getBySlug(slug, rev)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -344,14 +349,15 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('calls back with error from updating browserscopeID of page', function (done) {
+    lab.test('rejects with error from updating browserscopeID of page', function (done) {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
-      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1 }]);
-      bsRepoStub.addTest.callsArgWith(3, null, 'abc123');
-      pagesRepoStub.update.callsArgWith(2, testErr);
+      pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1 }]));
+      bsRepoStub.addTest.returns(Promise.resolve('abc123'));
+      pagesRepoStub.update.returns(Promise.reject(testErr));
 
-      pages.getBySlug(slug, rev, function (err) {
+      pages.getBySlug(slug, rev)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -359,13 +365,14 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('calls back with error from finding tests', function (done) {
+    lab.test('rejects with error from finding tests', function (done) {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
-      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1, browserscopeID: 'abc123' }]);
-      testsRepoStub.findByPageID.callsArgWith(1, testErr);
+      pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1, browserscopeID: 'abc123' }]));
+      testsRepoStub.findByPageID.returns(Promise.reject(testErr));
 
-      pages.getBySlug(slug, rev, function (err) {
+      pages.getBySlug(slug, rev)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -373,14 +380,15 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('calls back with error from finding other pages', function (done) {
+    lab.test('rejects with error from finding other pages', function (done) {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
-      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1, browserscopeID: 'abc123' }]);
-      testsRepoStub.findByPageID.callsArgWith(1, null);
-      pagesRepoStub.findBySlug.callsArgWith(1, testErr);
+      pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1, browserscopeID: 'abc123' }]));
+      testsRepoStub.findByPageID.returns(Promise.resolve());
+      pagesRepoStub.findBySlug.returns(Promise.reject(testErr));
 
-      pages.getBySlug(slug, rev, function (err) {
+      pages.getBySlug(slug, rev)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -388,15 +396,16 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('calls back with error from finding comments', function (done) {
+    lab.test('rejects with error from finding comments', function (done) {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
-      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1, browserscopeID: 'abc123' }]);
-      testsRepoStub.findByPageID.callsArgWith(1, null);
-      pagesRepoStub.findBySlug.callsArgWith(1, null);
-      commentsRepoStub.findByPageID.callsArgWith(1, testErr);
+      pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1, browserscopeID: 'abc123' }]));
+      testsRepoStub.findByPageID.returns(Promise.resolve());
+      pagesRepoStub.findBySlug.returns(Promise.resolve());
+      commentsRepoStub.findByPageID.returns(Promise.reject(testErr));
 
-      pages.getBySlug(slug, rev, function (err) {
+      pages.getBySlug(slug, rev)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -404,38 +413,38 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('calls back with page, tests, revisions, and comments', function (done) {
+    lab.test('resolves with page, tests, revisions, and comments', function (done) {
       const mockTests = [];
       const mockPages = [];
       const mockComments = [];
-      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1, browserscopeID: 'abc123' }]);
-      testsRepoStub.findByPageID.callsArgWith(1, null, mockTests);
-      pagesRepoStub.findBySlug.callsArgWith(1, null, mockPages);
-      commentsRepoStub.findByPageID.callsArgWith(1, null, mockComments);
+      pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1, browserscopeID: 'abc123' }]));
+      testsRepoStub.findByPageID.returns(Promise.resolve(mockTests));
+      pagesRepoStub.findBySlug.returns(Promise.resolve(mockPages));
+      commentsRepoStub.findByPageID.returns(Promise.resolve(mockComments));
 
-      pages.getBySlug(slug, rev, function (err, page, tests, revisions, comments) {
-        Code.expect(err).to.be.null();
-        Code.expect(page.id).to.equal(1);
-        Code.expect(tests).to.equal(mockTests);
-        Code.expect(revisions).to.equal(mockPages);
-        Code.expect(comments).to.equal(mockComments);
+      pages.getBySlug(slug, rev)
+      .then(function (values) {
+        Code.expect(values[0].id).to.equal(1);
+        Code.expect(values[1]).to.equal(mockTests);
+        Code.expect(values[2]).to.equal(mockPages);
+        Code.expect(values[3]).to.equal(mockComments);
 
         done();
       });
     });
 
-    lab.test('calls back with updated page after adding browserscopeID', function (done) {
+    lab.test('resolves with updated page after adding browserscopeID', function (done) {
       const newBsKey = 'abc123';
-      pagesRepoStub.getBySlug.callsArgWith(2, null, [{ id: 1, revision: 2 }]);
-      bsRepoStub.addTest.callsArgWith(3, null, newBsKey);
-      pagesRepoStub.update.callsArgWith(2, null);
-      testsRepoStub.findByPageID.callsArgWith(1, null, []);
-      pagesRepoStub.findBySlug.callsArgWith(1, null, []);
-      commentsRepoStub.findByPageID.callsArgWith(1, null, []);
+      pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1, revision: 2 }]));
+      bsRepoStub.addTest.returns(Promise.resolve(newBsKey));
+      pagesRepoStub.update.returns(Promise.resolve());
+      testsRepoStub.findByPageID.returns(Promise.resolve([]));
+      pagesRepoStub.findBySlug.returns(Promise.resolve([]));
+      commentsRepoStub.findByPageID.returns(Promise.resolve([]));
 
-      pages.getBySlug(slug, rev, function (err, page) {
-        Code.expect(err).to.be.null();
-        Code.expect(page.browserscopeID).to.equal(newBsKey);
+      pages.getBySlug(slug, rev)
+      .then(function (values) {
+        Code.expect(values[0].browserscopeID).to.equal(newBsKey);
 
         done();
       });

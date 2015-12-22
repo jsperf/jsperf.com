@@ -45,18 +45,17 @@ lab.experiment('Tests Repository', function () {
     });
 
     lab.test('inserts multiple values', function (done) {
-      dbStub.genericQuery.callsArgWith(2, null, { affectedRows: t.length });
+      dbStub.genericQuery.returns(Promise.resolve({ affectedRows: t.length }));
 
-      tests.bulkCreate(pageID, t, function (err) {
-        Code.expect(err).to.be.null();
+      tests.bulkCreate(pageID, t)
+      .then(function () {
         Code.expect(
           dbStub.genericQuery.calledWithExactly(
             'INSERT INTO ?? (??) VALUES (1, `t1`, `n`, `a = 1`), (1, `t2`, `n`, `a = 2`)',
             [
               'tests',
               ['pageID', 'title', 'defer', 'code']
-            ],
-            sinon.match.func
+            ]
           )
         ).to.be.true();
 
@@ -65,9 +64,10 @@ lab.experiment('Tests Repository', function () {
     });
 
     lab.test('returns an error when not enough rows inserted', function (done) {
-      dbStub.genericQuery.callsArgWith(2, null, { affectedRows: t.length - 1 });
+      dbStub.genericQuery.returns(Promise.resolve({ affectedRows: t.length - 1 }));
 
-      tests.bulkCreate(pageID, t, function (err) {
+      tests.bulkCreate(pageID, t)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal('Not all tests inserted');
 
@@ -79,9 +79,10 @@ lab.experiment('Tests Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.callsArgWith(2, testErr);
+      dbStub.genericQuery.returns(Promise.reject(testErr));
 
-      tests.bulkCreate(pageID, t, function (err) {
+      tests.bulkCreate(pageID, t)
+      .catch(function (err) {
         Code.expect(err).to.be.instanceof(Error);
         Code.expect(err.message).to.equal(testErrMsg);
 
@@ -93,15 +94,14 @@ lab.experiment('Tests Repository', function () {
   lab.experiment('findByPageID', function () {
     lab.test('selects all from tests where pageID', function (done) {
       var pageID = 1;
-      dbStub.genericQuery.callsArgWith(2, null, []);
+      dbStub.genericQuery.returns(Promise.resolve([]));
 
-      tests.findByPageID(pageID, function (err) {
-        Code.expect(err).to.be.null();
+      tests.findByPageID(pageID)
+      .then(function () {
         Code.expect(
           dbStub.genericQuery.calledWithExactly(
             'SELECT * FROM ?? WHERE pageID = ?',
-            ['tests', pageID],
-            sinon.match.func
+            ['tests', pageID]
           )
         ).to.be.true();
 

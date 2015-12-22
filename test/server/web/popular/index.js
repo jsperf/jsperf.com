@@ -43,8 +43,8 @@ lab.experiment('popular', function () {
   });
 
   lab.test('it responds with popular pages', function (done) {
-    pagesServiceStub.getPopular = function (cb) {
-      cb(null, []);
+    pagesServiceStub.getPopular = function () {
+      return Promise.resolve([]);
     };
 
     server.inject(request, function (response) {
@@ -60,8 +60,8 @@ lab.experiment('popular', function () {
   });
 
   lab.test('it responds with error', function (done) {
-    pagesServiceStub.getPopular = function (cb) {
-      cb(new Error());
+    pagesServiceStub.getPopular = function () {
+      return Promise.reject(new Error());
     };
 
     server.inject(request, function (response) {
