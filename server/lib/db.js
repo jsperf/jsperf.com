@@ -16,7 +16,8 @@ module.exports = {
         password: config.get('/db/pass'),
         database: config.get('/db/name'),
         // query and rows will print to stdout
-        debug: config.get('/debug') ? ['ComQueryPacket', 'RowDataPacket'] : false
+        debug: config.get('/debug') ? ['ComQueryPacket', 'RowDataPacket'] : false,
+        charset: 'utf8mb4'
       });
 
       conn.query(query, values, function (err, rows) {
