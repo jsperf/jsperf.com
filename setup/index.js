@@ -1,7 +1,5 @@
 var fs = require('fs');
-var path = require('path');
 var prompt = require('prompt');
-var mysql = require('mysql');
 
 var schema = {
   properties: {
@@ -38,35 +36,6 @@ var schema = {
       message: 'See README for instructions on how to get one',
       required: true
     },
-    db: {
-      properties: {
-        host: {
-          description: 'Database host',
-          required: false,
-          default: 'localhost'
-        },
-        port: {
-          description: 'Database port',
-          required: true,
-          default: 3306
-        },
-        user: {
-          description: 'Database username',
-          required: true
-        },
-        pass: {
-          description: 'Database password',
-          hidden: true,
-          required: false,
-          default: ''
-        },
-        name: {
-          description: 'Database name',
-          required: false,
-          default: 'jsperf_dev'
-        }
-      }
-    },
     'bell_cookie': {
       properties: {
         pass: {
@@ -96,6 +65,15 @@ var schema = {
           description: 'GitHub Client Secret',
           required: true,
           default: ''
+        }
+      }
+    },
+    mysql: {
+      properties: {
+        password: {
+          description: 'Password for the `jsperf` user in the MySQL container',
+          required: true,
+          default: (~~(Math.random() * (1 << 24))).toString(16)
         }
       }
     }
@@ -161,76 +139,4 @@ prompt.get(schema, function (er, result) {
   fs.writeFileSync('.env', buildVars('NODE_ENV=development\n', result));
 
   console.log('Thanks! You can change these later in the .env file');
-
-  var conn = mysql.createConnection({
-    host: result.db.host,
-    port: result.db.port,
-    user: result.db.user,
-    password: result.db.pass,
-    charset: 'utf8mb4'
-  });
-
-  conn.connect(function (e) {
-    if (e) {
-      console.error('failed to connect to database:', e.stack);
-      throw e;
-    }
-
-    console.log('Connected to database...');
-
-    conn.query('CREATE DATABASE IF NOT EXISTS ' + result.db.name, function (err) {
-      if (err) {
-        throw err;
-      }
-
-      console.log('Successfully created database');
-    });
-
-    var grantQuery = 'GRANT ALL ON ' + result.db.name + '.* TO ' + conn.escape(result.db.user) + '@' + conn.escape(result.db.host);
-    if (result.db.pass.length > 0) {
-      grantQuery += ' IDENTIFIED BY ' + conn.escape(result.db.pass);
-    }
-
-    conn.query(grantQuery, function (err) {
-      if (err) {
-        throw err;
-      }
-
-      console.log('Granted permissions to your user');
-    });
-
-    conn.query('FLUSH PRIVILEGES', function (err) {
-      if (err) {
-        throw err;
-      }
-    });
-
-    conn.query('USE ' + result.db.name, function (err) {
-      if (err) {
-        throw err;
-      }
-
-      console.log('Prepared to create tables');
-    });
-
-    ['comments', 'pages', 'tests'].forEach(function (table) {
-      var fileName = 'create_' + table + '.sql';
-
-      conn.query(
-        fs.readFileSync(
-          path.join(__dirname, 'sql', fileName),
-          { encoding: 'utf8' }
-        ),
-        function (err) {
-          if (err) {
-            throw err;
-          }
-
-          console.log('Created ' + table + ' table');
-        }
-      );
-    });
-
-    conn.end();
-  });
 });

@@ -7,9 +7,9 @@
     "clean": "rm npm-debug.log lcov.info coverage.html",
     "lint": "lab -d -L",
     "setup": "node setup",
-    "start": "nodemon --ext js,hbs server.js",
-    "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout",
-    "test-cov-html": "lab -r html -o coverage.html && open coverage.html"
+    "start": "node server.js",
+    "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html",
+    "watch": "nodemon --ext js,hbs server.js"
   },
   "repository": {
     "type": "git",
@@ -57,9 +57,5 @@
     "prompt": "^0.2.14",
     "proxyquire": "^1.4.0",
     "sinon": "^1.15.4"
-  },
-  "engines": {
-    "node": "4.x.x",
-    "npm": "3.x.x"
   }
 }

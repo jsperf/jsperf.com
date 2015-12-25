@@ -1,15 +1,5 @@
 language: node_js
-node_js:
-- 4
 env: PORT=3000
-before_install:
-- npm install -g npm@latest
 after_script:
 - npm install -g codeclimate-test-reporter
 - codeclimate-test-reporter < lcov.info || echo "Could not upload code coverage to CodeClimate"
-deploy:
-  provider: heroku
-  app:
-    master: jsperf-dev
-  api_key:
-    secure: Enbwr5BsIj6Q12tlrPytm7aoOgOBc5649NrRZaUzXbPxBMZslrs//bE2ibYE/UgUu55gzNh8a5orGVNj2i+wiisFsblF4K/GgNxlNWgTJtdd7Y27JKBGXJdXUJk6hMU4ksgNy9YM/fJAvPQOdyI7Pb+fM7oXwTvWeciSeUrev44=

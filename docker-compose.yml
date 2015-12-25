@@ -1,0 +1,35 @@
+web:
+  build: .
+  env_file: .env
+  links:
+    - db
+  environment:
+    SERVICE_3000_CHECK_HTTP: '/health'
+    SERVICE_3000_CHECK_INTERVAL: '1s'
+db:
+  image: mysql
+  volumes_from:
+    - data-jsperf-mysql
+  env_file: .env
+  environment:
+    MYSQL_RANDOM_ROOT_PASSWORD: 'true'
+    MYSQL_DATABASE: jsperf
+    MYSQL_USER: jsperf
+lb:
+  build: ./docker
+  dockerfile: Dockerfile-lb
+  links:
+    - web
+    - consul
+  ports:
+    - '80:80'
+consul:
+  image: gliderlabs/consul-server:0.6
+  command: -bootstrap
+registrator:
+  image: gliderlabs/registrator:v6
+  command: -internal consul://consul:8500
+  links:
+    - consul
+  volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
