@@ -2,6 +2,7 @@
 node_modules
 .dockerignore
 .editorconfig
+.env
 .eslintignore
 .eslintrc
 .gitattributes
