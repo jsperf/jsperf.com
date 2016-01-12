@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `published` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `pageID` (`pageID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=0;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=0;
