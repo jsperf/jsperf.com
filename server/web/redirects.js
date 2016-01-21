@@ -4,9 +4,6 @@ exports.register = function (server, options, next) {
       path: '/@',
       redirect: 'https://twitter.com/jsperf'
     }, {
-      path: '/dart-disclaimer',
-      redirect: '/dart'
-    }, {
       path: '/document-head-speed-test',
       redirect: '/document-head'
     }, {

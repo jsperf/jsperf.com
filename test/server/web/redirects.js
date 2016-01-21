@@ -39,11 +39,11 @@ lab.experiment('redirects', function () {
   });
 
   lab.test('it redirects aliases to relative URLs', function (done) {
-    request.url = '/dart-disclaimer';
+    request.url = '/donate';
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(301);
-      Code.expect(response.headers.location).to.equal('/dart');
+      Code.expect(response.headers.location).to.equal('/faq#donate');
 
       done();
     });
