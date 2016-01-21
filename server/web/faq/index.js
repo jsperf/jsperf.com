@@ -14,11 +14,11 @@ exports.register = function (server, options, next) {
           }, {
             slug: 'engine',
             title: 'Which benchmarking engine is being used?',
-            answer: 'jsPerf is proudly powered by <a href="//benchmarkjs.com/">Benchmark.js</a>, a <a href="//calendar.perfplanet.com/2010/bulletproof-javascript-benchmarks/" title="Bulletproof JavaScript benchmarks">robust</a> JavaScript benchmarking library that works on nearly all JavaScript platforms, supports high-resolution timers, and returns statistically significant results. Kudos to <a href="//allyoucanleet.com/">John-David Dalton</a> for his awesome work on this project!'
+            answer: 'jsPerf is proudly powered by <a href="http://benchmarkjs.com/">Benchmark.js</a>, a <a href="https://mathiasbynens.be/notes/javascript-benchmarking" title="Bulletproof JavaScript benchmarks">robust</a> JavaScript benchmarking library that works on nearly all JavaScript platforms, supports high-resolution timers, and returns statistically significant results. Kudos to <a href="http://allyoucanleet.com/">John-David Dalton</a> for his awesome work on this project!'
           }, {
             slug: 'script-warnings',
             title: 'I’m getting script warnings when running a test in Internet Explorer. What’s up with that?',
-            answer: 'Rather than limiting a script by time like all other browsers do, IE (up to version 8) limits a script to 5 million instructions. With modern hardware, a CPU-intensive script can trigger this in less than half a second. If you have a reasonably fast system you may run into these dialogs in IE, in which case the best solution is to <a href="//support.microsoft.com/default.aspx?scid=kb;en-us;175500">modify your Windows Registry to increase the number of operations</a> (I have mine set to 80,000,000).'
+            answer: 'Rather than limiting a script by time like all other browsers do, IE (up to version 8) limits a script to 5 million instructions. With modern hardware, a CPU-intensive script can trigger this in less than half a second. If you have a reasonably fast system you may run into these dialogs in IE, in which case the best solution is to <a href="https://support.microsoft.com/en-us/kb/175500">modify your Windows Registry to increase the number of operations</a> (I have mine set to 80,000,000).'
           }, {
             slug: 'firebug-warning',
             title: 'I’m getting a warning message telling me to disable Firebug. What’s up with that?',
@@ -34,15 +34,15 @@ exports.register = function (server, options, next) {
           }, {
             slug: 'ie9-java',
             title: 'I cannot seem to access jsPerf using IE9. What gives?',
-            answer: 'You may get an error message saying “A problem with this webpage caused Internet Explorer to close and reopen the tab”, but really the problem lies with the combination of <a href="//support.microsoft.com/kb/2506617">IE9 and Java Version 6 Update 22 or 23</a>. Luckily, there’s an easy fix: just <a href="//www.java.com/en/download/manual.jsp">download and install the latest version of Java</a>.'
+            answer: 'You may get an error message saying “A problem with this webpage caused Internet Explorer to close and reopen the tab”, but really the problem lies with the combination of <a href="https://support.microsoft.com/en-us/kb/2506617">IE9 and Java Version 6 Update 22 or 23</a>. Luckily, there’s an easy fix: just <a href="https://www.java.com/en/download/manual.jsp">download and install the latest version of Java</a>.'
           }, {
             slug: 'lion-java',
             title: 'jsPerf is broken in older Firefox versions on Mac OS X Lion!',
-            answer: 'That’s actually an issue with an incompatible Java plugin. When testing in Firefox 3.x under Lion, make sure to disable the <a href="//javaplugin.sourceforge.net/">Java Embedding Plugin</a> via Firefox → Preferences → General → Manage Add-ons → Plugins. You’ll still be able to use jsPerf, although it won’t use <a href="#java-applet">the fancy nanotimer</a>.'
+            answer: 'That’s actually an issue with an incompatible Java plugin. When testing in Firefox 3.x under Lion, make sure to disable the <a href="http://javaplugin.sourceforge.net/">Java Embedding Plugin</a> via Firefox → Preferences → General → Manage Add-ons → Plugins. You’ll still be able to use jsPerf, although it won’t use <a href="#java-applet">the fancy nanotimer</a>.'
           }, {
             slug: 'chrome',
             title: 'I heard somewhere that Chrome has built-in benchmarking extensions. Can I use these for jsPerf?',
-            answer: 'Yes, you can <a href="//www.chromium.org/developers/how-tos/run-chromium-with-flags">run Chrome or Chromium with the <code>--enable-benchmarking</code> flag</a> to improve the accuracy of test results in these browsers.'
+            answer: 'Yes, you can <a href="https://www.chromium.org/developers/how-tos/run-chromium-with-flags">run Chrome or Chromium with the <code>--enable-benchmarking</code> flag</a> to improve the accuracy of test results in these browsers.'
           }, {
             slug: 'run-single-test',
             title: 'Can I re-run a single test?',
@@ -55,7 +55,7 @@ exports.register = function (server, options, next) {
           }, {
             slug: 'autorun',
             title: 'I don’t like clicking buttons. Can I make the tests run automatically after opening a page?',
-            answer: 'Sure, just append <code>#run</code> to the URL of the test case, e.g. <a href="/document-getelementbyid#run" title="Run document.getElementById() benchmarks"><code>http://jsperf.com/document-getelementbyid#run</code></a>.'
+            answer: 'Sure, just append <code>#run</code> to the URL of the test case, e.g. <a href="/document-getelementbyid#run" title="Run document.getElementById() benchmarks"><code>https://jsperf.com/document-getelementbyid#run</code></a>.'
           }, {
             slug: 'chart-types',
             title: 'Can I predefine a specific chart type when linking to a test case?',
@@ -71,11 +71,11 @@ exports.register = function (server, options, next) {
           }, {
             slug: 'async',
             title: 'How can I run asynchronous tests?',
-            answer: 'Just tick the “async” checkbox for each asynchronous test. You will then have access to a <code>deferred</code> object. In your test code, whenever your test is finished, call <code>deferred.resolve()</code>. Here’s an example: <a href="http://jsperf.com/smallest-timeout">http://jsperf.com/smallest-timeout</a>'
+            answer: 'Just tick the “async” checkbox for each asynchronous test. You will then have access to a <code>deferred</code> object. In your test code, whenever your test is finished, call <code>deferred.resolve()</code>. Here’s an example: <a href="https://jsperf.com/smallest-timeout">https://jsperf.com/smallest-timeout</a>'
           }, {
             slug: 'add-edit',
             title: 'Can I add tests to existing testcases, or edit them?',
-            answer: 'Sure, just append <code>/edit</code> to the URL of the test case. If you’re the original author of the test case you’re editing and it hasn’t been more than 8 hours since you last visited jsPerf, any changes you make will simply overwrite what you entered before. If those conditions don’t apply, every edit you save will create a new revision, i.e. <code>http://jsperf.com/<var>foo</var>/2</code>, <code>http://jsperf.com/<var>foo</var>/3</code>, and so on.'
+            answer: 'Sure, just append <code>/edit</code> to the URL of the test case. If you’re the original author of the test case you’re editing and it hasn’t been more than 8 hours since you last visited jsPerf, any changes you make will simply overwrite what you entered before. If those conditions don’t apply, every edit you save will create a new revision, i.e. <code>https://jsperf.com/<var>foo</var>/2</code>, <code>https://jsperf.com/<var>foo</var>/3</code>, and so on.'
           }, {
             slug: 'remove-snippet',
             title: 'Can I remove a snippet from my test case?',
@@ -87,11 +87,11 @@ exports.register = function (server, options, next) {
           }, {
             slug: 'author-feed',
             title: 'How can I keep track of new or updated test cases made by a specific user?',
-            answer: 'Every author has its own Atom feed, located at <code>http://jsperf.com/browse/<var>author-name</var>.atom</code>. Omit the <code>.atom</code> suffix to get a clickable list instead. If you’re identified on jsPerf (i.e. if you’ve commented, or created/edited a test case), a “My tests” link will appear in the navigation.'
+            answer: 'Every author has its own Atom feed, located at <code>https://jsperf.com/browse/<var>author-name</var>.atom</code>. Omit the <code>.atom</code> suffix to get a clickable list instead. If you’re identified on jsPerf (i.e. if you’ve commented, or created/edited a test case), a “My tests” link will appear in the navigation.'
           }, {
             slug: 'results-json',
             title: 'Can I get the Browserscope results of my testcase in JSON format so I can do something cool with them?',
-            answer: 'Absolutely. On any jsPerf test case, just click the Browserscope logo to get to the results page. Its URL will look something like this: <code>http://www.browserscope.org/user/tests/table/<var>YOUR-TEST-ID</var></code>. That last part is the corresponding Browserscope test ID. To get its JSON output, just append <code>?o=json&callback=<var>foo</var></code>, e.g. <code>http://www.browserscope.org/user/tests/table/<var>YOUR-TEST-ID</var>?o=json&callback=<var>w00t</var></code>. For more details, see <a href="//www.browserscope.org/user/tests/howto">the Browserscope API documentation</a>.'
+            answer: 'Absolutely. On any jsPerf test case, just click the Browserscope logo to get to the results page. Its URL will look something like this: <code>https://www.browserscope.org/user/tests/table/<var>YOUR-TEST-ID</var></code>. That last part is the corresponding Browserscope test ID. To get its JSON output, just append <code>?o=json&callback=<var>foo</var></code>, e.g. <code>https://www.browserscope.org/user/tests/table/<var>YOUR-TEST-ID</var>?o=json&callback=<var>w00t</var></code>. For more details, see <a href="https://www.browserscope.org/user/tests/howto">the Browserscope API documentation</a>.'
           }, {
             slug: 'test-availability',
             title: 'How long will my tests be available on jsPerf?',

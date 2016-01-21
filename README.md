@@ -12,7 +12,7 @@ You’ll need [node.js](https://nodejs.org/en/) and [MySQL](https://www.mysql.co
 
 1. Clone the repository (`git clone https://github.com/jsperf/jsperf.com.git`).
 2. Install dependencies (`npm install`).
-3. Get a [Browserscope.org](http://www.browserscope.org/) API key by signing in and going to [the settings page](http://www.browserscope.org/user/settings). (You'll need this in the next step)
+3. Get a [Browserscope.org](https://www.browserscope.org/) API key by signing in and going to [the settings page](https://www.browserscope.org/user/settings). (You'll need this in the next step)
 4. Register a new OAuth GitHub development application by going to [your settings page in github](https://github.com/settings/applications/new). Take note to copy the "Client ID" and "Client Secret". The callback URL is simply the root url of the application, e.g., "http://localhost:3000"
 5. Setup database and other environment configuration (`npm run setup`).
 

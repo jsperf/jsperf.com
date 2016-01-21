@@ -14,7 +14,7 @@ module.exports = {
         url: config.get('/scheme') + '://' + config.get('/domain') + '/' + slug
       });
 
-      http.get('http://www.browserscope.org/user/tests/create?' + qs, function (res) {
+      http.get('https://www.browserscope.org/user/tests/create?' + qs, function (res) {
         var str = '';
 
         res.on('data', function (chunk) {

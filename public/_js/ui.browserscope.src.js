@@ -13,7 +13,7 @@
 
   /**
    * Used to filter Browserscope results by browser category.
-   * @see http://www.browserscope.org/user/tests/howto#urlparams
+   * @see https://www.browserscope.org/user/tests/howto#urlparams
    */
   filterMap = {
     'all': 3,
