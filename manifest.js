@@ -72,7 +72,6 @@ var manifest = {
     {'./server/web/auth/github': {}},
     {'./server/web/browse': {}},
     {'./server/web/contributors': {}},
-    {'./server/web/dart': {}},
     {'./server/web/errors': {}},
     {'./server/web/faq': {}},
     {'./server/web/home': {}},
