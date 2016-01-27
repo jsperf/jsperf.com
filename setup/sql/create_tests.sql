@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS `tests` (
   `defer` enum('y','n') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'n',
   PRIMARY KEY (`testID`),
   KEY `pageID` (`pageID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=0;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=0;

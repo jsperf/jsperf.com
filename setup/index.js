@@ -109,14 +109,14 @@ require('dotenv').load();
 // warning: nested prompts not supported yet https://github.com/flatiron/prompt/issues/47
 var unbuildVars = function () {
   var overrides = {};
-  let prop;
+  var prop;
 
   for (prop in schema.properties) {
-    let p = schema.properties[prop];
+    var p = schema.properties[prop];
 
     if (p.properties) {
       overrides[prop] = {};
-      let nestedProp;
+      var nestedProp;
 
       for (nestedProp in p.properties) {
         overrides[prop][nestedProp] = process.env[prop.toUpperCase() + '_' + nestedProp.toUpperCase()];

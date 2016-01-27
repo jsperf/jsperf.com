@@ -21,4 +21,4 @@ CREATE TABLE IF NOT EXISTS `pages` (
   KEY `updated` (`updated`),
   KEY `author` (`author`),
   KEY `visible` (`visible`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=0;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=0;
