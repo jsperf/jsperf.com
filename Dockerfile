@@ -1,9 +1,7 @@
 FROM node
 
-RUN mkdir /code
+ADD ./package.json /code/package.json
 WORKDIR /code
-
-ADD package.json /code
 RUN npm install
 
 ADD . /code

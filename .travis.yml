@@ -1,4 +1,13 @@
 language: node_js
+sudo: required
+services:
+  - docker
+before_install:
+- npm install prompt dotenv
+- npm run setup
+- docker create -v /var/lib/mysql --name data-jsperf-mysql mysql /bin/true
+- docker-compose run web node /code/setup/tables
+- docker-compose up -d
 env: PORT=3000
 after_script:
 - npm install -g codeclimate-test-reporter

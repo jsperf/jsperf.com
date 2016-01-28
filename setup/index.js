@@ -22,60 +22,40 @@ var schema = {
       required: false,
       default: 3000
     },
-    admin: {
-      properties: {
-        email: {
-          description: 'Email to send admin things to',
-          format: 'email',
-          required: false
-        }
-      }
+    'admin_email': {
+      description: 'Email to send admin things to',
+      format: 'email',
+      required: false
     },
     browserscope: {
       description: 'Browserscope.org API key',
       message: 'See README for instructions on how to get one',
       required: true
     },
-    'bell_cookie': {
-      properties: {
-        pass: {
-          description: 'Cookie Password for Oauth',
-          required: true,
-          default: ''
-        }
-      }
+    'bell_cookie_pass': {
+      description: 'Cookie Password for Oauth',
+      required: true,
+      default: ''
     },
-    cookie: {
-      properties: {
-        pass: {
-          description: 'Cookie Password',
-          required: true,
-          default: ''
-        }
-      }
+    'cookie_pass': {
+      description: 'Cookie Password',
+      required: true,
+      default: ''
     },
-    'github_client': {
-      properties: {
-        id: {
-          description: 'GitHub Client ID',
-          required: true,
-          default: ''
-        },
-        secret: {
-          description: 'GitHub Client Secret',
-          required: true,
-          default: ''
-        }
-      }
+    'github_client_id': {
+      description: 'GitHub Client ID',
+      required: true,
+      default: ''
     },
-    mysql: {
-      properties: {
-        password: {
-          description: 'Password for the `jsperf` user in the MySQL container',
-          required: true,
-          default: (~~(Math.random() * (1 << 24))).toString(16)
-        }
-      }
+    'github_client_secret': {
+      description: 'GitHub Client Secret',
+      required: true,
+      default: ''
+    },
+    'mysql_password': {
+      description: 'Password for the `jsperf` user in the MySQL container',
+      required: true,
+      default: (~~(Math.random() * (1 << 24))).toString(16)
     }
   }
 };
