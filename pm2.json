@@ -1,0 +1,19 @@
+{
+  "apps" : [{
+    "name"        : "jsperf-web",
+    "script"      : "server.js",
+    "env": {
+      "NODE_ENV": process.env.NODE_ENV,
+      "SCHEME": process.env.SCHEME,
+      "DOMAIN": process.env.DOMAIN,
+      "PORT": process.env.PORT,
+      "ADMIN_EMAIL": process.env.ADMIN_EMAIL,
+      "BROWSERSCOPE": process.env.BROWSERSCOPE,
+      "BELL_COOKIE_PASS": process.env.BELL_COOKIE_PASS,
+      "COOKIE_PASS": process.env.COOKIE_PASS,
+      "GITHUB_CLIENT_ID": process.env.GITHUB_CLIENT_ID,
+      "GITHUB_CLIENT_SECRET": process.env.GITHUB_CLIENT_SECRET,
+      "MYSQL_PASSWORD": process.env.MYSQL_PASSWORD
+    }
+  }]
+}

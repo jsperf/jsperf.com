@@ -1,4 +1,4 @@
-docker pull jsperf/jsperf.com
+docker pull jsperf/jsperf.com:master
 dbservice=$(docker ps --filter name=db  --format "{{.Names}}")
 timestamp=$(date +'%Y%m%d-%H-%M-%S')
 services=$(docker ps --filter name=web  --format "{{.Names}}")
