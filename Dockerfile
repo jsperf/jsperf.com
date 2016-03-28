@@ -1,9 +1,9 @@
 FROM node
 
 ADD ./package.json /code/package.json
+RUN npm install -g pm2@latest
 WORKDIR /code
 RUN npm install
-RUN npm install -g pm2@latest
 
 ADD . /code
 
