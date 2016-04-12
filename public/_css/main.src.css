@@ -566,6 +566,16 @@ footer {
 	color: #606;
 }
 
+#carbonads {
+	float: right;
+	width: 130px;
+	font-size: 80%;
+}
+
+#carbonads a {
+	display: block;
+}
+
 /* < 1051px */
 @media (max-width: 1050px) {
 	table pre, table td.code {
