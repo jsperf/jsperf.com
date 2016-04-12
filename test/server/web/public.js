@@ -45,15 +45,6 @@ lab.experiment('Public', function () {
     });
   });
 
-  lab.test('it serves robots.txt', function (done) {
-    request.url = '/robots.txt';
-    server.inject(request, function (response) {
-      Code.expect(response.statusCode).to.equal(200);
-
-      done();
-    });
-  });
-
   lab.experiment('_css', function () {
     lab.test('it serves main.css', function (done) {
       request.url = '/public/_css/main.css';
@@ -73,6 +64,24 @@ lab.experiment('Public', function () {
 
         done();
       });
+    });
+  });
+
+  lab.test('it serves test.js', function (done) {
+    request.url = '/test.js';
+    server.inject(request, function (response) {
+      Code.expect(response.statusCode).to.equal(200);
+
+      done();
+    });
+  });
+
+  lab.test('it serves robots.txt', function (done) {
+    request.url = '/robots.txt';
+    server.inject(request, function (response) {
+      Code.expect(response.statusCode).to.equal(200);
+
+      done();
     });
   });
 });

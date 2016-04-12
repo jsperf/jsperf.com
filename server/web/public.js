@@ -14,6 +14,14 @@ exports.register = function (server, options, next) {
 
   server.route({
     method: 'GET',
+    path: '/test.js',
+    handler: {
+      file: require.resolve('@mathias/benchmark.js-wrapper-jsperf')
+    }
+  });
+
+  server.route({
+    method: 'GET',
     path: '/robots.txt',
     handler: {
       file: 'public/robots.txt'
