@@ -74,6 +74,7 @@ var manifest = {
     {'./server/web/contributors': {}},
     {'./server/web/errors': {}},
     {'./server/web/faq': {}},
+    {'./server/web/health': {}},
     {'./server/web/home': {}},
     {'./server/web/popular': {}},
     {'./server/web/public': {}},

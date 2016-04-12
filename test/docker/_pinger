@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+const http = require('http');
+
+const url = process.argv[2];
+var code = Number(process.argv[3]);
+console.log('pinger beginning to request ' + url + ' looking for status code ' + code);
+
+process.on('message', function (newCode) {
+  code = newCode;
+  console.log('pinger now looking for', code);
+});
+
+function ping () {
+  http.get(url, function (res) {
+    if (res.statusCode === code) {
+      process.send(res.statusCode);
+    }
+  }).on('error', function (e) {
+    console.error('pinger got error: ' + e.message);
+  });
+}
+
+setInterval(ping, 1000 / 5); // 5 requests per second
