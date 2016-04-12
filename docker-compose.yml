@@ -3,8 +3,9 @@ web:
   env_file: .env
   links:
     - db
+    - consul
   expose:
-    - "3000"
+    - '3000'
   environment:
     PORT: 3000
     SERVICE_3000_CHECK_HTTP: '/health'
@@ -22,20 +23,22 @@ db:
 lb:
   build: ./docker
   dockerfile: Dockerfile-lb
-  net: 'host'
+  links:
+    - web
+    - consul
   ports:
     - '80:80'
 consul:
   image: gliderlabs/consul-server:0.6
   command: [-bootstrap, -advertise, 127.0.0.1, -client, 0.0.0.0]
-  net: 'host'
   ports:
    - '8500'
    - '53:8600/udp'
    - '8400:8400'
 registrator:
+  links:
+   - consul
   image: gliderlabs/registrator:v6
-  command: -internal consul://localhost:8500
-  net: 'host'
+  command: -internal consul://consul:8500
   volumes:
     - "/var/run/docker.sock:/tmp/docker.sock"
