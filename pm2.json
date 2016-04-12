@@ -1,6 +1,0 @@
-{
-  "apps" : [{
-    "name"        : "jsperf-web",
-    "script"      : "server.js"
-  }]
-}
