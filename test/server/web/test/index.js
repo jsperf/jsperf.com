@@ -153,6 +153,7 @@ lab.experiment('test', function () {
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
+      Code.expect(response.result).to.include('<pre><code class="js"><span class="pretty">  delete a</span></code></pre>');
 
       done();
     });
