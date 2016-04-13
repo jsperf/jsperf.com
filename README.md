@@ -23,7 +23,7 @@
 
 1. Install [Docker Toolbox](https://docs.docker.com/engine/installation/) so you have `docker` and `docker-compose`
 2. Create a Data Volume Container to persist data: `docker create -v /var/lib/mysql --name data-jsperf-mysql mysql /bin/true`
-3. Setup database tables: `docker-compose run web node /code/setup/tables`
+3. After completing the "Compose" steps below, setup database tables with: `docker-compose run web node /code/setup/tables`
 
 ##### Compose
 
