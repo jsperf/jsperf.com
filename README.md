@@ -27,7 +27,7 @@
 
 ##### Compose
 
-`docker-compose.yml` orchestrates a load balancer (nginx), the app (this node project), and a database (mysql) with some additional services to help with continuous deployment. To start everything up, run: `MYSQL_PASS=$MYSQL_PASS docker-compose up`. Pressing `ctrl+c` or sending a similar interruption will stop all of the containers. To run the composed containers in the background, use the `-d` argument.
+`docker-compose.yml` orchestrates a load balancer (nginx), the app (this node project), and a database (mysql) with some additional services to help with continuous deployment. To start everything up, run: `MYSQL_PASSWORD=$MYSQL_PASSWORD docker-compose up`. Pressing `ctrl+c` or sending a similar interruption will stop all of the containers. To run the composed containers in the background, use the `-d` argument.
 
 You can start additional app containers by running `docker-compose scale web=3` where `3` is the total number of containers. The load balancer will automatically reconfigure itself to include the new containers. Similarly, you can scale down the containers by running `docker-compose scale web=1` and the load balancer will, again, reconfigure itself accordingly.
 
