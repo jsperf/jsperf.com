@@ -14,7 +14,7 @@ exports.register = function (server, options, next) {
           }, {
             slug: 'engine',
             title: 'Which benchmarking engine is being used?',
-            answer: 'jsPerf is proudly powered by <a href="http://benchmarkjs.com/">Benchmark.js</a>, a <a href="https://mathiasbynens.be/notes/javascript-benchmarking" title="Bulletproof JavaScript benchmarks">robust</a> JavaScript benchmarking library that works on nearly all JavaScript platforms, supports high-resolution timers, and returns statistically significant results. Kudos to <a href="http://allyoucanleet.com/">John-David Dalton</a> for his awesome work on this project!'
+            answer: 'jsPerf is proudly powered by <a href="https://benchmarkjs.com/">Benchmark.js</a>, a <a href="https://mathiasbynens.be/notes/javascript-benchmarking" title="Bulletproof JavaScript benchmarks">robust</a> JavaScript benchmarking library that works on nearly all JavaScript platforms, supports high-resolution timers, and returns statistically significant results. Kudos to <a href="http://allyoucanleet.com/">John-David Dalton</a> for his awesome work on this project!'
           }, {
             slug: 'script-warnings',
             title: 'I’m getting script warnings when running a test in Internet Explorer. What’s up with that?',
@@ -67,7 +67,7 @@ exports.register = function (server, options, next) {
           }, {
             slug: 'setup-teardown',
             title: 'Is it possible to execute code before and after each clocked test loop, outside of the timed code region?',
-            answer: 'That’s what <a href="http://benchmarkjs.com/docs#prototype_setup" title="Benchmark.prototype.setup"><code>Benchmark#setup</code></a> and <a href="http://benchmarkjs.com/docs#prototype_teardown" title="Benchmark.prototype.teardown"><code>Benchmark#teardown</code></a> are for. You can use the Setup and Teardown fields to use the same function (s) for all tests. To target specific tests, you can use <code>setTimeout(function () { ui.benchmarks[<var>0</var>].setup = function (){ … }; }, 1);</code> (and/or <code>teardown</code>) in the Preparation Code field, where <code><var>0</var></code> is the zero-indexed test ID.'
+            answer: 'That’s what <a href="https://benchmarkjs.com/docs#prototype_setup" title="Benchmark.prototype.setup"><code>Benchmark#setup</code></a> and <a href="https://benchmarkjs.com/docs#prototype_teardown" title="Benchmark.prototype.teardown"><code>Benchmark#teardown</code></a> are for. You can use the Setup and Teardown fields to use the same function (s) for all tests. To target specific tests, you can use <code>setTimeout(function () { ui.benchmarks[<var>0</var>].setup = function (){ … }; }, 1);</code> (and/or <code>teardown</code>) in the Preparation Code field, where <code><var>0</var></code> is the zero-indexed test ID.'
           }, {
             slug: 'async',
             title: 'How can I run asynchronous tests?',
