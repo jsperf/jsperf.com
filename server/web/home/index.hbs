@@ -19,13 +19,13 @@
     <h3>Your details (optional)</h3>
 
     <div>
-      <label for="author">Name </label><input type="text" name="author" id="author" value={{author}}>
+      <label for="author">Name </label><input type="text" name="author" id="author" value="{{author}}">
     </div>
     <div>
-      <label for="authorEmail">Email </label><label class="inline"><input type="email" name="authorEmail" id="authorEmail" value={{authorEmail}}> (won’t be displayed; might be used for Gravatar)</label>
+      <label for="authorEmail">Email </label><label class="inline"><input type="email" name="authorEmail" id="authorEmail" value="{{authorEmail}}"> (won’t be displayed; might be used for Gravatar)</label>
     </div>
     <div>
-      <label for="authorURL">URL </label><input type="url" name="authorURL" id="authorURL" value={{authorURL}}>
+      <label for="authorURL">URL </label><input type="url" name="authorURL" id="authorURL" value="{{authorURL}}">
     </div>
   </fieldset>
 
@@ -34,12 +34,12 @@
 
     <div>
       <label for="title">Title <em title="This field is required">*</em> </label>
-      <input type="text" name="title" id="title" required value={{title}}>
+      <input type="text" name="title" id="title" required value="{{title}}">
       {{error titleError}}
     </div>
     <div>
       <label for="slug">Slug <em title="This field is required">*</em> </label>
-      <input type="text" name="slug" id="slug" pattern="{{slugPattern}}" required value={{slug}}>
+      <input type="text" name="slug" id="slug" pattern="{{slugPattern}}" required value="{{slug}}">
       {{error slugError}}
       <p class="preview">Test case URL will be <samp>{{scheme}}://{{domain}}/<mark>{{#if slug}}{{.}}{{else}}slug{{/if}}</mark></samp></p>
     </div>
@@ -80,7 +80,7 @@
           <h4>Code snippet {{inc @index}}</h4>
           <div>
             <label for="test[{{@index}}][title]">Title <em title="This field is required">*</em> </label>
-            <input type="text" name="test[{{@index}}][title]" id="test[{{@index}}][title]" {{#compare @index 2}}required{{/compare}} value={{title}}>
+            <input type="text" name="test[{{@index}}][title]" id="test[{{@index}}][title]" {{#compare @index 2}}required{{/compare}} value="{{title}}">
             {{error codeTitleError}}
           </div>
           <div>
