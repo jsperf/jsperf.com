@@ -41,7 +41,7 @@
       <label for="slug">Slug <em title="This field is required">*</em> </label>
       <input type="text" name="slug" id="slug" pattern="{{slugPattern}}" required value="{{slug}}">
       {{error slugError}}
-      <p class="preview">Test case URL will be <samp>{{scheme}}://{{domain}}/<mark>{{#if slug}}{{.}}{{else}}slug{{/if}}</mark></samp></p>
+      <p class="preview">Test case URL will be <samp>{{scheme}}://{{domain}}/<mark>{{#if slug}}{{slug}}{{else}}slug{{/if}}</mark></samp></p>
     </div>
     <div>
       <label for="visible">Published </label>
