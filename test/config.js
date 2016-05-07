@@ -1,6 +1,11 @@
 var Lab = require('lab');
 var Code = require('code');
-var Config = require('../config');
+var Proxyquire = require('proxyquire');
+var Config = Proxyquire('../config', {
+  './lib/config': {
+    normalizeDomain: function () {}
+  }
+});
 
 var lab = exports.lab = Lab.script();
 

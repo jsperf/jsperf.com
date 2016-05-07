@@ -66,7 +66,20 @@ var manifest = {
     }},
     {'bell': {}},
     {'hapi-auth-cookie': {}},
-    {'./server/web/auth/strategies': {}},
+    {'./server/web/auth/strategies': {
+      session: {
+        password: config.get('/auth/session/pass'),
+        cookie: config.get('/auth/session/name'),
+        isSecure: config.get('/auth/session/secure')
+      },
+      oauth: {
+        password: config.get('/auth/oauth/cookiePass'),
+        clientId: config.get('/auth/oauth/github/id'),
+        clientSecret: config.get('/auth/oauth/github/secret'),
+        isSecure: config.get('/auth/oauth/secure'),
+        location: config.get('/scheme') + '://' + config.get('/domain')
+      }
+    }},
     {'./server/api/json': {}},
     {'./server/api/jsonp': {}},
     {'./server/web/auth/github': {}},

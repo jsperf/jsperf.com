@@ -1,20 +1,20 @@
-var config = require('../../../config');
-
 exports.register = function (server, options, next) {
+  server.log(['debug'], 'registering auth strategies');
+
   server.auth.strategy('session', 'cookie', {
-    password: config.get('/auth/session/pass'),
-    cookie: config.get('/auth/session/name'),
+    password: options.session.password,
+    cookie: options.session.cookie,
     redirectTo: false,
-    isSecure: config.get('/auth/session/secure')
+    isSecure: options.session.isSecure
   });
 
   server.auth.strategy('github', 'bell', {
     provider: 'github',
-    password: config.get('/auth/oauth/cookiePass'),
-    clientId: config.get('/auth/oauth/github/id'),
-    clientSecret: config.get('/auth/oauth/github/secret'),
-    isSecure: config.get('/auth/oauth/secure'),
-    location: config.get('/scheme') + '://' + config.get('/domain')
+    password: options.oauth.password,
+    clientId: options.oauth.clientId,
+    clientSecret: options.oauth.clientSecret,
+    isSecure: options.oauth.isSecure,
+    location: options.oauth.location
   });
 
   return next();
