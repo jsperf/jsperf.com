@@ -6,7 +6,7 @@ var EventEmitter = require('events').EventEmitter;
 var httpStub = {};
 
 var browserscope = proxyquire('../../../server/repositories/browserscope', {
-  http: httpStub
+  https: httpStub
 });
 
 var lab = exports.lab = Lab.script();
