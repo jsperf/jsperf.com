@@ -15,7 +15,7 @@ module.exports = function (name, url, isComment) {
       str += 'by ';
     }
 
-    if (url !== '') {
+    if (url && url !== '') {
       str += "<a href='" + url + "'";
       str += url === 'https://mathiasbynens.be/' ? '' : " rel='nofollow'";
       str += '>' + name + '</a>';
