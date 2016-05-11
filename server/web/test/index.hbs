@@ -9,7 +9,7 @@
   {{else}}
     Test case
   {{/compare}}
-  created {{author page.author page.authorURL}}
+  created {{formatAuthor page.author page.authorURL}}
   <time datetime="{{DatetoISOString page.published}}" pubdate>{{relativeDate page.published}}</time>
 
   {{#compare page.published page.updated operator="diffRelativeDate"}}
@@ -123,7 +123,7 @@
         {{#compare visible "y" operator="==="}}
         {{!-- TODO: add "or admin session" --}}
           <li {{#compare revision ../revision operator="==="}}class="current"{{/compare}}>
-            <a href="/{{slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{author author authorURL}}
+            <a href="/{{slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{formatAuthor author authorURL}}
             <time datetime="{{DatetoISOString published}}" pubdate>
               {{relativeDate published}}
             </time>
@@ -148,7 +148,7 @@
       <article id="comment-{{inc @index}}" {{#compare page this operator="isOwner"}}class="owner"{{/compare}}>
         <p class="meta">
           <img src="https://gravatar.com/avatar/{{md5 authorEmail}}?s=26" width="26" height="26">
-          {{author author authorURL true}}
+          {{formatAuthor author authorURL true}}
 
           {{#if owner}}
             (revision owner)
