@@ -3,10 +3,10 @@ var Code = require('code');
 var proxyquire = require('proxyquire');
 var EventEmitter = require('events').EventEmitter;
 
-var httpStub = {};
+var httpsStub = {};
 
 var browserscope = proxyquire('../../../server/repositories/browserscope', {
-  http: httpStub
+  https: httpsStub
 });
 
 var lab = exports.lab = Lab.script();
@@ -16,7 +16,7 @@ lab.experiment('Browserscope Repository', function () {
     var emitter;
 
     lab.before(function (done) {
-      httpStub.get = function (url, cb) {
+      httpsStub.get = function (url, cb) {
         cb(emitter);
 
         return emitter;

@@ -1,5 +1,5 @@
 // TODO make hapi plugin
-var http = require('http');
+var https = require('https');
 var querystring = require('querystring');
 
 var config = require('../../config');
@@ -14,7 +14,7 @@ module.exports = {
         url: config.get('/scheme') + '://' + config.get('/domain') + '/' + slug
       });
 
-      http.get('https://www.browserscope.org/user/tests/create?' + qs, function (res) {
+      https.get('https://www.browserscope.org/user/tests/create?' + qs, function (res) {
         var str = '';
 
         res.on('data', function (chunk) {
