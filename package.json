@@ -41,6 +41,7 @@
     "hapi-auth-cookie": "^3.0.1",
     "highlight.js": "^8.7.0",
     "joi": "^5.1.0",
+    "jsesc": "^1.1.0",
     "lodash": "^3.3.1",
     "marked": "^0.3.4",
     "mysql": "^2.5.5",
