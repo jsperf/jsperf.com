@@ -30,6 +30,30 @@
 
   {{#if benchmark}}
     <script src="/test.js"></script>
+    <script>
+      {{#if page.browserscopeID}}
+        ui.browserscope.key = '{{ page.browserscopeID }}'
+      {{/if}}
+      
+      {{#each page.test}}
+        ui.add(
+          {{{ cleanJsString title }}},
+          {
+            'defer': {{#compare defer "y" operator="==="}}true{{ else }}false{{/compare}},
+            'fn': {{{ cleanJsString code }}}
+          }
+        );
+      {{/each}}
+      
+      {{#if page.setup}}
+        Benchmark.prototype.setup = {{{ cleanJsString page.setup }}}
+      {{/if}}
+      {{#if page.teardown}}
+        Benchmark.prototype.teardown = {{{ cleanJsString page.setup }}}
+      {{/if}}
+    </script>
+    
+    {{{ page.initHTML }}}
   {{else}}
     {{#if mainJS}}
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
