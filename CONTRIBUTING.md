@@ -1,4 +1,5 @@
 # Contributing to JSPerf
+
 ## Submitting a Pull Request
 
 * Make all changes in a *new* branch of `master`, e.g., `feature/new-logo`

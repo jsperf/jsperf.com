@@ -73,6 +73,17 @@ _If you're missing code coverage, open `coverage.html` in the root of the projec
 
 - ES6 Template Strings are not supported by esprima which means you can't generate coverage reports which means `npm test` won't pass.
 
+### Adding new dependencies
+
+1. Install using `npm` and either `--save` or `--save-dev`. Do not edit `package.json` manually.
+2. Run `npm run shrinkwrap` to update `npm-shrinkwrap.json`
+
+If you get an error while shrinkwrapping, try removing what you have installed currently, reinstalling based on `package.json` instead of `npm-shrinkwrap.json`, and then shrinkwrap again.
+
+```
+rm -r node_modules/ && npm install --ignore-shrinkwrap && npm run shrinkwrap
+```
+
 ## Debugging
 
 If you'd like extra debugging information when running the server, run with the `DEBUG` environment variable set to `*` for everything including dependencies or `jsperf*` for only this project's debugging statements.
