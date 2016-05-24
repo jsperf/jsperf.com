@@ -4,6 +4,7 @@ var path = require('path');
 var Lab = require('lab');
 var sinon = require('sinon');
 var Code = require('code');
+const Hoek = require('hoek');
 var Hapi = require('hapi');
 var proxyquire = require('proxyquire');
 
@@ -16,9 +17,9 @@ const defaultPageData = {
   browserscopeID: 'abc123',
   title: 'Oh Yea',
   info: 'Sample test',
-  setup: '',
-  teardown: '',
-  initHTML: '',
+  setup: 'samplesetup',
+  teardown: 'deletesetup',
+  initHTML: 'initstring',
   visible: 'y',
   author: 'Andrew',
   authorEmail: 'a@s.co',
@@ -96,19 +97,6 @@ lab.experiment('edit', function () {
     done();
   });
 
-  lab.test('not found', function (done) {
-    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('Not found')));
-
-    // adding revision to url here covers true case of rev ternary
-    request.url += '/999';
-
-    server.inject(request, function (response) {
-      Code.expect(response.statusCode).to.equal(404);
-
-      done();
-    });
-  });
-
   lab.test('fail to get by slug', function (done) {
     pagesServiceStub.getBySlug.returns(Promise.reject(new Error('real helpful')));
 
@@ -119,7 +107,7 @@ lab.experiment('edit', function () {
     });
   });
 
-  lab.test('it responds with test page for slug', function (done) {
+  lab.test('responds with test page for slug', function (done) {
     pagesServiceStub.getBySlug.returns(
       Promise.resolve([defaultPageData, [], [], []])
     );
@@ -131,7 +119,7 @@ lab.experiment('edit', function () {
     });
   });
 
-  lab.test('it gives the user a visible page warning if page is visible', function (done) {
+  lab.test('visible page warning if page is visible', function (done) {
     pagesServiceStub.getBySlug.returns(
       Promise.resolve([defaultPageData, [], [], []])
     );
@@ -143,8 +131,36 @@ lab.experiment('edit', function () {
     });
   });
 
-  lab.test('it gives the user a visible page prompt if page is not visible', function (done) {
-    let nonVisiblePage = Object.assign({visible: 'n'}, defaultPageData);
+  lab.test('not found', function (done) {
+    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('Not found')));
+
+    // adding revision to url here covers true case of rev ternary
+    request.url = '/wee/999/edit';
+
+    server.inject(request, function (response) {
+      Code.expect(response.statusCode).to.equal(404);
+
+      done();
+    });
+  });
+
+  lab.test('displays all pertinent page info', function (done) {
+    pagesServiceStub.getBySlug.returns(
+      Promise.resolve([defaultPageData, [], [], []])
+    );
+
+    server.inject(request, function (response) {
+      Code.expect(response.payload.indexOf(defaultPageData.info)).to.be.at.least(0);
+      Code.expect(response.payload.indexOf(defaultPageData.setup)).to.be.at.least(0);
+      Code.expect(response.payload.indexOf(defaultPageData.teardown)).to.be.at.least(0);
+      Code.expect(response.payload.indexOf(defaultPageData.initHTML)).to.be.at.least(0);
+
+      done();
+    });
+  });
+
+  lab.test('give the user a visible page prompt if page is not visible', function (done) {
+    const nonVisiblePage = Hoek.applyToDefaults(defaultPageData, {visible: 'n'});
     pagesServiceStub.getBySlug.returns(
       Promise.resolve([nonVisiblePage, [], [], []])
     );
@@ -156,7 +172,7 @@ lab.experiment('edit', function () {
     });
   });
 
-  lab.test('it displays an "editing original" message for the original author', function (done) {
+  lab.test('responds with "editing original" message for the original author', function (done) {
     server.route({
       method: 'GET', path: '/setsession',
       config: {
@@ -183,7 +199,7 @@ lab.experiment('edit', function () {
     });
   });
 
-  lab.test('it displays an "creating new revision" message for not the author', function (done) {
+  lab.test('displays an "creating new revision" message for not the author', function (done) {
     server.route({
       method: 'GET', path: '/setsession',
       config: {

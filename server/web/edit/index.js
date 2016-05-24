@@ -1,18 +1,14 @@
 'use strict';
 
 var Boom = require('boom');
-var debug = require('debug')('jsperf:web:test');
-var hljs = require('highlight.js');
 var pagesService = require('../../services/pages');
-var regex = require('../../lib/regex');
 
 exports.register = function (server, options, next) {
   server.route({
     method: 'GET',
     path: '/{testSlug}/{rev}/edit',
     handler: function (request, reply) {
-      const rev = request.params.rev ? request.params.rev : 1;
-      pagesService.getBySlug(request.params.testSlug, rev)
+      pagesService.getBySlug(request.params.testSlug, request.params.rev)
       .then(function (values) {
         let page = values[0];
         page.test = values[1];
