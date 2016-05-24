@@ -1,0 +1,70 @@
+<h1>Editing <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}">{{addCode page.title}}</a></h1>
+<p>
+{{#if isOwn}}
+Since it’s your test case, this edit will overwrite the current revision without creating a new URL.
+{{else}}
+This edit will create a new revision.
+{{/if}}
+</p>
+<form method="post">
+  <fieldset>
+    <h3>Your details (optional)</h3>
+    <div>
+      <label for="author">Name</label>
+        <input type="text" name="author" id="author"
+        {{#if isAdmin}}
+          value="{{page.author}}"
+        {{else if isOwn}}
+          value="{{page.author}}"
+        {{/if}}
+        >
+    </div>
+    <div>
+      <label for="author-email">Email </label>
+      <label class="inline">
+        <input type="email" name="author-email" id="author-email"
+          {{#if isAdmin}}
+            value="{{page.authorEmail}}"
+          {{else if isOwn}}
+            value="{{page.authorEmail}}"
+          {{/if}}
+        > (won’t be displayed; might be used for Gravatar)
+      </label>
+    </div>
+    <div>
+      <label for="author-url">URL </label>
+      <input type="url" name="author-url" id="author-url"
+      {{#if isAdmin}}
+        value="{{page.authorURL}}"
+      {{else if isOwn}}
+        value="{{page.authorURL}}"
+      {{/if}}
+      >
+    </div>
+  </fieldset>
+  <fieldset>
+    <h3>Test case details</h3>
+    <div>
+      <label for="title">Title <em title="This field is required">*</em> </label>
+      <input type="text" name="title" id="title" value="{{page.title}}" required>
+      {{error titleError}}
+    </div>
+    <div>
+      <label for="visible">Published </label>
+      <label class="inline">
+        <input type="checkbox" name="visible" id="visible" value="y"
+        {{#if page.visible}}
+        checked
+        {{/if}}
+        >
+        {{#if page.visible}}
+        (uncheck if you want to fiddle around before making the page public)
+        {{else}}
+        (check when your test case is finished)
+        {{/if}}
+      </label>
+    </div>
+
+  </fieldset>
+</form>
+

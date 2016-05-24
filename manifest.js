@@ -94,7 +94,8 @@ var manifest = {
     {'./server/web/redirects': {}},
     {'./server/web/search': {}},
     {'./server/web/sitemap/xml': {}},
-    {'./server/web/test': {}}
+    {'./server/web/test': {}},
+    {'./server/web/edit': {}}
   ]
 };
 
