@@ -5,6 +5,15 @@ const regex = require('./regex');
 const MEDIUM_TEXT_LENGTH = 16777215;
 exports.mediumTextLength = MEDIUM_TEXT_LENGTH;
 
+exports.errors = {
+  title: 'You must enter a title for this test case.',
+  slug: 'The slug can only contain alphanumeric characters and hyphens.',
+  slugDupe: 'This slug is already in use. Please choose another one.',
+  codeTitle: 'Please enter a title for this code snippet.',
+  code: 'Please enter a code snippet.',
+  general: 'Please review required fields and save again.'
+};
+
 exports.test = {
   title: '',
   defer: '',

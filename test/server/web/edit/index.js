@@ -7,7 +7,7 @@ var Code = require('code');
 const Hoek = require('hoek');
 var Hapi = require('hapi');
 var proxyquire = require('proxyquire');
-
+const defaults = require('../../../../server/lib/defaults');
 var Config = require('../../../../config');
 const testNow = new Date();
 const defaultPageData = {
@@ -82,12 +82,13 @@ lab.beforeEach(function (done) {
   server.register(plugins, done);
 });
 
-lab.experiment('edit', function () {
+lab.experiment('GET', function () {
   const slug = 'wee';
 
   lab.beforeEach(function (done) {
     request = {
       method: 'GET',
+      credentials: {'test': 'profile'},
       url: `/${slug}/1/edit`
     };
 
@@ -119,6 +120,32 @@ lab.experiment('edit', function () {
     });
   });
 
+  lab.test('it presents a login option to a user if they have not auth’d with GitHub', function (done) {
+    pagesServiceStub.getBySlug.returns(
+      Promise.resolve([defaultPageData, [], [], []])
+    );
+
+    delete request.credentials;
+
+    server.inject(request, function (response) {
+      Code.expect(response.result).to.include('Login with GitHub to Edit Test Cases');
+
+      done();
+    });
+  });
+
+  lab.test('it presents a save option to a user if they have already auth’d with GitHub', function (done) {
+    pagesServiceStub.getBySlug.returns(
+      Promise.resolve([defaultPageData, [], [], []])
+    );
+
+    server.inject(request, function (response) {
+      Code.expect(response.result).to.include('Save test case');
+
+      done();
+    });
+  });
+
   lab.test('visible page warning if page is visible', function (done) {
     pagesServiceStub.getBySlug.returns(
       Promise.resolve([defaultPageData, [], [], []])
@@ -126,6 +153,21 @@ lab.experiment('edit', function () {
 
     server.inject(request, function (response) {
       Code.expect(response.payload.indexOf('uncheck if you want to fiddle around before making the page public')).to.be.at.least(0);
+
+      done();
+    });
+  });
+
+  // Hapi does not support nested optional paramaters, this is the workaround
+  lab.test('redirect slug/edit to slug/1/edit', function (done) {
+    request.url = `/${slug}/edit`;
+    pagesServiceStub.getBySlug.returns(
+      Promise.resolve([defaultPageData, [], [], []])
+    );
+
+    server.inject(request, function (response) {
+      Code.expect(response.statusCode).to.equal(302);
+      Code.expect(response.headers.location).to.equal(`/${slug}/1/edit`);
 
       done();
     });
@@ -306,6 +348,100 @@ lab.experiment('edit', function () {
         Code.expect(response.payload.indexOf('Andrew')).to.equal(-1);
         Code.expect(response.payload.indexOf('a@s.co')).to.be.at.least(-1);
         Code.expect(response.payload.indexOf('as.co')).to.be.at.least(-1);
+
+        done();
+      });
+    });
+  });
+});
+
+lab.experiment('POST', function () {
+  lab.beforeEach(function (done) {
+    request = {
+      method: 'POST',
+      url: '/wee/1/edit',
+      credentials: {'test': 'profile'},
+      payload: {
+        author: 'Pitcher Man',
+        authorEmail: 'kool-aid@kraft.com',
+        authorURL: 'http://kool-aid.com',
+        title: 'oh',
+        slug: 'oh-yea',
+        info: '',
+        initHTML: '',
+        setup: '',
+        teardown: '',
+        test: [
+          {
+            title: 't1',
+            code: 't=1'
+          },
+          {
+            title: 't2',
+            code: 't=2'
+          }
+        ]
+      }
+    };
+
+    done();
+  });
+
+  lab.experiment('validation', function () {
+    lab.test('title required', function (done) {
+      delete request.payload.title;
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(400);
+        Code.expect(response.result).to.include(defaults.errors.title);
+
+        done();
+      });
+    });
+
+    lab.test('test title required', function (done) {
+      delete request.payload.test[0].title;
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(400);
+
+        Code.expect(response.result).to.include(defaults.errors.codeTitle);
+
+        done();
+      });
+    });
+
+    lab.test('test code required', function (done) {
+      delete request.payload.test[0].code;
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(400);
+
+        Code.expect(response.result).to.include('Please enter a code snippet.');
+
+        done();
+      });
+    });
+
+    lab.test('generic error', function (done) {
+      request.payload.test[0].defer = 'unexpected';
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(400);
+
+        Code.expect(response.result).to.include('Please review required fields and save again.');
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment('authorization', function () {
+    lab.test('401 if attempting to POST without authorization', function (done) {
+      delete request.credentials;
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(401);
 
         done();
       });

@@ -2,42 +2,129 @@
 
 var Boom = require('boom');
 var pagesService = require('../../services/pages');
+const defaults = require('../../lib/defaults');
+const schema = require('../../lib/schema');
+const Hoek = require('hoek');
+const Joi = require('joi');
 
 exports.register = function (server, options, next) {
   server.route({
     method: 'GET',
+    config: {
+      auth: {
+        mode: 'try',
+        strategy: 'session'
+      }
+    },
     path: '/{testSlug}/{rev}/edit',
     handler: function (request, reply) {
       pagesService.getBySlug(request.params.testSlug, request.params.rev)
-      .then(function (values) {
-        let page = values[0];
-        page.test = values[1];
-        page.revision = values[2];
-        const own = request.session.get('own') || {};
-        const isOwn = own[page.id];
-        const isAdmin = request.session.get('admin');
+        .then(function (values) {
+          let page = values[0];
+          page.test = values[1];
+          page.revision = values[2];
+          const own = request.session.get('own') || {};
+          const isOwn = own[page.id];
+          const isAdmin = request.session.get('admin');
 
-        reply.view('edit/index', {
-          benchmark: true,
-          showAtom: {
-            slug: request.path.slice(1) // remove slash
-          },
-          jsClass: true,
-          isOwn: isOwn,
-          isAdmin: isAdmin,
-          page: page
+          reply.view('edit/index', {
+            benchmark: true,
+            showAtom: {
+              slug: request.path.slice(1) // remove slash
+            },
+            jsClass: true,
+            isOwn: isOwn,
+            isAdmin: isAdmin,
+            page: page,
+            authorized: request.auth.isAuthenticated
+          });
+        })
+        .catch(function (err) {
+          if (err.message === 'Not found') {
+            reply(Boom.notFound('The page was not found'));
+          } else {
+            reply(err);
+          }
         });
-      })
-      .catch(function (err) {
-        if (err.message === 'Not found') {
-          reply(Boom.notFound('The page was not found'));
-        } else {
-          reply(err);
+    }
+  });
+
+  server.route({
+    method: 'POST',
+    path: '/{testSlug}/{rev}/edit',
+    config: {
+      auth: {
+        strategy: 'session'
+      }
+    },
+    handler: function (request, reply) {
+      let errResp = function (errObj) {
+        let page = Hoek.applyToDefaults(defaults.testPageContext, request.payload, true);
+        Hoek.merge(page, errObj);
+        reply.view('edit/index', {page: page, authorized: true}).code(400);
+      };
+
+      Joi.validate(request.payload, schema.testPage, function (err, pageWithTests) {
+        // if (err) {
+        let errObj = {};
+        try {
+          let valErr = err.details[0];
+          switch (valErr.path) {
+            case 'title':
+              errObj.titleError = defaults.errors.title;
+              break;
+            default:
+              // test errors are deeply nested because objects inside array
+              let testErr = valErr.context.reason[0];
+              let idx = testErr.path.split('.')[1];
+              switch (testErr.context.key) {
+                case 'title':
+                  request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
+                  break;
+                case 'code':
+                  request.payload.test[idx].codeError = defaults.errors.code;
+                  break;
+                default:
+                  throw new Error('unknown validation error');
+              }
+          }
+        } catch (ex) {
+          errObj.genError = defaults.errors.general;
         }
+        errResp(errObj);
+      // }
+      /**
+      else {
+        let payload = pageWithTests;
+
+        pagesService.checkIfSlugAvailable(server, payload.slug)
+          .then(function (isAvail) {
+            if (!isAvail) {
+              errResp({
+                slugError: defaults.errors.slugDupe
+              });
+            } else {
+              return pagesService.create(payload);
+            }
+          })
+          .then(function () {
+            request.session.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+            reply.redirect('/' + payload.slug);
+          })
+          .catch(errResp);
+      }
+      **/
       });
     }
   });
-  // TODO: atom feed
+
+  server.route({
+    method: 'GET',
+    path: '/{testSlug}/edit',
+    handler: function (request, reply) {
+      reply.redirect(`/${request.params.testSlug}/1/edit`);
+    }
+  });
 
   return next();
 };
