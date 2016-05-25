@@ -1,3 +1,4 @@
+{{#if authorized}}
 <h1>Editing <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}">{{addCode page.title}}</a></h1>
 <p>
 {{#if isOwn}}
@@ -6,6 +7,7 @@ Since it’s your test case, this edit will overwrite the current revision witho
 This edit will create a new revision.
 {{/if}}
 </p>
+{{error page.genError tag="p"}}
 <form method="post">
   <fieldset>
     <h3>Your details (optional)</h3>
@@ -47,7 +49,7 @@ This edit will create a new revision.
     <div>
       <label for="title">Title <em title="This field is required">*</em> </label>
       <input type="text" name="title" id="title" value="{{page.title}}" required>
-      {{error titleError}}
+      {{error page.titleError}}
     </div>
     <div>
       <label for="visible">Published </label>
@@ -116,7 +118,9 @@ This edit will create a new revision.
         <h4>Test {{@index}}</h4>
         <div>
           <label for="test[{{@index}}][title]">Title </label>
-          <input type="text" name="test[{{@index}}][title]" id="test[{{@index}}][title]" value="{{title}}"></div>
+          <input type="text" name="test[{{@index}}][title]" id="test[{{@index}}][title]" value="{{title}}">
+          {{error codeTitleError}}
+        </div>
         <div>
           <label for="test[{{@index}}][defer]">Async </label>
           <label class="inline">
@@ -128,6 +132,7 @@ This edit will create a new revision.
           </label>
           <textarea name="test[{{@index}}][code]" id="test[{{@index}}][code]" class="code-js" maxlength="16777215">{{code}}</textarea>
           <input type="hidden" name="test[{{@index}}][id]" value="{{testID}}">
+          {{error codeError tag="p"}}
         </div>
       </fieldset>
       {{/each}}
@@ -137,4 +142,7 @@ This edit will create a new revision.
     </div>
   </fieldset>
 </form>
+{{else}}
+   <a class="login" href="/auth/github"><i class="fa fa-github"></i> Login with GitHub to Edit Test Cases</a>
+{{/if}}
 

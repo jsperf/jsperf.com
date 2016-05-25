@@ -54,10 +54,10 @@ exports.register = function (server, options, next) {
 
             switch (valErr.path) {
               case 'title':
-                errObj.titleError = 'You must enter a title for this test case.';
+                errObj.titleError = defaults.errors.title;
                 break;
               case 'slug':
-                errObj.slugError = 'The slug can only contain alphanumeric characters and hyphens.';
+                errObj.slugError = defaults.errors.slug;
                 break;
               default:
                 // test errors are deeply nested because objects inside array
@@ -66,17 +66,17 @@ exports.register = function (server, options, next) {
 
                 switch (testErr.context.key) {
                   case 'title':
-                    request.payload.test[idx].codeTitleError = 'Please enter a title for this code snippet.';
+                    request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
                     break;
                   case 'code':
-                    request.payload.test[idx].codeError = 'Please enter a code snippet.';
+                    request.payload.test[idx].codeError = defaults.errors.code;
                     break;
                   default:
                     throw new Error('unknown validation error');
                 }
             }
           } catch (ex) {
-            errObj.genError = 'Please review required fields and save again.';
+            errObj.genError = defaults.errors.general;
           }
 
           errResp(errObj);
@@ -88,7 +88,7 @@ exports.register = function (server, options, next) {
           .then(function (isAvail) {
             if (!isAvail) {
               errResp({
-                slugError: 'This slug is already in use. Please choose another one.'
+                slugError: defaults.errors.slugDupe
               });
             } else {
               return pagesService.create(payload);
