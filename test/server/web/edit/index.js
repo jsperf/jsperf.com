@@ -14,6 +14,7 @@ const defaultPageData = {
   id: 1,
   slug: 'wee',
   revision: 1,
+  maxRev: 22,
   browserscopeID: 'abc123',
   title: 'Oh Yea',
   info: 'Sample test',
@@ -444,6 +445,183 @@ lab.experiment('POST', function () {
         Code.expect(response.statusCode).to.equal(401);
 
         done();
+      });
+    });
+  });
+
+  lab.experiment('new revision', function () {
+    lab.beforeEach(function (done) {
+      pagesServiceStub.getBySlug = function (a, b) {
+        request.payload.maxRev = 44;
+        return Promise.resolve([request.payload]);
+      };
+
+      done();
+    });
+
+    lab.afterEach(function (done) {
+      pagesServiceStub.getBySlug = function () {};
+      pagesServiceStub.edit = function () {};
+
+      done();
+    });
+
+    lab.test('handles error', function (done) {
+      var errMsg = 'testing-very-very-unique-msg';
+      pagesServiceStub.edit = function (a) {
+        return Promise.reject(new Error(errMsg));
+      };
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(400);
+
+        Code.expect(response.result).to.include(errMsg);
+
+        done();
+      });
+    });
+
+    lab.test('calls edit page service with new revision params', function (done) {
+      pagesServiceStub.edit = sinon.stub();
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
+
+      server.inject(request, response => {
+        let firstCallArgs = pagesServiceStub.edit.args[0];
+
+        Code.expect(firstCallArgs[0].slug).to.equal(request.payload.slug);
+        Code.expect(firstCallArgs[1]).to.equal(false);
+        Code.expect(firstCallArgs[2]).to.equal(44);
+
+        done();
+      });
+    });
+
+    lab.test('redirects to new url after revision insertion', function (done) {
+      pagesServiceStub.edit = sinon.stub();
+      let stubPage = Hoek.applyToDefaults(request.payload, {revision: 101});
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(stubPage));
+
+      server.inject(request, response => {
+        Code.expect(response.statusCode).to.equal(302);
+        Code.expect(response.headers.location).to.equal(`/${request.payload.slug}/101`);
+
+        done();
+      });
+    });
+  });
+
+  lab.experiment('owner revision', function () {
+    lab.beforeEach(function (done) {
+      pagesServiceStub.getBySlug = function (a, b) {
+        return Promise.resolve([defaultPageData]);
+      };
+
+      server.route({
+        method: 'GET', path: '/setsession',
+        config: {
+          handler: function (req, reply) {
+            var owns = {1: true};
+            req.session.set('own', owns);
+            return reply('session set');
+          }
+        }
+      });
+
+      done();
+    });
+
+    lab.afterEach(function (done) {
+      pagesServiceStub.getBySlug = function () {};
+      pagesServiceStub.edit = function () {};
+
+      done();
+    });
+
+    lab.test('calls edit page service with update params', function (done) {
+      pagesServiceStub.edit = sinon.stub();
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
+
+      server.inject('/setsession', function (res) {
+        var header = res.headers['set-cookie'];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = 'session=' + cookie[1];
+        server.inject(request, response => {
+          let firstCallArgs = pagesServiceStub.edit.args[0];
+
+          Code.expect(firstCallArgs[0].slug).to.equal(request.payload.slug);
+          Code.expect(firstCallArgs[1]).to.equal(true);
+          Code.expect(firstCallArgs[2]).to.equal(22);
+
+          done();
+        });
+      });
+    });
+
+    lab.test('redirects to original url after update', function (done) {
+      pagesServiceStub.edit = sinon.stub();
+      let stubPage = Hoek.applyToDefaults(request.payload, {revision: 1});
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(stubPage));
+
+      server.inject('/setsession', function (res) {
+        var header = res.headers['set-cookie'];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = 'session=' + cookie[1];
+        server.inject(request, response => {
+          Code.expect(response.statusCode).to.equal(302);
+          Code.expect(response.headers.location).to.equal(`/${request.payload.slug}`);
+
+          done();
+        });
+      });
+    });
+  });
+
+  lab.experiment('admin revision', function () {
+    lab.beforeEach(function (done) {
+      pagesServiceStub.getBySlug = function (a, b) {
+        return Promise.resolve([defaultPageData]);
+      };
+
+      server.route({
+        method: 'GET', path: '/setsession',
+        config: {
+          handler: function (req, reply) {
+            req.session.set('admin', true);
+            return reply('session set');
+          }
+        }
+      });
+
+      done();
+    });
+
+    lab.afterEach(function (done) {
+      pagesServiceStub.getBySlug = function () {};
+      pagesServiceStub.edit = function () {};
+
+      done();
+    });
+
+    lab.test('calls edit page service with update params', function (done) {
+      pagesServiceStub.edit = sinon.stub();
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
+
+      server.inject('/setsession', function (res) {
+        var header = res.headers['set-cookie'];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
+        request.headers = {};
+        request.headers.cookie = 'session=' + cookie[1];
+        server.inject(request, response => {
+          let firstCallArgs = pagesServiceStub.edit.args[0];
+
+          Code.expect(firstCallArgs[0].slug).to.equal(request.payload.slug);
+          Code.expect(firstCallArgs[1]).to.equal(true);
+          Code.expect(firstCallArgs[2]).to.equal(22);
+
+          done();
+        });
       });
     });
   });

@@ -59,61 +59,62 @@ exports.register = function (server, options, next) {
     },
     handler: function (request, reply) {
       let errResp = function (errObj) {
+        if (errObj.message) {
+          errObj.genError = errObj.message;
+        }
         let page = Hoek.applyToDefaults(defaults.testPageContext, request.payload, true);
         Hoek.merge(page, errObj);
         reply.view('edit/index', {page: page, authorized: true}).code(400);
       };
 
       Joi.validate(request.payload, schema.testPage, function (err, pageWithTests) {
-        // if (err) {
-        let errObj = {};
-        try {
-          let valErr = err.details[0];
-          switch (valErr.path) {
-            case 'title':
-              errObj.titleError = defaults.errors.title;
-              break;
-            default:
-              // test errors are deeply nested because objects inside array
-              let testErr = valErr.context.reason[0];
-              let idx = testErr.path.split('.')[1];
-              switch (testErr.context.key) {
-                case 'title':
-                  request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
-                  break;
-                case 'code':
-                  request.payload.test[idx].codeError = defaults.errors.code;
-                  break;
-                default:
-                  throw new Error('unknown validation error');
-              }
-          }
-        } catch (ex) {
-          errObj.genError = defaults.errors.general;
-        }
-        errResp(errObj);
-      // }
-      /**
-      else {
-        let payload = pageWithTests;
-
-        pagesService.checkIfSlugAvailable(server, payload.slug)
-          .then(function (isAvail) {
-            if (!isAvail) {
-              errResp({
-                slugError: defaults.errors.slugDupe
-              });
-            } else {
-              return pagesService.create(payload);
+        if (err) {
+          let errObj = {};
+          try {
+            let valErr = err.details[0];
+            switch (valErr.path) {
+              case 'title':
+                errObj.titleError = defaults.errors.title;
+                break;
+              default:
+                // test errors are deeply nested because objects inside array
+                let testErr = valErr.context.reason[0];
+                let idx = testErr.path.split('.')[1];
+                switch (testErr.context.key) {
+                  case 'title':
+                    request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
+                    break;
+                  case 'code':
+                    request.payload.test[idx].codeError = defaults.errors.code;
+                    break;
+                  default:
+                    throw new Error('unknown validation error');
+                }
             }
-          })
-          .then(function () {
+          } catch (ex) {
+            errObj.genError = defaults.errors.general;
+          }
+          errResp(errObj);
+        } else {
+          let payload = pageWithTests;
+          let isOwn;
+
+          pagesService.getBySlug(request.params.testSlug, request.params.rev).then(values => {
+            let page = values[0];
+            const own = request.session.get('own') || {};
+            isOwn = own[page.id];
+            const isAdmin = request.session.get('admin');
+            let update = !!(isAdmin || isOwn);
+            return pagesService.edit(payload, update, page.maxRev);
+          }).then(page => {
             request.session.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
-            reply.redirect('/' + payload.slug);
-          })
-          .catch(errResp);
-      }
-      **/
+            if (isOwn && page.revision === 1) {
+              reply.redirect(`/${page.slug}`);
+            } else {
+              reply.redirect(`/${page.slug}/${page.revision}`);
+            }
+          }).catch(errResp);
+        }
       });
     }
   });
