@@ -97,21 +97,21 @@ exports.register = function (server, options, next) {
           errResp(errObj);
         } else {
           let payload = pageWithTests;
-          let isOwn;
+          let isOwn, page;
 
           pagesService.getBySlug(request.params.testSlug, request.params.rev).then(values => {
-            let page = values[0];
+            page = values[0];
             const own = request.session.get('own') || {};
             isOwn = own[page.id];
             const isAdmin = request.session.get('admin');
             let update = !!(isAdmin || isOwn);
-            return pagesService.edit(payload, update, page.maxRev);
-          }).then(page => {
+            return pagesService.edit(payload, update, page.maxRev, page.id);
+          }).then(updateResult => {
             request.session.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
-            if (isOwn && page.revision === 1) {
+            if (isOwn) {
               reply.redirect(`/${page.slug}`);
             } else {
-              reply.redirect(`/${page.slug}/${page.revision}`);
+              reply.redirect(`/${page.slug}/${(page.maxRev + 1)}`);
             }
           }).catch(errResp);
         }

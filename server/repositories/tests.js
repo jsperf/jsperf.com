@@ -1,6 +1,8 @@
+'use strict';
 // TODO make hapi plugin
 var debug = require('debug')('jsperf:repositories:tests');
 var db = require('../lib/db');
+var Promise = require('bluebird');
 
 const table = 'tests';
 
@@ -17,8 +19,34 @@ module.exports = {
     values = values.join(', ');
 
     return db.genericQuery('INSERT INTO ?? (??) VALUES ' + values, [table, columns])
-    .then(function (result) {
-      if (result.affectedRows !== tests.length) {
+      .then(function (result) {
+        if (result.affectedRows !== tests.length) {
+          throw new Error('Not all tests inserted');
+        }
+      });
+  },
+
+  bulkUpdate: function (pageID, tests, update) {
+    const columns = ['pageID', 'title', 'defer', 'code'];
+    let queries = [];
+
+    tests.forEach(test => {
+      if (!test.title && !test.code) {
+        if (update && test.id) {
+          queries.push(db.genericQuery(`DELETE FROM tests WHERE pageID = ${pageID} AND testID = ${test.id}`));
+        }
+      } else {
+        // Update test
+        if (test.id) {
+          queries.push(db.genericQuery(`UPDATE tests SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.id}`));
+        } else {
+          queries.push(db.genericQuery(`INSERT INTO ?? (??) VALUES (${pageID}, ${db.escape(test.title)}, ${db.escape(test.defer)}, ${db.escape(test.code)})`, [table, columns]));
+        }
+      }
+    });
+
+    return Promise.each(queries, result => {
+      if (result.affectedRows !== 1) {
         throw new Error('Not all tests inserted');
       }
     });
