@@ -1,3 +1,4 @@
+'use strict';
 // TODO make hapi plugin
 var _ = require('lodash');
 var debug = require('debug')('jsperf:services:pages');
@@ -23,38 +24,54 @@ module.exports = {
 
       // does it exist in table?
       pagesRepo.get('id', { slug: slug })
-      .then(function (row) {
-        resolve(!row);
-      })
-      .catch(reject);
+        .then(function (row) {
+          resolve(!row);
+        })
+        .catch(reject);
     });
   },
-
   create: function (payload) {
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
-    .then(function (testKey) {
-      var page = _.omit(payload, 'test');
-      page.browserscopeID = testKey;
-      page.published = new Date();
+      .then(function (testKey) {
+        var page = _.omit(payload, 'test');
+        page.browserscopeID = testKey;
+        page.published = new Date();
 
-      return pagesRepo.create(page);
-    })
-    .then(function (pageID) {
-      return testsRepo.bulkCreate(pageID, payload.test);
-    });
+        return pagesRepo.create(page);
+      })
+      .then(function (pageID) {
+        return testsRepo.bulkCreate(pageID, payload.test);
+      });
   },
-
+  edit: function (payload, isOwn, maxRev, pageId) {
+    let newRev = ++maxRev;
+    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, newRev)
+      .then(testKey => {
+        let page = _.omit(payload, 'test');
+        page.browserscopeID = testKey;
+        if (isOwn) {
+          return pagesRepo.updateById(page, pageId);
+        } else {
+          page.published = new Date();
+          page.revision = newRev;
+          return pagesRepo.create(page);
+        }
+      })
+      .then(function (pageID) {
+        return testsRepo.bulkUpdate(pageID, payload.test, isOwn);
+      });
+  },
   getPopular: function () {
     return Promise.all([
       pagesRepo.getPopularRecent(),
       pagesRepo.getPopularAllTime()
     ])
-    .then(function (values) {
-      return {
-        recent: values[0],
-        allTime: values[1]
-      };
-    });
+      .then(function (values) {
+        return {
+          recent: values[0],
+          allTime: values[1]
+        };
+      });
   },
 
   find: function (searchTerms) {
@@ -72,50 +89,50 @@ module.exports = {
 
     // can we find the page?
     return pagesRepo.getBySlug(slug, rev)
-    .then(function (pages) {
-      if (pages.length === 0) {
-        throw new Error('Not found');
-      }
-
-      page = pages[0];
-      values.push(page);
-
-      return new Promise(function (resolve, reject) {
-        // update browserscopeID for page if missing
-        if (page.browserscopeID && page.browserscopeID !== '') {
-          return resolve();
+      .then(function (pages) {
+        if (pages.length === 0) {
+          throw new Error('Not found');
         }
 
-        const s = page.revision > 1 ? page.slug + '/' + page.revision : page.slug;
+        page = pages[0];
+        values.push(page);
 
-        browserscopeRepo.addTest(page.title, page.info, s)
-        .then(function (testKey) {
-          page.browserscopeID = testKey;
-          return pagesRepo.update({ browserscopeID: testKey }, { id: page.id });
-        })
-        .then(function () {
-          resolve();
-        })
-        .catch(reject);
+        return new Promise(function (resolve, reject) {
+          // update browserscopeID for page if missing
+          if (page.browserscopeID && page.browserscopeID !== '') {
+            return resolve();
+          }
+
+          const s = page.revision > 1 ? page.slug + '/' + page.revision : page.slug;
+
+          browserscopeRepo.addTest(page.title, page.info, s)
+            .then(function (testKey) {
+              page.browserscopeID = testKey;
+              return pagesRepo.update({ browserscopeID: testKey }, { id: page.id });
+            })
+            .then(function () {
+              resolve();
+            })
+            .catch(reject);
+        });
+      })
+      .then(function () {
+        // find its tests
+        return testsRepo.findByPageID(page.id);
+      })
+      .then(function (tests) {
+        // find other revisions of page
+        values.push(tests);
+        return pagesRepo.findBySlug(slug);
+      })
+      .then(function (revisions) {
+        // find comments for page
+        values.push(revisions);
+        return commentsRepo.findByPageID(page.id);
+      })
+      .then(function (comments) {
+        values.push(comments);
+        return values;
       });
-    })
-    .then(function () {
-      // find its tests
-      return testsRepo.findByPageID(page.id);
-    })
-    .then(function (tests) {
-      // find other revisions of page
-      values.push(tests);
-      return pagesRepo.findBySlug(slug);
-    })
-    .then(function (revisions) {
-      // find comments for page
-      values.push(revisions);
-      return commentsRepo.findByPageID(page.id);
-    })
-    .then(function (comments) {
-      values.push(comments);
-      return values;
-    });
   }
 };

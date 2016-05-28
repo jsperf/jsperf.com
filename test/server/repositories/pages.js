@@ -351,4 +351,35 @@ lab.experiment('Pages Repository', function () {
       });
     });
   });
+
+  lab.experiment('updateById', function () {
+    lab.test('generic update query', function (done) {
+      var modify = { browserscopeID: 'abc123' };
+      var pageID = 1;
+      dbStub.genericQuery.returns(Promise.resolve());
+
+      pages.updateById(modify, pageID)
+      .then(function () {
+        Code.expect(dbStub.genericQuery.calledWithExactly(
+          'UPDATE ?? SET ? WHERE id = ?',
+          [table, modify, pageID]
+        )).to.be.true();
+
+        done();
+      });
+    });
+
+    lab.test('returns updated pageId', function (done) {
+      var modify = { browserscopeID: 'abc123' };
+      var pageID = 1;
+      dbStub.genericQuery.returns(Promise.resolve());
+
+      pages.updateById(modify, pageID)
+      .then(newId => {
+        Code.expect(newId).to.equal(pageID);
+
+        done();
+      });
+    });
+  });
 });
