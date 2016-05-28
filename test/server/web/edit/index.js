@@ -498,12 +498,11 @@ lab.experiment('POST', function () {
 
     lab.test('redirects to new url after revision insertion', function (done) {
       pagesServiceStub.edit = sinon.stub();
-      let stubPage = Hoek.applyToDefaults(request.payload, {revision: 101});
-      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(stubPage));
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
 
       server.inject(request, response => {
         Code.expect(response.statusCode).to.equal(302);
-        Code.expect(response.headers.location).to.equal(`/${request.payload.slug}/101`);
+        Code.expect(response.headers.location).to.equal(`/${request.payload.slug}/45`);
 
         done();
       });
@@ -570,7 +569,7 @@ lab.experiment('POST', function () {
         request.headers.cookie = 'session=' + cookie[1];
         server.inject(request, response => {
           Code.expect(response.statusCode).to.equal(302);
-          Code.expect(response.headers.location).to.equal(`/${request.payload.slug}`);
+          Code.expect(response.headers.location).to.equal(`/${defaultPageData.slug}`);
 
           done();
         });
