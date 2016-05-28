@@ -1,3 +1,5 @@
+'use strict';
+
 var Lab = require('lab');
 var Code = require('code');
 var proxyquire = require('proxyquire');
@@ -203,6 +205,135 @@ lab.experiment('Pages Service', function () {
 
       pages.create(payload)
       .then(done);
+    });
+  });
+
+  lab.experiment('edit', function () {
+    var payload;
+
+    lab.beforeEach(function (done) {
+      payload = {};
+
+      bsRepoStub.addTest = s.stub();
+
+      pagesRepoStub.create = s.stub();
+
+      pagesRepoStub.updateById = s.stub();
+
+      testsRepoStub.bulkCreate = s.stub();
+
+      testsRepoStub.bulkUpdate = s.stub();
+
+      done();
+    });
+
+    lab.test('returns error if browserscope fails to add test', function (done) {
+      var testErrMsg = 'testing';
+      var testErr = new Error(testErrMsg);
+
+      bsRepoStub.addTest.returns(Promise.reject(testErr));
+
+      pages.edit(payload)
+      .catch(function (err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+        Code.expect(pagesRepoStub.create.called).to.be.false();
+
+        done();
+      });
+    });
+
+    lab.test('returns error if page fails to create', function (done) {
+      var testErrMsg = 'testing';
+      var testErr = new Error(testErrMsg);
+
+      bsRepoStub.addTest.returns(Promise.resolve());
+
+      pagesRepoStub.create.returns(Promise.reject(testErr));
+
+      pages.edit(payload)
+      .catch(function (err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+        Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
+
+        done();
+      });
+    });
+
+    lab.test('returns error if page fails to update', function (done) {
+      var testErrMsg = 'testing';
+      var testErr = new Error(testErrMsg);
+
+      bsRepoStub.addTest.returns(Promise.resolve());
+
+      pagesRepoStub.updateById.returns(Promise.reject(testErr));
+
+      pages.edit(payload, true)
+      .catch(function (err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+        Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
+
+        done();
+      });
+    });
+
+    lab.test('returns error if tests fail to update', function (done) {
+      var testErrMsg = 'testing';
+      var testErr = new Error(testErrMsg);
+
+      bsRepoStub.addTest.returns(Promise.resolve());
+
+      pagesRepoStub.create.returns(Promise.resolve());
+
+      testsRepoStub.bulkUpdate.returns(Promise.reject(testErr));
+
+      pages.edit(payload)
+      .catch(function (err) {
+        Code.expect(err).to.be.instanceof(Error);
+        Code.expect(err.message).to.equal(testErrMsg);
+
+        done();
+      });
+    });
+
+    lab.test('adds browserscope test, page, and tests', function (done) {
+      bsRepoStub.addTest.returns(Promise.resolve());
+
+      pagesRepoStub.create.returns(Promise.resolve());
+
+      testsRepoStub.bulkCreate.returns(Promise.resolve());
+
+      pages.edit(payload)
+      .then(done);
+    });
+
+    lab.test('edits browserscope test, page, and tests', function (done) {
+      bsRepoStub.addTest.returns(Promise.resolve());
+
+      pagesRepoStub.updateById.returns(Promise.resolve());
+
+      testsRepoStub.bulkUpdate.returns(Promise.resolve());
+
+      pages.edit(payload, true)
+      .then(done);
+    });
+
+    lab.test('edits page by calling pageRepo.updateById', function (done) {
+      bsRepoStub.addTest.returns(Promise.resolve());
+
+      pagesRepoStub.updateById.returns(Promise.resolve());
+
+      testsRepoStub.bulkUpdate.returns(Promise.resolve());
+
+      pages.edit({id: 222}, true, 1, 123)
+      .then(() => {
+        let call1 = pagesRepoStub.updateById.getCall(0).args;
+        Code.expect(call1[0].id).to.equal(222);
+        Code.expect(call1[1]).to.equal(123);
+        done();
+      });
     });
   });
 

@@ -7,16 +7,16 @@ const table = 'pages';
 module.exports = {
   create: function (payload) {
     return db.genericQuery('INSERT INTO ?? SET ?', [table, payload])
-    .then(function (result) {
-      return result.insertId;
-    });
+      .then(function (result) {
+        return result.insertId;
+      });
   },
 
   get: function (fields, where) {
     return db.genericQuery('SELECT ?? FROM ?? WHERE ? LIMIT 1', [fields, table, where])
-    .then(function (rows) {
-      return rows[0];
-    });
+      .then(function (rows) {
+        return rows[0];
+      });
   },
 
   getLatestVisible: function (count) {
@@ -155,8 +155,13 @@ module.exports = {
   updateHits: function (pageID) {
     return db.genericQuery('UPDATE ?? SET hits = hits + 1 WHERE id = ?', [table, pageID]);
   },
-
   update: function (modify, where) {
     return db.genericQuery('UPDATE ?? SET ? WHERE ?', [table, modify, where]);
+  },
+  updateById: function (modify, pageID) {
+    return db.genericQuery('UPDATE ?? SET ? WHERE id = ?', [table, modify, pageID])
+      .then(function (result) {
+        return pageID;
+      });
   }
 };
