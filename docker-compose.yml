@@ -11,6 +11,8 @@ web:
     PORT: 3000
     SERVICE_3000_CHECK_HTTP: '/health'
     SERVICE_3000_CHECK_INTERVAL: '1s'
+  volumes:
+    - .:/code
 db:
   image: mysql
   volumes_from:
@@ -29,6 +31,10 @@ lb:
     - consul
   ports:
     - '80:80'
+  volumes:
+    - ./docker/nginx.conf:/etc/consul-templates/nginx.conf:ro
+    - ./docker/consul-template.service:/etc/service/consul-template/run:ro
+    - ./docker/nginx.service:/etc/service/nginx/run:ro
 consul:
   image: gliderlabs/consul-server:0.6
   command: [-bootstrap, -advertise, 127.0.0.1, -client, 0.0.0.0]
