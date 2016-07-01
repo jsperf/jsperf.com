@@ -10,6 +10,7 @@ RUN unzip /tmp/consul-template.zip -d /usr/local/bin
 ADD nginx.service /etc/service/nginx/run
 ADD consul-template.service /etc/service/consul-template/run
 
+RUN mkdir /run/nginx
 ADD nginx.conf /etc/consul-templates/nginx.conf
 
 CMD ["/sbin/runsvdir", "/etc/service"]
