@@ -28,7 +28,7 @@ exports.register = function (server, options, next) {
           const isAdmin = request.session.get('admin');
 
           reply.view('edit/index', {
-            benchmark: true,
+            benchmark: false,
             showAtom: {
               slug: request.path.slice(1) // remove slash
             },
