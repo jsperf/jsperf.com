@@ -10,7 +10,8 @@ var Config = require('../../../../config');
 
 var pagesServiceStub = {
   updateHits: function () {},
-  getBySlug: function () {}
+  getBySlug: function () {},
+  getVisibleBySlugWithRevisions: () => {}
 };
 var debugSpy = sinon.spy();
 
@@ -40,15 +41,6 @@ lab.beforeEach(function (done) {
     port: Config.get('/port/web')
   });
 
-  server.register([ AuthPlugin ], function () {
-    server.auth.strategy('session', 'cookie', {
-      password: 'testing',
-      cookie: 'sid-jsperf',
-      redirectTo: false,
-      isSecure: false
-    });
-  });
-
   server.views({
     engines: {
       hbs: require('handlebars')
@@ -64,6 +56,15 @@ lab.experiment('test', function () {
   const slug = 'oh-yea';
 
   lab.beforeEach(function (done) {
+    server.register([ AuthPlugin ], function () {
+      server.auth.strategy('session', 'cookie', {
+        password: 'testing',
+        cookie: 'sid-jsperf',
+        redirectTo: false,
+        isSecure: false
+      });
+    });
+
     request = {
       method: 'GET',
       url: '/' + slug
@@ -361,6 +362,63 @@ lab.experiment('test', function () {
           done();
         });
       });
+    });
+  });
+});
+
+lab.experiment('atom', () => {
+  lab.beforeEach(done => {
+    request = {
+      method: 'GET',
+      url: '/my-test.atom'
+    };
+
+    pagesServiceStub.getVisibleBySlugWithRevisions = sinon.stub();
+
+    done();
+  });
+
+  lab.test('not found', done => {
+    pagesServiceStub.getVisibleBySlugWithRevisions.returns(Promise.reject(new Error('Not found')));
+
+    server.inject(request, response => {
+      Code.expect(response.statusCode).to.equal(404);
+      done();
+    });
+  });
+
+  lab.test('it responds with atom feed', done => {
+    pagesServiceStub.getVisibleBySlugWithRevisions = slug => {
+      var d = new Date();
+      return Promise.resolve([
+        {
+          published: d
+        },
+        [
+          {
+            published: d,
+            updated: d
+          }
+        ]
+      ]);
+    };
+
+    server.inject(request, response => {
+      Code.expect(response.statusCode).to.equal(200);
+      Code.expect(response.headers['content-type']).to.equal('application/atom+xml;charset=UTF-8');
+      Code.expect(response.result).to.be.string().and.to.startWith('<feed').and.to.contain('<entry>');
+
+      done();
+    });
+  });
+
+  lab.test('it responds with generic error', done => {
+    pagesServiceStub.getVisibleBySlugWithRevisions = cnt => Promise.reject(new Error());
+
+    server.inject(request, response => {
+      Code.expect(response.statusCode).to.equal(500);
+
+      done();
     });
   });
 });

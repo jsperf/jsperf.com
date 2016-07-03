@@ -117,5 +117,27 @@ module.exports = {
       values.push(comments);
       return values;
     });
+  },
+
+  getVisibleBySlugWithRevisions: slug => {
+    debug('getVisibleBySlugWithRevisions', arguments);
+    const values = [];
+
+    // can we find the page?
+    return pagesRepo.getVisibleBySlug(slug, 1)
+      .then(pages => {
+        if (pages.length === 0) {
+          throw new Error('Not found');
+        }
+
+        values.push(pages[0]);
+
+        // find other revisions of page
+        return pagesRepo.findVisibleBySlug(slug);
+      })
+      .then(revisions => {
+        values.push(revisions);
+        return values;
+      });
   }
 };

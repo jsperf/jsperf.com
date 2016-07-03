@@ -89,6 +89,15 @@ module.exports = {
     );
   },
 
+  getVisibleBySlug: (slug, rev) => {
+    debug('getVisibleBySlug', arguments);
+
+    return db.genericQuery(
+      'SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ? AND visible = ?',
+      [table, slug, table, slug, rev, 'y']
+    );
+  },
+
   find: function (searchTerms) {
     // SELECT * FROM (
     //   SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount
@@ -119,6 +128,15 @@ module.exports = {
     return db.genericQuery(
       'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
       [slug]
+    );
+  },
+
+  findVisibleBySlug: slug => {
+    debug('findBySlug', arguments);
+
+    return db.genericQuery(
+      'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
+      [slug, 'y']
     );
   },
 

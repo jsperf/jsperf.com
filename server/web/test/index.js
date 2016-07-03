@@ -9,7 +9,7 @@ exports.register = function (server, options, next) {
     method: 'GET',
     path: '/{testSlug}/{rev?}',
     handler: function (request, reply) {
-      const rev = request.params.rev ? request.params.rev : 1;
+      const rev = request.params.rev || 1;
 
       pagesService.getBySlug(request.params.testSlug, rev)
       .then(function (values) {
@@ -87,7 +87,33 @@ exports.register = function (server, options, next) {
     }
   });
 
-  // TODO: atom feed
+  server.route({
+    method: 'GET',
+    path: '/{testSlug}.atom',
+    handler: (request, reply) => {
+      pagesService.getVisibleBySlugWithRevisions(request.params.testSlug)
+        .then(values => {
+          const model = {
+            page: values[0],
+            revisions: values[1]
+          };
+
+          reply
+            .view('test/index-atom', model, {
+              layout: false
+            })
+            .header('Content-Type', 'application/atom+xml;charset=UTF-8')
+            .header('Last-Modified', model.page.updated.toString());
+        })
+        .catch(err => {
+          if (err.message === 'Not found') {
+            reply(Boom.notFound('The page was not found'));
+          } else {
+            reply(err);
+          }
+        });
+    }
+  });
 
   return next();
 };
