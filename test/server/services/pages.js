@@ -450,4 +450,71 @@ lab.experiment('Pages Service', function () {
       });
     });
   });
+
+  lab.experiment('getVisibleBySlugWithRevisions', () => {
+    const slug = 'example';
+    const rev = 1;
+
+    lab.beforeEach(done => {
+      pagesRepoStub.getVisibleBySlug = s.stub();
+      pagesRepoStub.findVisibleBySlug = s.stub();
+
+      done();
+    });
+
+    lab.test('rejects with error from getting page by stub', done => {
+      const testErrMsg = 'testing';
+      const testErr = new Error(testErrMsg);
+      pagesRepoStub.getVisibleBySlug.returns(Promise.reject(testErr));
+
+      pages.getVisibleBySlugWithRevisions(slug)
+        .catch(err => {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
+
+          done();
+        });
+    });
+
+    lab.test('rejects with error if page not found', done => {
+      pagesRepoStub.getVisibleBySlug.returns(Promise.resolve([]));
+
+      pages.getVisibleBySlugWithRevisions(slug, rev)
+        .catch(err => {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal('Not found');
+
+          done();
+        });
+    });
+
+    lab.test('rejects with error from finding revisions', done => {
+      var testErrMsg = 'testing';
+      var testErr = new Error(testErrMsg);
+      pagesRepoStub.getVisibleBySlug.returns(Promise.resolve([{ id: 1, browserscopeID: 'abc123' }]));
+      pagesRepoStub.findVisibleBySlug.returns(Promise.reject(testErr));
+
+      pages.getVisibleBySlugWithRevisions(slug, rev)
+        .catch(err => {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
+
+          done();
+        });
+    });
+
+    lab.test('resolves with page and revisions', done => {
+      const mockPages = [];
+      pagesRepoStub.getVisibleBySlug.returns(Promise.resolve([{ id: 1, browserscopeID: 'abc123' }]));
+      pagesRepoStub.findVisibleBySlug.returns(Promise.resolve(mockPages));
+
+      pages.getVisibleBySlugWithRevisions(slug, rev)
+        .then(values => {
+          Code.expect(values[0].id).to.equal(1);
+          Code.expect(values[1]).to.equal(mockPages);
+
+          done();
+        });
+    });
+  });
 });

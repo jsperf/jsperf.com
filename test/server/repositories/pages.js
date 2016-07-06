@@ -196,6 +196,25 @@ lab.experiment('Pages Repository', function () {
     });
   });
 
+  lab.experiment('getVisibleBySlug', () => {
+    lab.test('returns page given slug and rev', done => {
+      const slug = 'test-slug';
+      const rev = 1;
+      dbStub.genericQuery.returns(Promise.resolve({}));
+
+      pages.getVisibleBySlug(slug, rev)
+        .then(page => {
+          Code.expect(page).to.be.object();
+          Code.expect(dbStub.genericQuery.calledWithExactly(
+            'SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ? AND visible = ?',
+            [table, slug, table, slug, rev, 'y']
+          )).to.be.true();
+
+          done();
+        });
+    });
+  });
+
   lab.experiment('find', function () {
     lab.test('returns search results', function (done) {
       var searchTerms = 'test query';
@@ -230,6 +249,24 @@ lab.experiment('Pages Repository', function () {
 
         done();
       });
+    });
+  });
+
+  lab.experiment('findVisibleBySlug', () => {
+    lab.test('returns query results', done => {
+      var slug = 'oh-yea';
+      dbStub.genericQuery.returns(Promise.resolve([]));
+
+      pages.findVisibleBySlug(slug)
+        .then(p => {
+          Code.expect(p).to.be.array();
+          Code.expect(dbStub.genericQuery.calledWithExactly(
+            'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
+            [slug, 'y']
+          )).to.be.true();
+
+          done();
+        });
     });
   });
 
