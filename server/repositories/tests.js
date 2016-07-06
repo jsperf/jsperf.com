@@ -2,7 +2,6 @@
 // TODO make hapi plugin
 var debug = require('debug')('jsperf:repositories:tests');
 var db = require('../lib/db');
-var Promise = require('bluebird');
 
 const table = 'tests';
 
@@ -44,11 +43,14 @@ module.exports = {
         }
       }
     });
+    return Promise.all(queries).then((results) => {
+      results.forEach((result) => {
+        if (result.affectedRows !== 1) {
+          throw new Error('Not all tests inserted');
+        }
+      });
 
-    return Promise.each(queries, result => {
-      if (result.affectedRows !== 1) {
-        throw new Error('Not all tests inserted');
-      }
+      return Promise.resolve(results);
     });
   },
 

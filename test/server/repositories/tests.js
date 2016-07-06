@@ -125,7 +125,6 @@ lab.experiment('Tests Repository', function () {
           call1 = Hoek.flatten(call1).join(',');
 
           Code.expect(call1).to.equal('INSERT INTO ?? (??) VALUES (1, `t1`, `n`, `a = 1`),tests,pageID,title,defer,code');
-        }).finally(() => {
           done();
         });
     });
@@ -137,7 +136,7 @@ lab.experiment('Tests Repository', function () {
         .then(results => {
           Code.expect(results[0].affectedRows).to.equal(1);
           Code.expect(results[1].affectedRows).to.equal(1);
-        }).finally(() => {
+
           done();
         });
     });
@@ -156,7 +155,6 @@ lab.experiment('Tests Repository', function () {
 
           Code.expect(call2).to.equal('UPDATE tests SET title = `t2`, defer =  `n` , code =  `a = 2` WHERE pageID = 1 AND testID = 321');
           Code.expect(call1).to.equal('UPDATE tests SET title = `t1`, defer =  `n` , code =  `a = 1` WHERE pageID = 1 AND testID = 123');
-        }).finally(() => {
           done();
         });
     });
@@ -230,7 +228,6 @@ lab.experiment('Tests Repository', function () {
         .catch(err => {
           Code.expect(err).to.be.instanceof(Error);
           Code.expect(err.message).to.equal('Not all tests inserted');
-        }).finally(() => {
           done();
         });
     });
