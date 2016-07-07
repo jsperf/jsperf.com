@@ -1,3 +1,4 @@
+'use strict';
 var Boom = require('boom');
 var debug = require('debug')('jsperf:web:test');
 var hljs = require('highlight.js');
@@ -76,6 +77,39 @@ exports.register = function (server, options, next) {
           stripped: stripped,
           page: page
         });
+      })
+      .catch(function (err) {
+        if (err.message === 'Not found') {
+          reply(Boom.notFound('The page was not found'));
+        } else {
+          reply(err);
+        }
+      });
+    }
+  });
+
+  // allows owner or admin to publish a test making it visible to the public
+  server.route({
+    method: 'GET',
+    path: '/{testSlug}/{rev}/publish',
+    handler: function (request, reply) {
+      pagesService.getBySlug(request.params.testSlug, request.params.rev)
+      .then(function (values) {
+        const page = values[0];
+        const own = request.session.get('own') || {};
+        const isOwn = own[page.id];
+        const isAdmin = request.session.get('admin');
+
+        if (isOwn || isAdmin) {
+          return pagesService.publish(page.id);
+        }
+
+        // whoever is requesting this doesn't own it so don't let them know it exists
+        throw new Error('Not found');
+      })
+      .then(function () {
+        debug('publish finished', arguments);
+        reply.redirect(`/${request.params.testSlug}/${request.params.rev}`);
       })
       .catch(function (err) {
         if (err.message === 'Not found') {

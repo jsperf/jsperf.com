@@ -11,7 +11,8 @@ var Config = require('../../../../config');
 var pagesServiceStub = {
   updateHits: function () {},
   getBySlug: function () {},
-  getVisibleBySlugWithRevisions: () => {}
+  getVisibleBySlugWithRevisions: () => {},
+  publish: function () {}
 };
 var debugSpy = sinon.spy();
 
@@ -52,9 +53,9 @@ lab.beforeEach(function (done) {
   server.register(plugins, done);
 });
 
-lab.experiment('test', function () {
-  const slug = 'oh-yea';
+const slug = 'oh-yea';
 
+lab.experiment('test', function () {
   lab.beforeEach(function (done) {
     server.register([ AuthPlugin ], function () {
       server.auth.strategy('session', 'cookie', {
@@ -361,6 +362,79 @@ lab.experiment('test', function () {
 
           done();
         });
+      });
+    });
+  });
+});
+
+lab.experiment('publish', () => {
+  lab.beforeEach((done) => {
+    server.register([ AuthPlugin ], function () {
+      server.auth.strategy('session', 'cookie', {
+        password: 'testing',
+        cookie: 'sid-jsperf',
+        redirectTo: false,
+        isSecure: false
+      });
+    });
+
+    request = {
+      method: 'GET',
+      url: `/${slug}/1/publish`
+    };
+
+    pagesServiceStub.getBySlug = sinon.stub();
+    pagesServiceStub.publish = sinon.stub().returns(Promise.resolve());
+
+    done();
+  });
+
+  lab.test('handle error', (done) => {
+    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('testing')));
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(500);
+
+      done();
+    });
+  });
+
+  lab.test('404 when not owner or admin', (done) => {
+    pagesServiceStub.getBySlug.returns(Promise.resolve([{}]));
+
+    server.inject(request, (res) => {
+      Code.expect(res.statusCode).to.equal(404);
+
+      done();
+    });
+  });
+
+  lab.test('makes page visible', (done) => {
+    pagesServiceStub.getBySlug.returns(Promise.resolve([{
+      id: 1
+    }]));
+
+    server.route({
+      method: 'GET', path: '/setsession',
+      config: {
+        handler: function (req, reply) {
+          var owns = {1: true};
+          req.session.set('own', owns);
+          return reply('session set');
+        }
+      }
+    });
+
+    server.inject('/setsession', function (res) {
+      var header = res.headers['set-cookie'];
+      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
+      request.headers = {};
+      request.headers.cookie = 'session=' + cookie[1];
+
+      server.inject(request, (res) => {
+        Code.expect(res.statusCode).to.equal(302);
+
+        done();
       });
     });
   });
