@@ -155,5 +155,17 @@ module.exports = {
         values.push(revisions);
         return values;
       });
+  },
+
+  publish: function (pageID) {
+    const now = new Date();
+    const modify = {
+      visible: 'y',
+      updated: now,
+      published: now
+    };
+
+    debug('publish', pageID, modify);
+    return pagesRepo.updateById(modify, pageID);
   }
 };

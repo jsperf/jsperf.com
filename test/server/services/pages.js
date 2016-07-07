@@ -648,4 +648,21 @@ lab.experiment('Pages Service', function () {
         });
     });
   });
+
+  lab.experiment('publish', () => {
+    lab.test('updates page to be visible', (done) => {
+      pagesRepoStub.updateById = s.stub().returns(Promise.resolve());
+
+      pages.publish(1)
+        .then(() => {
+          Code.expect(pagesRepoStub.updateById.args[0][0]).to.include({
+            visible: 'y'
+          });
+          Code.expect(pagesRepoStub.updateById.args[0][1]).to.equal(1);
+
+          done();
+        })
+        .catch(done);
+    });
+  });
 });
