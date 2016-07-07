@@ -1,0 +1,148 @@
+{{#if authorized}}
+<h1>Editing <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}">{{addCode page.title}}</a></h1>
+<p>
+{{#if isOwn}}
+Since it’s your test case, this edit will overwrite the current revision without creating a new URL.
+{{else}}
+This edit will create a new revision.
+{{/if}}
+</p>
+{{error page.genError tag="p"}}
+<form method="post">
+  <fieldset>
+    <h3>Your details (optional)</h3>
+    <div>
+      <label for="author">Name</label>
+        <input type="text" name="author" id="author"
+        {{#if isAdmin}}
+          value="{{page.author}}"
+        {{else if isOwn}}
+          value="{{page.author}}"
+        {{/if}}
+        >
+    </div>
+    <div>
+      <label for="author-email">Email </label>
+      <label class="inline">
+        <input type="email" name="author-email" id="author-email"
+          {{#if isAdmin}}
+            value="{{page.authorEmail}}"
+          {{else if isOwn}}
+            value="{{page.authorEmail}}"
+          {{/if}}
+        > (won’t be displayed; might be used for Gravatar)
+      </label>
+    </div>
+    <div>
+      <label for="author-url">URL </label>
+      <input type="url" name="author-url" id="author-url"
+      {{#if isAdmin}}
+        value="{{page.authorURL}}"
+      {{else if isOwn}}
+        value="{{page.authorURL}}"
+      {{/if}}
+      >
+    </div>
+  </fieldset>
+  <fieldset>
+    <h3>Test case details</h3>
+    <div>
+      <label for="title">Title <em title="This field is required">*</em> </label>
+      <input type="text" name="title" id="title" value="{{page.title}}" required>
+      {{error page.titleError}}
+    </div>
+    <div>
+      <label for="visible">Published </label>
+      <label class="inline">
+        <input type="checkbox" name="visible" id="visible" value="y"
+        {{#compare page.visible 'y' operator="==="}}
+        checked
+        {{/compare}}
+        >
+        {{#compare page.visible 'y' operator="==="}}
+        (uncheck if you want to fiddle around before making the page public)
+        {{/compare}}
+        {{#compare page.visible 'n' operator="==="}}
+        (check when your test case is finished)
+        {{/compare}}
+      </label>
+    </div>
+    <div>
+      <label for="info">Description
+        <span>(in case you feel further explanation is needed)</span>
+        <span>(Markdown syntax is allowed)</span>
+      </label>
+      <textarea name="info" id="info" maxlength="16777215">{{page.info}}</textarea>
+    </div>
+    <fieldset>
+      <h3>Preparation code</h3>
+      <div>
+        <label for="prep-html">Preparation code HTML
+          <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)
+          </span>
+          <span>(useful when testing DOM operations or including libraries)
+          </span>
+        </label>
+        <textarea name="prep-html" id="prep-html" maxlength="{{mediumTextLength}}">{{page.initHTML}}</textarea>
+        <p id="add-libraries">Include JavaScript libraries as follows: <code>&lt;script src="https://cdn.example.com/library.js">&lt;/script></code></p>
+        </p>
+      </div>
+      <div>
+        <label for="setup">Define
+          <code>setup</code> for all tests
+          <span>(variables, functions, arrays or other objects that will be used in the tests)
+          </span>
+          <span>(runs before each clocked test loop, outside of the timed code region)
+          </span>
+          <span>(e.g. define local test variables, reset global variables, clear <code>canvas</code>, etc.)
+          </span>
+          <span>(<a href="/faq#setup-teardown">see FAQ</a>)
+          </span>
+        </label>
+        <textarea name="setup" id="setup" maxlength="16777215">{{page.setup}}</textarea>
+      </div>
+      <div>
+        <label for="teardown">Define <code>teardown</code> for all tests
+          <span>(runs after each clocked test loop, outside of the timed code region)
+          </span>
+          <span>(<a href="/faq#setup-teardown">see FAQ</a>)
+          </span>
+        </label>
+        <textarea name="teardown" id="teardown" maxlength="16777215">{{page.teardown}}</textarea>
+      </div>
+    </fieldset>
+    <fieldset id="tests">
+      <h3>Code snippets to compare</h3>
+      {{#each page.test}}
+      <fieldset>
+        <h4>Test {{@index}}</h4>
+        <div>
+          <label for="test[{{@index}}][title]">Title </label>
+          <input type="text" name="test[{{@index}}][title]" id="test[{{@index}}][title]" value="{{title}}">
+          {{error codeTitleError}}
+        </div>
+        <div>
+          <label for="test[{{@index}}][defer]">Async </label>
+          <label class="inline">
+            <input type="checkbox" value="y" {{#compare defer "y" operator="==="}} checked{{/compare}}> (check if this is an <a href="/faq#async">asynchronous test</a>)
+          </label>
+        </div>
+        <div>
+          <label for="test[{{@index}}][code]">Code
+          </label>
+          <textarea name="test[{{@index}}][code]" id="test[{{@index}}][code]" class="code-js" maxlength="16777215">{{code}}</textarea>
+          <input type="hidden" name="test[{{@index}}][id]" value="{{testID}}">
+          {{error codeError tag="p"}}
+        </div>
+      </fieldset>
+      {{/each}}
+    </fieldset>
+    <div class="buttons">
+      <input type="submit" class="submit" value="Save test case" title="Save and view test case">
+    </div>
+  </fieldset>
+</form>
+{{else}}
+   <a class="login" href="/auth/github"><i class="fa fa-github"></i> Login with GitHub to Edit Test Cases</a>
+{{/if}}
+

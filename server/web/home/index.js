@@ -1,63 +1,11 @@
 var _ = require('lodash');
 var Joi = require('joi');
 
-var regex = require('../../lib/regex');
-
+const defaults = require('../../lib/defaults');
+const schema = require('../../lib/schema');
 var pagesService = require('../../services/pages');
 
-const mediumTextLength = 16777215;
-const mediumText = Joi.string().allow('').max(mediumTextLength);
-const pageProperties = Joi.object().keys({
-  author: Joi.string().allow('').min(1),
-  authorEmail: Joi.string().allow('').email(),
-  authorURL: Joi.string().allow('').regex(new RegExp(regex.url, 'i'), 'url'),
-  title: Joi.string().required().trim().min(1).max(255),
-  slug: Joi.string().required().trim().min(1).max(55).regex(new RegExp(regex.slug), 'slug'),
-  visible: Joi.string().default('n').valid('y', 'n'),
-  info: mediumText,
-  initHTML: mediumText,
-  setup: mediumText,
-  teardown: mediumText,
-  test: Joi.array().required().min(2).includes(Joi.object().required().keys({
-    title: Joi.string().required().trim().min(1).max(255),
-    defer: Joi.string().default('n').valid('y', 'n'),
-    code: Joi.string().required().trim().min(1).max(mediumTextLength)
-  }))
-});
-
 exports.register = function (server, options, next) {
-  var defaultContext = {
-    home: true,
-    showAtom: {
-      slug: 'browse'
-    },
-    jsClass: true,
-    mainJS: true,
-    mediumTextLength: mediumTextLength,
-    titleError: null,
-    slugError: null,
-    genError: null,
-    slugPattern: regex.slug,
-    author: '',
-    authorEmail: '',
-    authorURL: '',
-    title: '',
-    slug: '',
-    visible: '',
-    info: '',
-    initHTML: '',
-    setup: '',
-    teardown: ''
-  };
-
-  var defaultTest = {
-    title: '',
-    defer: '',
-    code: '',
-    codeTitleError: null,
-    codeError: null
-  };
-
   server.route({
     method: 'GET',
     path: '/',
@@ -74,8 +22,8 @@ exports.register = function (server, options, next) {
         authorized = true;
       }
 
-      reply.view('home/index', _.assign(defaultContext, {
-        test: [defaultTest, defaultTest],
+      reply.view('home/index', _.assign(defaults.testPageContext, {
+        test: [defaults.test, defaults.test],
         authorized: authorized
       }));
     }
@@ -93,10 +41,10 @@ exports.register = function (server, options, next) {
           errObj.genError = errObj.message;
         }
 
-        reply.view('home/index', _.assign(defaultContext, request.payload, {authorized: true}, errObj)).code(400);
+        reply.view('home/index', _.assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
-      Joi.validate(request.payload, pageProperties, function (er, pageWithTests) {
+      Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {
         if (er) {
           var errObj = {};
           // `abortEarly` option defaults to `true` so can rely on 0 index
@@ -106,10 +54,10 @@ exports.register = function (server, options, next) {
 
             switch (valErr.path) {
               case 'title':
-                errObj.titleError = 'You must enter a title for this test case.';
+                errObj.titleError = defaults.errors.title;
                 break;
               case 'slug':
-                errObj.slugError = 'The slug can only contain alphanumeric characters and hyphens.';
+                errObj.slugError = defaults.errors.slug;
                 break;
               default:
                 // test errors are deeply nested because objects inside array
@@ -118,17 +66,17 @@ exports.register = function (server, options, next) {
 
                 switch (testErr.context.key) {
                   case 'title':
-                    request.payload.test[idx].codeTitleError = 'Please enter a title for this code snippet.';
+                    request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
                     break;
                   case 'code':
-                    request.payload.test[idx].codeError = 'Please enter a code snippet.';
+                    request.payload.test[idx].codeError = defaults.errors.code;
                     break;
                   default:
                     throw new Error('unknown validation error');
                 }
             }
           } catch (ex) {
-            errObj.genError = 'Please review required fields and save again.';
+            errObj.genError = defaults.errors.general;
           }
 
           errResp(errObj);
@@ -140,7 +88,7 @@ exports.register = function (server, options, next) {
           .then(function (isAvail) {
             if (!isAvail) {
               errResp({
-                slugError: 'This slug is already in use. Please choose another one.'
+                slugError: defaults.errors.slugDupe
               });
             } else {
               return pagesService.create(payload);
