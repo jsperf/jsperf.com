@@ -1,19 +1,21 @@
 'use strict';
+
 var Boom = require('boom');
 var debug = require('debug')('jsperf:web:test');
 var hljs = require('highlight.js');
-var pagesService = require('../../services/pages');
 var regex = require('../../lib/regex');
+const Joi = require('joi');
+const schema = require('../../lib/schema');
+const defaults = require('../../lib/defaults');
+
+// services
+const pagesService = require('../../services/pages');
+const commentsService = require('../../services/comments');
 
 exports.register = function (server, options, next) {
-  server.route({
-    method: 'GET',
-    path: '/{testSlug}/{rev?}',
-    handler: function (request, reply) {
-      const rev = request.params.rev || 1;
-
-      pagesService.getBySlug(request.params.testSlug, rev)
-      .then(function (values) {
+  const getTestPage = request =>
+    pagesService.getBySlug(request.params.testSlug, request.params.rev || 1)
+      .then(values => {
         var page = values[0];
         page.test = values[1];
         page.revision = values[2];
@@ -62,7 +64,7 @@ exports.register = function (server, options, next) {
         const isOwn = own[page.id];
         const isAdmin = request.session.get('admin');
 
-        reply.view('test/index', {
+        return {
           benchmark: true,
           showAtom: {
             slug: request.path.slice(1) // remove slash
@@ -75,16 +77,84 @@ exports.register = function (server, options, next) {
           hasPrep: hasPrep,
           hasSetupOrTeardown: hasSetupOrTeardown,
           stripped: stripped,
-          page: page
-        });
-      })
-      .catch(function (err) {
-        if (err.message === 'Not found') {
-          reply(Boom.notFound('The page was not found'));
-        } else {
-          reply(err);
-        }
+          page: page,
+          authorized: request.auth.isAuthenticated
+        };
       });
+
+  server.route({
+    method: 'GET',
+    path: '/{testSlug}/{rev?}',
+    config: {
+      auth: {
+        mode: 'try',
+        strategy: 'session'
+      }
+    },
+    handler: function (request, reply) {
+      getTestPage(request)
+        .then(model => reply.view('test/index', model))
+        .catch(err => {
+          if (err.message === 'Not found') {
+            reply(Boom.notFound('The page was not found'));
+          } else {
+            reply(err);
+          }
+        });
+    }
+  });
+
+  // comment route
+  server.route({
+    method: 'POST',
+    path: '/{testSlug}/{rev?}',
+    config: {
+      auth: {
+        mode: 'try',
+        strategy: 'session'
+      }
+    },
+    handler: (request, reply) => {
+      if (!request.auth.isAuthenticated) {
+        return reply(Boom.unauthorized('Unauthorized'));
+      }
+
+      getTestPage(request)
+        .then(model =>
+          Joi.validate(request.payload, schema.comment, {abortEarly: false}, (err, payload) => {
+            if (err) {
+              let errObj = {};
+              let errMsg;
+
+              err.details.forEach(detail => {
+                errMsg = defaults.errors.comment[detail.path];
+                if (errMsg) {
+                  errObj[`${detail.path}Error`] = errMsg;
+                }
+              });
+
+              reply.view('test/index', Object.assign(model, errObj, request.payload));
+            } else {
+              commentsService.create(
+                model.page.id,
+                request.headers['x-forwarded-for'] || request.info.remoteAddress,
+                payload
+              ).then(comment => {
+                model.page.comments.push(comment);
+                reply.view('test/index', model);
+              }).catch(() => {
+                reply.view('test/index', Object.assign(model, request.payload)).code(400);
+              });
+            }
+          })
+        )
+        .catch(err => {
+          if (err.message === 'Not found') {
+            reply(Boom.notFound('The page was not found'));
+          } else {
+            reply(err);
+          }
+        });
     }
   });
 

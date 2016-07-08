@@ -22,4 +22,13 @@ lab.experiment('Schema Library', function () {
       done();
     });
   });
+
+  lab.experiment('comment', function () {
+    lab.test('is a Joi schema', function (done) {
+      const joiDesc = schema.comment.describe();
+      Code.expect(joiDesc.type).to.equal('object');
+
+      done();
+    });
+  });
 });

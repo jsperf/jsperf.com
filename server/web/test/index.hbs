@@ -165,40 +165,42 @@
     {{/each}}
   </div>
 
-  {{!-- TODO: implement adding comments in v2.1 (remove disabled from submit btn)
-  <?php echo $item->slug . ($item->revision > 1 ? '/' . $item->revision : ''); ?>#comment-form
-  --}}
-  <form action="/comments" method="post" id="comment-form">
-    <fieldset>
-      <h2>Add a comment</h2>
-      <div>
-        <label for="author">Name <em title="This field is required">*</em> </label>
-        <input type="text" name="author" id="author" {{#if author}}value={{author}}{{/if}} required>
-        {{#if nameError}} {{nameError}}{{/if}}
-      </div>
-      <div>
-        <label for="author-email">Email <em title="This field is required">*</em> </label>
-        {{#unless mailError}}<label class="inline">{{/unless}}
-          <input type="email" name="author-email" id="author-email" {{#if authorEmail}}value={{authorEmail}}{{/if}} required>
-          {{#if mailError}} {{mailError}}{{else}}(only used for Gravatar)</label>{{/if}}
-      </div>
-      <div>
-        <label for="author-url">URL </label>
-        <input type="url" name="author-url" id="author-url" {{#if authorURL}}value={{authorURL}}{{/if}}>
-      </div>
-      <div>
-        <label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label>
-        <textarea name="message" id="message" maxlength="16777215" required>{{#if message}}{{message}}{{/if}}</textarea>
-        {{#if msgError}} {{msgError}}{{/if}}
-      </div>
-      <div class="question">
-        <label for="question">Are you a spammer? <span>(just answer the question)</span> </label>
-        <input type="text" name="question" id="question" {{#if question}}value={{question}}{{/if}}>
-        {{#if spamError}} {{spamError}}{{/if}}
-      </div>
-      <div class="buttons">
-        <input type="submit" class="submit" value="Add comment" disabled>
-      </div>
-    </fieldset>
-  </form>
+  {{#if authorized}}
+    <form action="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}#comment-form" method="post" id="comment-form">
+      <fieldset>
+        <h2>Add a comment</h2>
+        <div>
+          <label for="author">Name <em title="This field is required">*</em> </label>
+          <input type="text" name="author" id="author" {{#if author}}value={{author}}{{/if}} required>
+          {{#if authorError}} {{authorError}}{{/if}}
+        </div>
+        <div>
+          <label for="authorEmail">Email <em title="This field is required">*</em> </label>
+          {{#unless mailError}}<label class="inline">{{/unless}}
+            <input type="email" name="authorEmail" id="authorEmail" {{#if authorEmail}}value={{authorEmail}}{{/if}} required>
+            {{#if authorEmailError}} {{authorEmailError}}{{else}}(only used for Gravatar)</label>{{/if}}
+        </div>
+        <div>
+          <label for="authorURL">URL </label>
+          <input type="url" name="authorURL" id="authorURL" {{#if authorURL}}value={{authorURL}}{{/if}}>
+          {{#if authorURLError}} {{authorURLError}}{{/if}}
+        </div>
+        <div>
+          <label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label>
+          <textarea name="message" id="message" maxlength="16777215" required>{{#if message}}{{message}}{{/if}}</textarea>
+          {{#if messageError}} {{messageError}}{{/if}}
+        </div>
+        <div class="question">
+          <label for="question">Are you a spammer? <span>(just answer the question)</span> </label>
+          <input type="text" name="question" id="question" {{#if question}}value={{question}}{{/if}}>
+          {{#if questionError}} {{questionError}}{{/if}}
+        </div>
+        <div class="buttons">
+          <input type="submit" class="submit" value="Add comment">
+        </div>
+      </fieldset>
+    </form>
+  {{else}}
+      <a class="login" href="/auth/github"><i class="fa fa-github"></i> Login with GitHub to Edit Test Cases</a>
+  {{/if}}
 </section>

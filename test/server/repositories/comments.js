@@ -1,30 +1,30 @@
-var Lab = require('lab');
-var Code = require('code');
-var proxyquire = require('proxyquire');
-var sinon = require('sinon');
+const Lab = require('lab');
+const Code = require('code');
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
-var dbStub = {};
+const dbStub = {};
 
-var comments = proxyquire('../../../server/repositories/comments', {
+const comments = proxyquire('../../../server/repositories/comments', {
   '../lib/db': dbStub
 });
 
-var lab = exports.lab = Lab.script();
+const lab = exports.lab = Lab.script();
 
-lab.experiment('Comments Repository', function () {
-  lab.beforeEach(function (done) {
+lab.experiment('Comments Repository', () => {
+  lab.beforeEach(done => {
     dbStub.genericQuery = sinon.stub();
 
     done();
   });
 
-  lab.experiment('findByPageID', function () {
-    lab.test('selects all from comments where pageID', function (done) {
+  lab.experiment('findByPageID', () => {
+    lab.test('selects all from comments where pageID', done => {
       var pageID = 1;
       dbStub.genericQuery.returns(Promise.resolve([]));
 
       comments.findByPageID(pageID)
-      .then(function () {
+      .then(() => {
         Code.expect(
           dbStub.genericQuery.calledWithExactly(
             'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
@@ -34,6 +34,56 @@ lab.experiment('Comments Repository', function () {
 
         done();
       });
+    });
+  });
+
+  lab.experiment('create', () => {
+    var payload;
+    var insertId;
+
+    lab.before(done => {
+      payload = {
+        pageID: 123
+      };
+
+      insertId = 1;
+
+      done();
+    });
+
+    lab.test('inserts payload', done => {
+      dbStub.genericQuery.returns(Promise.resolve({ insertId: insertId }));
+
+      comments.create(payload)
+        .then(newId => {
+          Code.expect(
+            dbStub.genericQuery.calledWithExactly(
+              'INSERT INTO ?? SET ?',
+              [
+                'comments',
+                payload
+              ]
+            )
+          ).to.be.true();
+          Code.expect(newId).to.equal(insertId);
+
+          done();
+        });
+    });
+
+    lab.test('returns an error if query failed', done => {
+      var testErrMsg = 'testing';
+      var testErr = new Error(testErrMsg);
+
+      dbStub.genericQuery.returns(Promise.reject(testErr));
+
+      comments.create(payload)
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
+
+          done();
+        });
     });
   });
 });
