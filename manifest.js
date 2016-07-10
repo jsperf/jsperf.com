@@ -8,7 +8,6 @@ var criteria = {
 
 var visionaryContextDefault = {
   cssFile: 'main.css',
-  headTitle: 'jsPerf: JavaScript performance playground',
   scheme: config.get('/scheme'),
   domain: config.get('/domain')
 };
@@ -50,8 +49,7 @@ var manifest = {
         $filter: 'env',
         development: _.assign(visionaryContextDefault, {
           debug: true,
-          cssFile: 'main.src.css?' + Date.now(),
-          headTitle: 'jsPerf-dev'
+          cssFile: 'main.src.css?' + Date.now()
         }),
         $default: visionaryContextDefault
       }
