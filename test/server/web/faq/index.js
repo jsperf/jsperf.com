@@ -22,6 +22,7 @@ lab.beforeEach(function (done) {
       hbs: require('handlebars')
     },
     path: './server/web',
+    layout: true,
     relativeTo: path.join(__dirname, '..', '..', '..', '..')
   });
   server.register(plugins, done);
@@ -65,6 +66,14 @@ lab.experiment('faq', function () {
         'test-availability',
         'additional-features'
       ]);
+
+      done();
+    });
+  });
+
+  lab.test('it shows the title specified in the route', function (done) {
+    server.inject(request, function (response) {
+      Code.expect(response.payload).to.include('<title>Frequently asked questions · jsPerf</title>');
 
       done();
     });
