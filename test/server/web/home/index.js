@@ -79,6 +79,14 @@ lab.experiment('home', function () {
       });
     });
 
+    lab.test('it serves a generic title on pages that does not specify one', function (done) {
+      server.inject(request, function (response) {
+        Code.expect(response.payload).to.include('<title>jsPerf: JavaScript performance playground</title>');
+
+        done();
+      });
+    });
+
     lab.test('it presents a login option to a user if they have not auth’d with GitHub', function (done) {
       server.inject(request, function (response) {
         Code.expect(response.result).to.include('Login with GitHub to Create Test Cases');
