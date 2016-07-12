@@ -10,7 +10,7 @@ module.exports = {
     }
     return new Promise(function (resolve, reject) {
       var conn = mysql.createConnection({
-        host: 'db',
+        host: process.env.DB_ENV_MYSQL_HOST || 'db',
         port: 3306,
         user: process.env.DB_ENV_MYSQL_USER,
         password: process.env.DB_ENV_MYSQL_PASSWORD,
