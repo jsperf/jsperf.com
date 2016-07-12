@@ -1,10 +1,12 @@
 FROM node:5.11.1
 
-ADD ./package.json /code/package.json
 WORKDIR /code
+
+COPY ./package.json /code/package.json
+
 RUN npm install
 
-ADD . /code
+COPY . /code
 
 EXPOSE 3000
 
