@@ -132,6 +132,7 @@ lab.experiment('errors', function () {
 
   lab.test('display a general error page', function (done) {
     server.inject('/web/405', function (response) {
+      Code.expect(response.statusCode).to.equal(500);
       Code.expect(response.result).to.include('something went wrong');
 
       done();
@@ -140,6 +141,7 @@ lab.experiment('errors', function () {
 
   lab.test('bypass custom error pages for all allowed routes', function (done) {
     server.inject('/web/bypass', function (response) {
+      Code.expect(response.statusCode).to.equal(200);
       Code.expect(response.result).to.include('bypassed any boom errors');
 
       done();

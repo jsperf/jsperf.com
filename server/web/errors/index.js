@@ -15,7 +15,7 @@ exports.register = function (server, options, next) {
       return reply.view('errors/' + statusCode).code(statusCode);
     } else {
       debug(request.response);
-      return reply.view('errors/general');
+      return reply.view('errors/general').code(500);
     }
   });
 

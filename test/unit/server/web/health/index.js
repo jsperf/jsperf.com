@@ -43,7 +43,7 @@ lab.experiment('health', function () {
   });
 
   lab.test('it responds unhealthy', function (done) {
-    s.stub(mockDb, 'genericQuery').returns(Promise.reject());
+    s.stub(mockDb, 'genericQuery').returns(Promise.reject(new Error()));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(500);
