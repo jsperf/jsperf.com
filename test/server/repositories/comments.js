@@ -36,4 +36,23 @@ lab.experiment('Comments Repository', function () {
       });
     });
   });
+
+  lab.experiment('delete', () => {
+    lab.test('a comment by id', done => {
+      var commentId = 1;
+      dbStub.genericQuery.returns(Promise.resolve([]));
+
+      comments.delete(commentId)
+        .then(function () {
+          Code.expect(
+            dbStub.genericQuery.calledWithExactly(
+              'DELETE FROM ?? WHERE id = ?',
+              ['comments', commentId]
+            )
+          ).to.be.true();
+
+          done();
+        });
+    });
+  });
 });

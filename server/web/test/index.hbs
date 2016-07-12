@@ -157,6 +157,7 @@
           commented <time datetime="{{DatetoISOString published}}" pubdate>{{relativeDate published}}</time>: <a href="#comment-{{inc @index}}" title="Permanent link to this comment">∞</a>
           {{#if ../isAdmin}}
             <a href="/edit-comment/{{id}}">edit</a>
+            <a href="/comment/delete/{{id}}">delete</a>
           {{/if}}
         </p>
 
