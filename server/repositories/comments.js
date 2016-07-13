@@ -12,5 +12,14 @@ module.exports = {
       'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
       [table, pageID]
     );
+  },
+
+  delete: commentId => {
+    debug('delete', {commentId});
+
+    return db.genericQuery(
+      'DELETE FROM ?? WHERE id = ?',
+      [table, commentId]
+    );
   }
 };
