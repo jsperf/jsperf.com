@@ -19,6 +19,8 @@
 
 #### Docker
 
+jsPerf is available at `localhost` and changes to the codebase can be applied by running `docker-compose build web`.
+
 ##### One-time Setup
 
 _`$MYSQL_PASSWORD` is whatever you chose or generated during `node setup`_
@@ -46,12 +48,30 @@ docker run -d --name jsperfcom_web_man \
 jsperfcom_web
 ```
 
-#### Local
+#### Running jsPerf locally
 
-You’ll need [node.js](https://nodejs.org/en/) and [MySQL](https://www.mysql.com/downloads/) installed.
+It is also possible to run jsPerf locally without installing and using Docker.
+
+##### Setup
+
+You’ll need [Node.js](https://nodejs.org/en/) and [MySQL](https://dev.mysql.com/downloads/mysql/) installed.
+
+Start the MySQL server, create a database, a user, and create the database-tables using the `tables.js` file. Replace with your own credentials.
 
 ```
-npm start
+node setup/tables.js DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf
+```
+
+Add an entry to the hosts file to redirect jsPerf’s database connections to `localhost` (which is where MySQL is likely running) with the following:
+
+```
+127.0.0.1 db
+```
+
+##### Running jsPerf
+
+```
+npm start DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf
 ```
 
 ## Testing
