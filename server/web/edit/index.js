@@ -28,6 +28,7 @@ exports.register = function (server, options, next) {
           const isAdmin = request.session.get('admin');
 
           reply.view('edit/index', {
+            headTitle: page.title,
             benchmark: false,
             showAtom: {
               slug: request.path.slice(1) // remove slash
@@ -64,7 +65,11 @@ exports.register = function (server, options, next) {
         }
         let page = Hoek.applyToDefaults(defaults.testPageContext, request.payload, true);
         Hoek.merge(page, errObj);
-        reply.view('edit/index', {page: page, authorized: true}).code(400);
+        reply.view('edit/index', {
+          headTitle: page.title,
+          page: page,
+          authorized: true
+        }).code(400);
       };
 
       Joi.validate(request.payload, schema.testPage, function (err, pageWithTests) {

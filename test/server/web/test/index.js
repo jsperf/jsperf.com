@@ -47,6 +47,7 @@ lab.beforeEach(function (done) {
       hbs: require('handlebars')
     },
     path: './server/web',
+    layout: true,
     relativeTo: path.join(__dirname, '..', '..', '..', '..')
   });
 
@@ -126,6 +127,7 @@ lab.experiment('test', function () {
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
+      Code.expect(response.payload).to.include('<title>Oh Yea · jsPerf</title>');
 
       done();
     });

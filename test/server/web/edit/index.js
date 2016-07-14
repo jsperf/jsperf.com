@@ -77,6 +77,7 @@ lab.beforeEach(function (done) {
     },
     helpersPath: 'templates/helpers',
     path: './server/web',
+    layout: true,
     relativeTo: path.join(__dirname, '..', '..', '..', '..')
   });
 
@@ -116,6 +117,7 @@ lab.experiment('GET', function () {
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
+      Code.expect(response.payload).to.include('<title>Oh Yea · jsPerf</title>');
 
       done();
     });
@@ -474,6 +476,7 @@ lab.experiment('POST', function () {
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(400);
+        Code.expect(response.payload).to.include('<title>oh · jsPerf</title>');
 
         Code.expect(response.result).to.include(errMsg);
 
