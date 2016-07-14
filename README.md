@@ -13,7 +13,7 @@
 2. Install dependencies: `npm install`
 3. Get a [Browserscope.org](http://www.browserscope.org/) API key by signing in and going to [the settings page](http://www.browserscope.org/user/settings). (You'll need this in the last step)
 4. Register a new OAuth GitHub development application by going to [your settings page in github](https://github.com/settings/applications/new). Take note to copy the "Client ID" and "Client Secret". The callback URL is simply the root url of the application, e.g., `http://localhost:3000`
-5. Setup environment configuration: `npm run setup`
+5. Setup environment configuration: `node setup`
 
 ### Running the server
 
@@ -23,9 +23,13 @@ jsPerf is available at `localhost` and changes to the codebase can be applied by
 
 ##### One-time Setup
 
+_`$MYSQL_PASSWORD` is whatever you chose or generated during `node setup`_
+
 1. Install [Docker Toolbox](https://docs.docker.com/engine/installation/) so you have `docker` and `docker-compose`
 2. Create a Data Volume Container to persist data: `docker create -v /var/lib/mysql --name data-jsperf-mysql mysql /bin/true`
-3. After completing the "Compose" steps below, setup database tables with: `docker-compose run web node /code/setup/tables`
+3. Start Docker Compose in detached mode: `MYSQL_PASSWORD=$MYSQL_PASSWORD docker-compose up`
+4. Setup database tables with: `MYSQL_PASSWORD=$MYSQL_PASSWORD docker-compose run web node /code/setup/tables`
+5. Verify everything is working: `open http://$(docker-machine ip)`
 
 ##### Compose
 
@@ -89,6 +93,21 @@ _If you'd just like to lint and save a little time, you can run `npm run lint` w
 
 _If you're missing code coverage, open `coverage.html` in the root of the project for a detailed visual report._
 
+### End to End
+
+End to end (e2e) testing is done with Selenium. There is a separate Docker Compose file to define the Selenium Grid Hub, Selenium Nodes, and the test runner. Running the e2e test suite is a three step process:
+
+1. Build containers: `docker-compose -f docker-compose.yml -f docker-compose.e2e.yml build`
+2. Start the app along with Selenium: `MYSQL_PASSWORD=$MYSQL_PASSWORD docker-compose -f docker-compose.yml -f docker-compose.e2e.yml up -d`
+  - To scale up available Selenium Nodes to make testing faster, run: `docker-compose -f docker-compose.yml -f docker-compose.e2e.yml scale firefox=5` (_5 is the number of VMs Sauce Labs gives open source projects_)
+3. Run the test suite: `docker-compose -f docker-compose.yml -f docker-compose.e2e.yml run --rm runner npm run test-e2e`
+
+When you're done, you can safely stop and remove all of the containers by running:
+
+```
+docker-compose -f docker-compose.yml -f docker-compose.e2e.yml down
+```
+
 ## Gotchas
 
 - ES6 Template Strings are not supported by esprima which means you can't generate coverage reports which means `npm test` won't pass.
@@ -96,12 +115,12 @@ _If you're missing code coverage, open `coverage.html` in the root of the projec
 ### Adding new dependencies
 
 1. Install using `npm` and either `--save` or `--save-dev`. Do not edit `package.json` manually.
-2. Run `npm run shrinkwrap` to update `npm-shrinkwrap.json`
+2. Run `npm shrinkwrap --dev` to update `npm-shrinkwrap.json`
 
-If you get an error while shrinkwrapping, try removing what you have installed currently, reinstalling based on `package.json` instead of `npm-shrinkwrap.json`, and then shrinkwrap again.
+If you get an error while shrinkwrapping, try pruning your `node_modules` directory by running `npm prune`. If that doesn't work, try removing what you have installed currently, reinstalling based on `package.json` instead of `npm-shrinkwrap.json`, and then shrinkwrap again.
 
 ```
-rm -r node_modules/ && npm install --ignore-shrinkwrap && npm run shrinkwrap
+rm -r node_modules/ && npm install --no-shrinkwrap && npm shrinkwrap --dev
 ```
 
 ## Debugging

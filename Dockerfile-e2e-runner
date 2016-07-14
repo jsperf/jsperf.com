@@ -1,0 +1,13 @@
+FROM mhart/alpine-node:5.11.1
+
+WORKDIR /code
+
+COPY ./package.json /code/package.json
+
+RUN npm install --only=dev
+
+COPY .eslint* /code/
+COPY ./test/e2e /code/test/e2e
+
+# CMD ["npm", "run", "test-e2e"]
+CMD ["/bin/true"]

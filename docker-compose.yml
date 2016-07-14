@@ -12,12 +12,12 @@ web:
     SERVICE_3000_CHECK_HTTP: '/health'
     SERVICE_3000_CHECK_INTERVAL: '1s'
 db:
-  image: mysql
+  image: mysql:5.7
   volumes_from:
     - data-jsperf-mysql
   env_file: .env
   environment:
-    MYSQL_RANDOM_ROOT_PASSWORD: 'True'
+    MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
     MYSQL_PASSWORD: $MYSQL_PASSWORD
     MYSQL_DATABASE: jsperf
     MYSQL_USER: jsperf

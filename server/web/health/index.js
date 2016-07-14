@@ -9,9 +9,7 @@ exports.register = function (server, options, next) {
         .then(function () {
           reply();
         })
-        .catch(function () {
-          reply(new Error('Unhealthy'));
-        });
+        .catch(reply);
     }
   });
 
