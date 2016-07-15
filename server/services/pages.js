@@ -157,6 +157,16 @@ module.exports = {
       });
   },
 
+  deleteBySlug: function (slug, rev) {
+    debug('deleteBySlug', arguments);
+
+    if (rev > 1) {
+      return pagesRepo.deleteOneRevisionBySlug(slug, rev);
+    } else {
+      return pagesRepo.deleteAllRevisionsBySlug(slug);
+    }
+  },
+
   publish: function (pageID) {
     const now = new Date();
     const modify = {

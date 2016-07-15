@@ -270,6 +270,51 @@ lab.experiment('Pages Repository', function () {
     });
   });
 
+  lab.experiment('deleteOneRevisionBySlug', () => {
+    lab.test('returns query results', done => {
+      var slug = 'oh-yea';
+      var rev = 2;
+      dbStub.genericQuery.returns(Promise.resolve([{}, { affectedRows: 1 }]));
+
+      pages.deleteOneRevisionBySlug(slug, rev)
+        .then(p => {
+          Code.expect(dbStub.genericQuery.onFirstCall().stub.calledWithExactly(
+            'DELETE FROM tests WHERE pageID IN (SELECT id FROM pages WHERE slug = ? AND revision = ?)',
+            [slug, rev]
+          )).to.be.true();
+
+          Code.expect(dbStub.genericQuery.onSecondCall().stub.calledWithExactly(
+            'DELETE FROM pages WHERE slug = ? AND revision = ?',
+            [slug, rev]
+          )).to.be.true();
+
+          done();
+        });
+    });
+  });
+
+  lab.experiment('deleteAllRevisionsBySlug', () => {
+    lab.test('returns query results', done => {
+      var slug = 'oh-yea';
+      dbStub.genericQuery.returns(Promise.resolve([{}, { affectedRows: 3 }]));
+
+      pages.deleteAllRevisionsBySlug(slug)
+        .then(p => {
+          Code.expect(dbStub.genericQuery.onFirstCall().stub.calledWithExactly(
+            'DELETE FROM tests WHERE pageID IN (SELECT id FROM pages WHERE slug = ?)',
+            [slug]
+          )).to.be.true();
+
+          Code.expect(dbStub.genericQuery.onSecondCall().stub.calledWithExactly(
+            'DELETE FROM pages WHERE slug = ?',
+            [slug]
+          )).to.be.true();
+
+          done();
+        });
+    });
+  });
+
   lab.experiment('getSitemap', function () {
     lab.test('returns an error when query fails', function (done) {
       var testErrMsg = 'testing';

@@ -649,6 +649,32 @@ lab.experiment('Pages Service', function () {
     });
   });
 
+  lab.experiment('deleting', () => {
+    lab.test('revision 1 deletes all revisions', (done) => {
+      pagesRepoStub.deleteAllRevisionsBySlug = s.stub().returns(Promise.resolve(3));
+
+      pages.deleteBySlug('oh-yea', 1)
+        .then(values => {
+          Code.expect(values).to.equal(3);
+
+          done();
+        })
+        .catch(done);
+    });
+
+    lab.test('revisions above 1 deletes just one revision', (done) => {
+      pagesRepoStub.deleteOneRevisionBySlug = s.stub().returns(Promise.resolve(1));
+
+      pages.deleteBySlug('oh-yea', 2)
+        .then(values => {
+          Code.expect(values).to.equal(1);
+
+          done();
+        })
+        .catch(done);
+    });
+  });
+
   lab.experiment('publish', () => {
     lab.test('updates page to be visible', (done) => {
       pagesRepoStub.updateById = s.stub().returns(Promise.resolve());
