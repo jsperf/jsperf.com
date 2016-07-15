@@ -20,7 +20,7 @@ exports.register = function (server, options, next) {
       };
 
       if (!request.session.get('admin')) {
-        defaultContext.message = `You don't have permissions to delete a test`;
+        defaultContext.message = 'You do not have permissions to delete a test';
         return reply.view('delete/index', defaultContext).code(401);
       }
 
@@ -35,7 +35,7 @@ exports.register = function (server, options, next) {
         } else if (deletedRevisions > 1) {
           defaultContext.message = `Deleted ${deletedRevisions} revisions`;
         } else {
-          defaultContext.message = `Could not delete`;
+          defaultContext.message = 'Could not delete';
         }
 
         reply.view('delete/index', defaultContext);

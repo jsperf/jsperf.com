@@ -93,7 +93,7 @@ lab.experiment('deleting', function () {
 
     server.inject('/setsession', function (res) {
       var header = res.headers['set-cookie'];
-      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
+      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
       request.headers = {};
       request.headers.cookie = 'session=' + cookie[1];
 
@@ -121,7 +121,7 @@ lab.experiment('deleting', function () {
 
     server.inject('/setsession', function (res) {
       var header = res.headers['set-cookie'];
-      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
+      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
       request.headers = {};
       request.headers.cookie = 'session=' + cookie[1];
       request.url = '/test-slug/23/delete';
@@ -150,7 +150,7 @@ lab.experiment('deleting', function () {
 
     server.inject('/setsession', function (res) {
       var header = res.headers['set-cookie'];
-      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/);
+      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
       request.headers = {};
       request.headers.cookie = 'session=' + cookie[1];
 
