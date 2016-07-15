@@ -50,6 +50,7 @@
     "yar": "^3.0.3"
   },
   "devDependencies": {
+    "cheerio": "0.20.0",
     "code": "^1.4.1",
     "eslint-config-semistandard": "6.0.2",
     "eslint-config-standard": "5.3.5",

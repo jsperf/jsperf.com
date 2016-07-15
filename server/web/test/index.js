@@ -16,7 +16,7 @@ exports.register = function (server, options, next) {
       .then(function (values) {
         var page = values[0];
         page.test = values[1];
-        page.revision = values[2];
+        page.revisions = values[2];
         page.comments = values[3];
 
         const hasSetupOrTeardown = page.setup.length || page.teardown.length;
