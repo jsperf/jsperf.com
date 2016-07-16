@@ -59,7 +59,7 @@ You’ll need [Node.js](https://nodejs.org/en/) and [MySQL](https://dev.mysql.co
 Start the MySQL server, create a database, a user, and create the database-tables using the `tables.js` file. Replace with your own credentials.
 
 ```
-node setup/tables.js DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf
+DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf node setup/tables.js
 ```
 
 Add an entry to the hosts file to redirect jsPerf’s database connections to `localhost` (which is where MySQL is likely running) with the following:
@@ -71,7 +71,7 @@ Add an entry to the hosts file to redirect jsPerf’s database connections to `l
 ##### Running jsPerf
 
 ```
-npm start DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf
+DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf npm start
 ```
 
 ## Testing
