@@ -1,12 +1,12 @@
-var path = require('path');
+const path = require('path');
+const Lab = require('lab');
+const sinon = require('sinon');
+const Code = require('code');
+const Hapi = require('hapi');
+const proxyquire = require('proxyquire');
+const cheerio = require('cheerio');
 
-var Lab = require('lab');
-var sinon = require('sinon');
-var Code = require('code');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
-
-var Config = require('../../../../../config');
+const Config = require('../../../../../config');
 
 var pagesServiceStub = {
   updateHits: function () {},
@@ -103,31 +103,61 @@ lab.experiment('test', function () {
 
   lab.test('it responds with test page for slug', function (done) {
     const now = new Date();
+    const page = {
+      id: 1,
+      slug: slug,
+      revision: 1,
+      browserscopeID: 'abc123',
+      title: 'Oh Yea',
+      info: 'Sample test',
+      setup: '',
+      teardown: '',
+      initHTML: '',
+      visible: 'y',
+      author: 'Max',
+      authorEmail: 'm@b.co',
+      authorURL: 'b.co',
+      hits: 0,
+      published: now,
+      updated: now,
+      maxRev: 2
+    };
+    const revisions = [{
+      published: now,
+      updated: now,
+      author: 'Max',
+      authorEmail: 'm@b.co',
+      authorURL: 'b.co',
+      revision: 1,
+      visible: 'y',
+      title: 'Oh Yea'
+    }, {
+      published: now,
+      updated: now,
+      author: 'Max',
+      authorEmail: 'm@b.co',
+      authorURL: 'b.co',
+      revision: 2,
+      visible: 'y',
+      title: 'Oh Yea'
+    }];
 
-    pagesServiceStub.getBySlug.returns(
-      Promise.resolve([{
-        id: 1,
-        slug: slug,
-        revision: 1,
-        browserscopeID: 'abc123',
-        title: 'Oh Yea',
-        info: 'Sample test',
-        setup: '',
-        teardown: '',
-        initHTML: '',
-        visible: 'y',
-        author: 'Max',
-        authorEmail: 'm@b.co',
-        authorURL: 'b.co',
-        hits: 0,
-        published: now,
-        updated: now
-      }, [], [], []])
-    );
+    pagesServiceStub.getBySlug.returns(Promise.resolve([page, [], revisions, []]));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
-      Code.expect(response.payload).to.include('<title>Oh Yea · jsPerf</title>');
+      const $ = cheerio.load(response.payload);
+      Code.expect($('title').text()).to.equal('Oh Yea · jsPerf');
+
+      // make sure revision list is correct
+      const revLis = $('li', '#revisions');
+      const firstRevLi = revLis.first();
+      Code.expect(firstRevLi.hasClass('current')).to.be.true();
+      Code.expect(firstRevLi.children('a').first().attr('href')).to.equal(request.url);
+
+      const secondRevLi = revLis.eq(1);
+      Code.expect(secondRevLi.hasClass('current')).to.be.false();
+      Code.expect(secondRevLi.children('a').first().attr('href')).to.equal(request.url + '/' + revisions[1].revision);
 
       done();
     });
@@ -367,76 +397,61 @@ lab.experiment('test', function () {
       });
     });
   });
-});
 
-lab.experiment('publish', () => {
-  lab.beforeEach((done) => {
-    server.register([ AuthPlugin ], function () {
-      server.auth.strategy('session', 'cookie', {
-        password: 'testing',
-        cookie: 'sid-jsperf',
-        redirectTo: false,
-        isSecure: false
+  lab.experiment('publish', () => {
+    lab.beforeEach((done) => {
+      request.url = `/${slug}/1/publish`;
+
+      done();
+    });
+
+    lab.test('handle error', (done) => {
+      pagesServiceStub.getBySlug.returns(Promise.reject(new Error('testing')));
+
+      server.inject(request, (res) => {
+        Code.expect(res.statusCode).to.equal(500);
+
+        done();
       });
     });
 
-    request = {
-      method: 'GET',
-      url: `/${slug}/1/publish`
-    };
-
-    pagesServiceStub.getBySlug = sinon.stub();
-    pagesServiceStub.publish = sinon.stub().returns(Promise.resolve());
-
-    done();
-  });
-
-  lab.test('handle error', (done) => {
-    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('testing')));
-
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(500);
-
-      done();
-    });
-  });
-
-  lab.test('404 when not owner or admin', (done) => {
-    pagesServiceStub.getBySlug.returns(Promise.resolve([{}]));
-
-    server.inject(request, (res) => {
-      Code.expect(res.statusCode).to.equal(404);
-
-      done();
-    });
-  });
-
-  lab.test('makes page visible', (done) => {
-    pagesServiceStub.getBySlug.returns(Promise.resolve([{
-      id: 1
-    }]));
-
-    server.route({
-      method: 'GET', path: '/setsession',
-      config: {
-        handler: function (req, reply) {
-          var owns = {1: true};
-          req.session.set('own', owns);
-          return reply('session set');
-        }
-      }
-    });
-
-    server.inject('/setsession', function (res) {
-      var header = res.headers['set-cookie'];
-      var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
-      request.headers = {};
-      request.headers.cookie = 'session=' + cookie[1];
+    lab.test('404 when not owner or admin', (done) => {
+      pagesServiceStub.getBySlug.returns(Promise.resolve([{}]));
 
       server.inject(request, (res) => {
-        Code.expect(res.statusCode).to.equal(302);
+        Code.expect(res.statusCode).to.equal(404);
 
         done();
+      });
+    });
+
+    lab.test('makes page visible', (done) => {
+      pagesServiceStub.getBySlug.returns(Promise.resolve([{
+        id: 1
+      }]));
+
+      server.route({
+        method: 'GET', path: '/setsession',
+        config: {
+          handler: function (req, reply) {
+            var owns = {1: true};
+            req.session.set('own', owns);
+            return reply('session set');
+          }
+        }
+      });
+
+      server.inject('/setsession', function (res) {
+        var header = res.headers['set-cookie'];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
+        request.headers = {};
+        request.headers.cookie = 'session=' + cookie[1];
+
+        server.inject(request, (res) => {
+          Code.expect(res.statusCode).to.equal(302);
+
+          done();
+        });
       });
     });
   });

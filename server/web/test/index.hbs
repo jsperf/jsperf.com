@@ -115,15 +115,15 @@
 {{/if}}
 
 {{#compare 1 page.maxRev}}
-  <section>
+  <section id="revisions">
     <h2>Revisions</h2>
     <p>You can <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}/edit" rel="nofollow">edit these tests or add even more tests to this page</a> by appending <code>/edit</code> to the URL.</p>
     <ul>
-      {{#each page.revision}}
+      {{#each page.revisions}}
         {{#compare visible "y" operator="==="}}
         {{!-- TODO: add "or admin session" --}}
-          <li {{#compare revision ../revision operator="==="}}class="current"{{/compare}}>
-            <a href="/{{slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{formatAuthor author authorURL}}
+          <li {{#compare revision ../../../page.revision operator="==="}}class="current"{{/compare}}>
+            <a href="/{{../../page.slug}}{{#compare 1 revision}}/{{revision}}{{/compare}}">Revision {{revision}}</a>: published {{formatAuthor author authorURL}}
             <time datetime="{{DatetoISOString published}}" pubdate>
               {{relativeDate published}}
             </time>

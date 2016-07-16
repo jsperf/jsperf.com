@@ -128,7 +128,7 @@ module.exports = {
     debug('findBySlug', arguments);
 
     return db.genericQuery(
-      'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
+      'SELECT published, updated, author, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
       [slug]
     );
   },

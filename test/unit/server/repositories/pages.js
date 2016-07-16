@@ -243,12 +243,13 @@ lab.experiment('Pages Repository', function () {
       .then(function (p) {
         Code.expect(p).to.be.array();
         Code.expect(dbStub.genericQuery.calledWithExactly(
-          'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
+          'SELECT published, updated, author, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
           [slug]
         )).to.be.true();
 
         done();
-      });
+      })
+      .catch(done);
     });
   });
 
