@@ -3,12 +3,16 @@ const regex = require('./regex');
 const defaults = require('./defaults');
 
 const mediumText = Joi.string().allow('').max(defaults.mediumTextLength);
+const author = Joi.string().min(1);
+const authorEmail = Joi.string().email();
+const authorURL = Joi.string().allow('').regex(new RegExp(regex.url, 'i'), 'url');
 
 exports.mediumText = mediumText;
+
 exports.testPage = Joi.object().keys({
-  author: Joi.string().allow('').min(1),
-  authorEmail: Joi.string().allow('').email(),
-  authorURL: Joi.string().allow('').regex(new RegExp(regex.url, 'i'), 'url'),
+  author: author.allow(''),
+  authorEmail: authorEmail.allow(''),
+  authorURL,
   title: Joi.string().required().trim().min(1).max(255),
   slug: Joi.string().required().trim().min(1).max(55).regex(new RegExp(regex.slug), 'slug'),
   visible: Joi.string().default('n').valid('y', 'n'),
@@ -21,4 +25,12 @@ exports.testPage = Joi.object().keys({
     defer: Joi.string().default('n').valid('y', 'n'),
     code: Joi.string().required().trim().min(1).max(defaults.mediumTextLength)
   }))
+});
+
+exports.comment = Joi.object().keys({
+  author: author.required(),
+  authorEmail: authorEmail.required(),
+  authorURL: authorURL.required(),
+  message: Joi.string().min(1).max(defaults.mediumTextLength),
+  question: Joi.string().valid('no')
 });
