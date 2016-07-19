@@ -1,3 +1,5 @@
+'use strict';
+
 // TODO make hapi plugin
 var debug = require('debug')('jsperf:repositories:pages');
 var db = require('../lib/db');
@@ -138,6 +140,28 @@ module.exports = {
       'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
       [slug, 'y']
     );
+  },
+
+  deleteOneRevisionBySlug: function (slug, rev) {
+    let queries = [];
+
+    queries.push(db.genericQuery('DELETE FROM tests WHERE pageID IN (SELECT id FROM pages WHERE slug = ? AND revision = ?)', [slug, rev]));
+    queries.push(db.genericQuery('DELETE FROM pages WHERE slug = ? AND revision = ?', [slug, rev]));
+
+    return Promise.all(queries).then(function (values) {
+      return values[1].affectedRows;
+    });
+  },
+
+  deleteAllRevisionsBySlug: function (slug, rev) {
+    let queries = [];
+
+    queries.push(db.genericQuery('DELETE FROM tests WHERE pageID IN (SELECT id FROM pages WHERE slug = ?)', [slug]));
+    queries.push(db.genericQuery('DELETE FROM pages WHERE slug = ?', [slug]));
+
+    return Promise.all(queries).then(function (values) {
+      return values[1].affectedRows;
+    });
   },
 
   getSitemap: function () {

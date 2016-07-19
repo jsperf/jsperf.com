@@ -93,7 +93,8 @@ var manifest = {
     {'./server/web/search': {}},
     {'./server/web/sitemap/xml': {}},
     {'./server/web/test': {}},
-    {'./server/web/edit': {}}
+    {'./server/web/edit': {}},
+    {'./server/web/delete': {}}
   ]
 };
 
