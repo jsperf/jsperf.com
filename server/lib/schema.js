@@ -31,6 +31,5 @@ exports.comment = Joi.object().keys({
   author: author.required(),
   authorEmail: authorEmail.required(),
   authorURL: authorURL.required(),
-  message: Joi.string().min(1).max(defaults.mediumTextLength),
-  question: Joi.string().valid('no')
+  message: Joi.string().min(1).max(defaults.mediumTextLength)
 });

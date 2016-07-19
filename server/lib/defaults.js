@@ -16,8 +16,7 @@ exports.errors = {
     author: 'Please enter your name.',
     authorEmail: 'Please enter your email address.',
     authorURL: 'Please enter a valid URL or leave it blank',
-    message: 'Please enter a message.',
-    question: 'Please enter ‘no’ to prove you’re not a spammer.'
+    message: 'Please enter a message.'
   }
 };
 

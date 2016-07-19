@@ -588,7 +588,6 @@ lab.experiment('create comment', () => {
           authorEmail: '',
           authorURL: 'bad url',
           message: '',
-          question: '',
           unknown: ''
         };
 
@@ -598,7 +597,6 @@ lab.experiment('create comment', () => {
           Code.expect(response.result).to.include(defaults.errors.comment.authorEmail);
           Code.expect(response.result).to.include(defaults.errors.comment.authorURL);
           Code.expect(response.result).to.include(defaults.errors.comment.message);
-          Code.expect(response.result).to.include(defaults.errors.comment.question);
 
           done();
         });
@@ -621,8 +619,7 @@ lab.experiment('create comment', () => {
             author: 'Max',
             authorEmail: 'mdd@test.com',
             authorURL: 'http://b.co',
-            message: 'message',
-            question: 'no'
+            message: 'message'
           };
 
           done();
