@@ -31,6 +31,8 @@ _`$MYSQL_PASSWORD` is whatever you chose or generated during `node setup`_
 4. Setup database tables with: `MYSQL_PASSWORD=$MYSQL_PASSWORD docker-compose run web node /code/setup/tables`
 5. Verify everything is working: `open http://$(docker-machine ip)`
 
+<sub>NOTE: see [Gotchas](#gotchas) if you plan on running the server behind a load balancer.</sub>
+
 ##### Compose
 
 `docker-compose.yml` orchestrates a load balancer (nginx), the app (this node project), and a database (mysql) with some additional services to help with continuous deployment. To start everything up, run: `MYSQL_PASSWORD=$MYSQL_PASSWORD docker-compose up`. Pressing `ctrl+c` or sending a similar interruption will stop all of the containers. To run the composed containers in the background, use the `-d` argument.
@@ -111,6 +113,7 @@ docker-compose -f docker-compose.yml -f docker-compose.e2e.yml down
 ## Gotchas
 
 - ES6 Template Strings are not supported by esprima which means you can't generate coverage reports which means `npm test` won't pass.
+- Be sure to include the external port at the end of the domain in your `.env` file if running behind a load balancer<br>(i.e. `DOMAIN=dev.jsperf.com:80`).
 
 ### Adding new dependencies
 
