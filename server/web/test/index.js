@@ -1,19 +1,21 @@
 'use strict';
+
 var Boom = require('boom');
 var debug = require('debug')('jsperf:web:test');
 var hljs = require('highlight.js');
-var pagesService = require('../../services/pages');
 var regex = require('../../lib/regex');
+const Joi = require('joi');
+const schema = require('../../lib/schema');
+const defaults = require('../../lib/defaults');
+
+// services
+const pagesService = require('../../services/pages');
+const commentsService = require('../../services/comments');
 
 exports.register = function (server, options, next) {
-  server.route({
-    method: 'GET',
-    path: '/{testSlug}/{rev?}',
-    handler: function (request, reply) {
-      const rev = request.params.rev || 1;
-
-      pagesService.getBySlug(request.params.testSlug, rev)
-      .then(function (values) {
+  const getTestPage = (request) => {
+    return pagesService.getBySlug(request.params.testSlug, request.params.rev || 1)
+      .then(values => {
         var page = values[0];
         page.test = values[1];
         page.revisions = values[2];
@@ -62,7 +64,7 @@ exports.register = function (server, options, next) {
         const isOwn = own[page.id];
         const isAdmin = request.session.get('admin');
 
-        reply.view('test/index', {
+        return {
           headTitle: page.title,
           benchmark: true,
           showAtom: {
@@ -76,16 +78,74 @@ exports.register = function (server, options, next) {
           hasPrep: hasPrep,
           hasSetupOrTeardown: hasSetupOrTeardown,
           stripped: stripped,
-          page: page
-        });
+          page: page,
+          authorized: request.auth.isAuthenticated
+        };
       })
-      .catch(function (err) {
+      .catch((err) => {
         if (err.message === 'Not found') {
-          reply(Boom.notFound('The page was not found'));
-        } else {
-          reply(err);
+          err = Boom.notFound('The page was not found');
         }
+
+        return Promise.reject(err);
       });
+  };
+
+  server.route({
+    method: 'GET',
+    path: '/{testSlug}/{rev?}',
+    config: {
+      auth: {
+        mode: 'try',
+        strategy: 'session'
+      }
+    },
+    handler: function (request, reply) {
+      getTestPage(request)
+        .then(model => reply.view('test/index', model))
+        .catch(reply);
+    }
+  });
+
+  // comment route
+  server.route({
+    method: 'POST',
+    path: '/{testSlug}/{rev?}',
+    config: {
+      auth: {
+        mode: 'try',
+        strategy: 'session'
+      }
+    },
+    handler: (request, reply) => {
+      if (!request.auth.isAuthenticated) {
+        return reply(Boom.unauthorized('Unauthorized'));
+      }
+
+      getTestPage(request)
+        .then((model) => {
+          const result = Joi.validate(request.payload, schema.comment, {abortEarly: false});
+          if (result.error) {
+            let errObj = {};
+
+            result.error.details.forEach(detail => {
+              let errMsg = defaults.errors.comment[detail.path];
+              if (errMsg) {
+                errObj[`${detail.path}Error`] = errMsg;
+              }
+            });
+
+            reply.view('test/index', Object.assign(model, errObj, request.payload));
+          } else {
+            const ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
+            return commentsService.create(model.page.id, ip, result.value)
+            .then((comment) => {
+              model.page.comments.push(comment);
+              reply.view('test/index', model);
+            });
+          }
+        })
+        .catch(reply);
     }
   });
 

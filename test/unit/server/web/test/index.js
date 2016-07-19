@@ -7,6 +7,7 @@ const proxyquire = require('proxyquire');
 const cheerio = require('cheerio');
 
 const Config = require('../../../../../config');
+const defaults = require('../../../../../server/lib/defaults');
 
 var pagesServiceStub = {
   updateHits: function () {},
@@ -14,10 +15,16 @@ var pagesServiceStub = {
   getVisibleBySlugWithRevisions: () => {},
   publish: function () {}
 };
+
+const commentsServiceStub = {
+  create () {}
+};
+
 var debugSpy = sinon.spy();
 
 var TestPlugin = proxyquire('../../../../../server/web/test/index', {
   '../../services/pages': pagesServiceStub,
+  '../../services/comments': commentsServiceStub,
   'debug': function () { return debugSpy; }
 });
 
@@ -33,6 +40,7 @@ var AuthPlugin = {
 
 var lab = exports.lab = Lab.script();
 var request, server;
+const now = new Date();
 
 lab.beforeEach(function (done) {
   var plugins = [ TestPlugin, YarPlugin ];
@@ -40,6 +48,15 @@ lab.beforeEach(function (done) {
 
   server.connection({
     port: Config.get('/port/web')
+  });
+
+  server.register([AuthPlugin], () => {
+    server.auth.strategy('session', 'cookie', {
+      password: 'testing',
+      cookie: 'sid-jsperf',
+      redirectTo: false,
+      isSecure: false
+    });
   });
 
   server.views({
@@ -58,15 +75,6 @@ const slug = 'oh-yea';
 
 lab.experiment('test', function () {
   lab.beforeEach(function (done) {
-    server.register([ AuthPlugin ], function () {
-      server.auth.strategy('session', 'cookie', {
-        password: 'testing',
-        cookie: 'sid-jsperf',
-        redirectTo: false,
-        isSecure: false
-      });
-    });
-
     request = {
       method: 'GET',
       url: '/' + slug
@@ -164,8 +172,6 @@ lab.experiment('test', function () {
   });
 
   lab.test('it responds with highlighted test page for slug', function (done) {
-    const now = new Date();
-
     pagesServiceStub.getBySlug.returns(Promise.resolve([{
       id: 1,
       slug: slug,
@@ -211,7 +217,6 @@ lab.experiment('test', function () {
     });
 
     lab.test('updates unique page hits', function (done) {
-      const now = new Date();
       pagesServiceStub.getBySlug.returns(Promise.resolve([{
         id: 1,
         slug: slug,
@@ -248,7 +253,6 @@ lab.experiment('test', function () {
     });
 
     lab.test('ignores duplicate page hits', function (done) {
-      const now = new Date();
       pagesServiceStub.getBySlug.returns(Promise.resolve([{
         id: 123,
         slug: slug,
@@ -283,7 +287,6 @@ lab.experiment('test', function () {
     });
 
     lab.test('catches errors from page service', function (done) {
-      const now = new Date();
       pagesServiceStub.getBySlug.returns(Promise.resolve([{
         id: 999,
         slug: slug,
@@ -324,7 +327,6 @@ lab.experiment('test', function () {
 
   lab.experiment('No Index Flag', function () {
     lab.beforeEach(function (done) {
-      const now = new Date();
       pagesServiceStub.getBySlug.returns(Promise.resolve([{
         id: 1,
         slug: slug,
@@ -398,6 +400,55 @@ lab.experiment('test', function () {
     });
   });
 
+  lab.experiment('comments form', function () {
+    lab.beforeEach(done => {
+      pagesServiceStub.getBySlug.returns(
+        Promise.resolve([{
+          id: 1,
+          slug: slug,
+          revision: 1,
+          browserscopeID: 'abc123',
+          title: 'Oh Yea',
+          info: 'Sample test',
+          setup: '',
+          teardown: '',
+          initHTML: '',
+          visible: 'y',
+          author: 'Max',
+          authorEmail: 'm@b.co',
+          authorURL: 'b.co',
+          hits: 0,
+          published: now,
+          updated: now
+        }, [], [], []])
+      );
+
+      done();
+    });
+
+    lab.test('is not displayed if user is anonymous', done => {
+      server.inject(request, response => {
+        Code.expect(response.statusCode).to.equal(200);
+        Code.expect(response.result).to.not.include('method="post" id="comment-form"');
+        Code.expect(response.result).to.include('<a class="login" href="/auth/github">');
+
+        done();
+      });
+    });
+
+    lab.test('is displayed if user is logged in', done => {
+      request.credentials = {'test': 'profile'};
+
+      server.inject(request, response => {
+        Code.expect(response.statusCode).to.equal(200);
+        Code.expect(response.result).to.include('method="post" id="comment-form"');
+        Code.expect(response.result).to.not.include('<a class="login" href="/auth/github">');
+
+        done();
+      });
+    });
+  });
+
   lab.experiment('publish', () => {
     lab.beforeEach((done) => {
       request.url = `/${slug}/1/publish`;
@@ -451,6 +502,145 @@ lab.experiment('test', function () {
           Code.expect(res.statusCode).to.equal(302);
 
           done();
+        });
+      });
+    });
+  });
+});
+
+lab.experiment('create comment', () => {
+  lab.beforeEach(done => {
+    request = {
+      method: 'POST',
+      url: `/${slug}/1`
+    };
+
+    pagesServiceStub.getBySlug = sinon.stub();
+    commentsServiceStub.create = sinon.stub();
+
+    done();
+  });
+
+  lab.test('not authorized', done => {
+    server.inject(request, res => {
+      Code.expect(res.statusCode).to.equal(401);
+      done();
+    });
+  });
+
+  lab.experiment('when authorized', () => {
+    lab.beforeEach(done => {
+      request.credentials = {'test': 'profile'};
+      done();
+    });
+
+    lab.test('it catches error', done => {
+      pagesServiceStub.getBySlug.returns(Promise.reject(new Error('testing')));
+
+      server.inject(request, res => {
+        Code.expect(res.statusCode).to.equal(500);
+        done();
+      });
+    });
+
+    lab.test('not found', function (done) {
+      pagesServiceStub.getBySlug.returns(Promise.reject(new Error('Not found')));
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(404);
+
+        done();
+      });
+    });
+
+    lab.experiment('and page exists', () => {
+      lab.beforeEach(done => {
+        pagesServiceStub.getBySlug.returns(
+          Promise.resolve([{
+            id: 1,
+            slug: slug,
+            revision: 1,
+            browserscopeID: 'abc123',
+            title: 'Oh Yea',
+            info: 'Sample test',
+            setup: '',
+            teardown: '',
+            initHTML: '',
+            visible: 'y',
+            author: 'Max',
+            authorEmail: 'm@b.co',
+            authorURL: 'b.co',
+            hits: 0,
+            published: now,
+            updated: now
+          }, [], [], []])
+        );
+
+        request.headers = {};
+        request.info = {};
+
+        done();
+      });
+
+      lab.test('should show errors if payload is not valid', done => {
+        request.payload = {
+          author: '',
+          authorEmail: '',
+          authorURL: 'bad url',
+          message: '',
+          unknown: ''
+        };
+
+        server.inject(request, response => {
+          Code.expect(response.statusCode).to.equal(200);
+          Code.expect(response.result).to.include(defaults.errors.comment.author);
+          Code.expect(response.result).to.include(defaults.errors.comment.authorEmail);
+          Code.expect(response.result).to.include(defaults.errors.comment.authorURL);
+          Code.expect(response.result).to.include(defaults.errors.comment.message);
+
+          done();
+        });
+      });
+
+      lab.experiment('it should respond 200 with ip from', () => {
+        lab.beforeEach(done => {
+          commentsServiceStub.create.returns(Promise.resolve({
+            id: 1,
+            pageID: 1,
+            author: 'Max',
+            authorEmail: 'mdd@test.com',
+            authorURL: 'http://b.co',
+            content: 'message',
+            ip: '127.0.0.1',
+            published: now
+          }));
+
+          request.payload = {
+            author: 'Max',
+            authorEmail: 'mdd@test.com',
+            authorURL: 'http://b.co',
+            message: 'message'
+          };
+
+          done();
+        });
+
+        lab.test('x-forwarded-for', done => {
+          request.headers = {'x-forwarded-for': '127.0.0.1'};
+
+          server.inject(request, response => {
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+          });
+        });
+
+        lab.test('remoteAdress', done => {
+          request.info.remoteAdress = '127.0.0.1';
+
+          server.inject(request, response => {
+            Code.expect(response.statusCode).to.equal(200);
+            done();
+          });
         });
       });
     });

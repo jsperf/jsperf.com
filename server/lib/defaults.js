@@ -11,7 +11,13 @@ exports.errors = {
   slugDupe: 'This slug is already in use. Please choose another one.',
   codeTitle: 'Please enter a title for this code snippet.',
   code: 'Please enter a code snippet.',
-  general: 'Please review required fields and save again.'
+  general: 'Please review required fields and save again.',
+  comment: {
+    author: 'Please enter your name.',
+    authorEmail: 'Please enter your email address.',
+    authorURL: 'Please enter a valid URL or leave it blank',
+    message: 'Please enter a message.'
+  }
 };
 
 exports.test = {
