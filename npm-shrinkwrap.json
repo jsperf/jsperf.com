@@ -3,9 +3,9 @@
   "version": "2.0.0",
   "dependencies": {
     "@mathias/benchmark.js-wrapper-jsperf": {
-      "version": "1.0.1",
-      "from": "@mathias/benchmark.js-wrapper-jsperf@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/@mathias/benchmark.js-wrapper-jsperf/-/benchmark.js-wrapper-jsperf-1.0.1.tgz"
+      "version": "1.0.2",
+      "from": "@mathias/benchmark.js-wrapper-jsperf@>=1.0.2 <2.0.0",
+      "resolved": "https://registry.npmjs.org/@mathias/benchmark.js-wrapper-jsperf/-/benchmark.js-wrapper-jsperf-1.0.2.tgz"
     },
     "abab": {
       "version": "1.0.3",
