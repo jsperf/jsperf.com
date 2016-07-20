@@ -5,8 +5,8 @@ const debug = require('debug')('jsperf:services:comments');
 const commentsRepo = require('../repositories/comments');
 
 module.exports = {
-  create: (pageID, ip, payload) => {
-    debug('create', payload);
+  create: function (pageID, ip, payload) {
+    debug('create', arguments);
 
     const comment = {
       pageID,
@@ -20,5 +20,11 @@ module.exports = {
 
     return commentsRepo.create(comment)
       .then(id => Object.assign(comment, {id}));
+  },
+
+  delete: function (commentId) {
+    debug('delete', arguments);
+
+    return commentsRepo.delete(commentId);
   }
 };

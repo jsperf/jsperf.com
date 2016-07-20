@@ -1,6 +1,6 @@
 // TODO make hapi plugin
-var debug = require('debug')('jsperf:repositories:comments');
-var db = require('../lib/db');
+const debug = require('debug')('jsperf:repositories:comments');
+const db = require('../lib/db');
 
 const table = 'comments';
 
@@ -14,6 +14,16 @@ module.exports = {
     );
   },
 
-  create: payload => db.genericQuery('INSERT INTO ?? SET ?', [table, payload])
-      .then(result => result.insertId)
+  create: function (payload) {
+    debug('create', arguments);
+
+    return db.genericQuery('INSERT INTO ?? SET ?', [table, payload])
+      .then(result => result.insertId);
+  },
+
+  delete: function (commentId) {
+    debug('delete', arguments);
+
+    return db.genericQuery('DELETE FROM ?? WHERE id = ?', [table, commentId]);
+  }
 };

@@ -82,6 +82,7 @@ var manifest = {
     {'./server/api/jsonp': {}},
     {'./server/web/auth/github': {}},
     {'./server/web/browse': {}},
+    {'./server/web/comment': {}},
     {'./server/web/contributors': {}},
     {'./server/web/errors': {}},
     {'./server/web/faq': {}},

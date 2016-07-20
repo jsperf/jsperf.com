@@ -86,4 +86,20 @@ lab.experiment('Comments Repository', () => {
         });
     });
   });
+
+  lab.experiment('delete', () => {
+    lab.test('should delete specific comment', (done) => {
+      dbStub.genericQuery.returns(Promise.resolve());
+      const id = 1;
+      comments.delete(id).then(() => {
+        Code.expect(dbStub.genericQuery.calledWithExactly(
+          'DELETE FROM ?? WHERE id = ?',
+          ['comments', id]
+        )).to.be.true();
+
+        done();
+      })
+      .catch(done);
+    });
+  });
 });

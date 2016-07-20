@@ -66,4 +66,14 @@ lab.experiment('Comments Service', function () {
       .catch(done);
     });
   });
+
+  lab.test('delete', (done) => {
+    commentsRepoStub.delete = s.stub().returns(Promise.resolve());
+    const id = 1;
+    comments.delete(id).then(() => {
+      Code.expect(commentsRepoStub.delete.calledWith(id)).to.be.true();
+
+      done();
+    });
+  });
 });
