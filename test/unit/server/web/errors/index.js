@@ -3,7 +3,6 @@ var Lab = require('lab');
 var Code = require('code');
 var Hapi = require('hapi');
 var Boom = require('boom');
-var Config = require('../../../../../config');
 var Route400Plugin = {};
 var Route403Plugin = {};
 var Route405Plugin = {};
@@ -85,21 +84,21 @@ lab.beforeEach(function (done) {
   var plugins = [ErrorHandlerPlugin, Route400Plugin, Route403Plugin, Route405Plugin, RouteBypassBoomPlugin];
   server = new Hapi.Server();
 
-  server.connection({
-    port: Config.get('/port/web')
-  });
+  server.connection();
 
-  server.views({
-    engines: {
-      hbs: require('handlebars')
-    },
-    path: './server/web',
-    layout: true,
-    helpersPath: 'templates/helpers',
-    partialsPath: 'templates/partials',
-    relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+  server.register(require('vision'), () => {
+    server.views({
+      engines: {
+        hbs: require('handlebars')
+      },
+      path: './server/web',
+      layout: true,
+      helpersPath: 'templates/helpers',
+      partialsPath: 'templates/partials',
+      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+    });
+    server.register(plugins, done);
   });
-  server.register(plugins, done);
 });
 
 lab.experiment('errors', function () {

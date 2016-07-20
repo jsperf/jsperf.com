@@ -36,6 +36,8 @@ var manifest = {
         }]
       }]
     }},
+    {'inert': {}},
+    {'vision': {}},
     {'visionary': {
       engines: {
         hbs: 'handlebars'

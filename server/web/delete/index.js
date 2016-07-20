@@ -19,7 +19,7 @@ exports.register = function (server, options, next) {
         ga: false
       };
 
-      if (!request.session.get('admin')) {
+      if (!request.yar.get('admin')) {
         defaultContext.message = 'You do not have permissions to delete a test';
         return reply.view('delete/index', defaultContext).code(401);
       }

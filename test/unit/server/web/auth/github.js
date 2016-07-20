@@ -17,7 +17,7 @@ var MockAuthGitHub = {
 
     server.auth.strategy('github', 'MockGitHub');
     server.auth.strategy('session', 'cookie', {
-      password: 'testing'
+      password: 'password-should-be-32-characters'
     });
 
     next();

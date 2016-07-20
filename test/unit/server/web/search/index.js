@@ -5,8 +5,6 @@ var Code = require('code');
 var Hapi = require('hapi');
 var proxyquire = require('proxyquire');
 
-var Config = require('../../../../../config');
-
 var pagesServiceStub = {};
 
 var SearchPlugin = proxyquire('../../../../../server/web/search/index', {
@@ -19,17 +17,20 @@ var request, server;
 lab.beforeEach(function (done) {
   var plugins = [ SearchPlugin ];
   server = new Hapi.Server();
-  server.connection({
-    port: Config.get('/port/web')
+  server.connection();
+  server.register(require('vision'), () => {
+    server.views({
+      engines: {
+        hbs: require('handlebars')
+      },
+      path: './server/web',
+      layout: true,
+      helpersPath: 'templates/helpers',
+      partialsPath: 'templates/partials',
+      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+    });
+    server.register(plugins, done);
   });
-  server.views({
-    engines: {
-      hbs: require('handlebars')
-    },
-    path: './server/web',
-    relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
-  });
-  server.register(plugins, done);
 });
 
 lab.experiment('search', function () {
