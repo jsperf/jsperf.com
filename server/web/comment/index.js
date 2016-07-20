@@ -14,7 +14,7 @@ exports.register = function (server, options, next) {
     },
     path: '/comment/delete/{commentId}',
     handler: function (request, reply) {
-      if (!request.session.get('admin')) {
+      if (!request.yar.get('admin')) {
         return reply(Boom.unauthorized('Unauthorized'));
       }
 

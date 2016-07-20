@@ -6,7 +6,6 @@ var sinon = require('sinon');
 var Code = require('code');
 var Hapi = require('hapi');
 var proxyquire = require('proxyquire');
-var Config = require('../../../../../config');
 
 var pagesServiceStub = {
   deleteBySlug: () => {}
@@ -20,7 +19,7 @@ var DeletePlugin = proxyquire('../../../../../server/web/delete/index', {
 
 var YarPlugin = {
   register: require('yar'),
-  options: { cookieOptions: { password: 'testing' } }
+  options: { cookieOptions: { password: 'password-should-be-32-characters' } }
 };
 
 var AuthPlugin = {
@@ -35,9 +34,7 @@ lab.beforeEach(done => {
   var plugins = [ DeletePlugin, YarPlugin ];
   server = new Hapi.Server();
 
-  server.connection({
-    port: Config.get('/port/web')
-  });
+  server.connection();
 
   server.register([ AuthPlugin ], function () {
     server.auth.strategy('session', 'cookie', {
@@ -48,16 +45,19 @@ lab.beforeEach(done => {
     });
   });
 
-  server.views({
-    engines: {
-      hbs: require('handlebars')
-    },
-    helpersPath: 'templates/helpers',
-    path: './server/web',
-    relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+  server.register(require('vision'), () => {
+    server.views({
+      engines: {
+        hbs: require('handlebars')
+      },
+      path: './server/web',
+      layout: true,
+      helpersPath: 'templates/helpers',
+      partialsPath: 'templates/partials',
+      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+    });
+    server.register(plugins, done);
   });
-
-  server.register(plugins, done);
 });
 
 lab.experiment('deleting', function () {
@@ -85,7 +85,7 @@ lab.experiment('deleting', function () {
       method: 'GET', path: '/setsession',
       config: {
         handler: function (req, reply) {
-          req.session.set('admin', true);
+          req.yar.set('admin', true);
           return reply('session set');
         }
       }
@@ -113,7 +113,7 @@ lab.experiment('deleting', function () {
       method: 'GET', path: '/setsession',
       config: {
         handler: function (req, reply) {
-          req.session.set('admin', true);
+          req.yar.set('admin', true);
           return reply('session set');
         }
       }
@@ -142,7 +142,7 @@ lab.experiment('deleting', function () {
       method: 'GET', path: '/setsession',
       config: {
         handler: function (req, reply) {
-          req.session.set('admin', true);
+          req.yar.set('admin', true);
           return reply('session set');
         }
       }

@@ -49,20 +49,20 @@ exports.register = function (server, options, next) {
         }
 
         // update hits once per page per session
-        var hits = request.session.get('hits') || {};
+        var hits = request.yar.get('hits') || {};
         if (!hits[page.id]) {
           pagesService.updateHits(page.id)
           .then(function () {
             hits[page.id] = true;
-            request.session.set('hits', hits);
+            request.yar.set('hits', hits);
           })
           // TODO: report error some place useful
           .catch(debug);
         }
 
-        var own = request.session.get('own') || {};
+        var own = request.yar.get('own') || {};
         const isOwn = own[page.id];
-        const isAdmin = request.session.get('admin');
+        const isAdmin = request.yar.get('admin');
 
         return {
           headTitle: page.title,
@@ -157,9 +157,9 @@ exports.register = function (server, options, next) {
       pagesService.getBySlug(request.params.testSlug, request.params.rev)
       .then(function (values) {
         const page = values[0];
-        const own = request.session.get('own') || {};
+        const own = request.yar.get('own') || {};
         const isOwn = own[page.id];
-        const isAdmin = request.session.get('admin');
+        const isAdmin = request.yar.get('admin');
 
         if (isOwn || isAdmin) {
           return pagesService.publish(page.id);

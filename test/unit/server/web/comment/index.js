@@ -19,7 +19,7 @@ let server;
 lab.beforeEach(function (done) {
   s = sinon.sandbox.create();
 
-  const cookiePass = 'testing';
+  const cookiePass = 'password-should-be-32-characters';
   const YarPlugin = {
     register: require('yar'),
     options: { cookieOptions: { password: cookiePass } }
@@ -74,7 +74,7 @@ lab.experiment('comment', () => {
         method: 'GET', path: '/setsession',
         config: {
           handler: function (req, reply) {
-            req.session.set('admin', true);
+            req.yar.set('admin', true);
             return reply('session set');
           }
         }

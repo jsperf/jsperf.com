@@ -10,7 +10,7 @@ var lab = exports.lab = Lab.script();
 var request, server;
 
 lab.beforeEach(function (done) {
-  var plugins = [ PublicPlugin ];
+  var plugins = [ require('inert'), PublicPlugin ];
   server = new Hapi.Server();
   server.connection({
     port: Config.get('/port/web')

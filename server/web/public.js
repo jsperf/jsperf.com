@@ -32,5 +32,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/assets'
+  name: 'web/assets',
+  dependencies: 'inert'
 };

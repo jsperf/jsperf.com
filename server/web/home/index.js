@@ -95,7 +95,7 @@ exports.register = function (server, options, next) {
             }
           })
           .then(function () {
-            request.session.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+            request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
             reply.redirect('/' + payload.slug);
           })
           .catch(errResp);

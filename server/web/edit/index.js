@@ -23,9 +23,9 @@ exports.register = function (server, options, next) {
           let page = values[0];
           page.test = values[1];
           page.revision = values[2];
-          const own = request.session.get('own') || {};
+          const own = request.yar.get('own') || {};
           const isOwn = own[page.id];
-          const isAdmin = request.session.get('admin');
+          const isAdmin = request.yar.get('admin');
 
           reply.view('edit/index', {
             headTitle: page.title,
@@ -106,13 +106,13 @@ exports.register = function (server, options, next) {
 
           pagesService.getBySlug(request.params.testSlug, request.params.rev).then(values => {
             page = values[0];
-            const own = request.session.get('own') || {};
+            const own = request.yar.get('own') || {};
             isOwn = own[page.id];
-            const isAdmin = request.session.get('admin');
+            const isAdmin = request.yar.get('admin');
             let update = !!(isAdmin || isOwn);
             return pagesService.edit(payload, update, page.maxRev, page.id);
           }).then(updateResult => {
-            request.session.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+            request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
             if (isOwn) {
               reply.redirect(`/${page.slug}`);
             } else {

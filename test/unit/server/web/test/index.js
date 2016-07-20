@@ -6,7 +6,6 @@ const Hapi = require('hapi');
 const proxyquire = require('proxyquire');
 const cheerio = require('cheerio');
 
-const Config = require('../../../../../config');
 const defaults = require('../../../../../server/lib/defaults');
 
 var pagesServiceStub = {
@@ -30,7 +29,7 @@ var TestPlugin = proxyquire('../../../../../server/web/test/index', {
 
 var YarPlugin = {
   register: require('yar'),
-  options: { cookieOptions: { password: 'testing' } }
+  options: { cookieOptions: { password: 'password-should-be-32-characters' } }
 };
 
 var AuthPlugin = {
@@ -46,9 +45,7 @@ lab.beforeEach(function (done) {
   var plugins = [ TestPlugin, YarPlugin ];
   server = new Hapi.Server();
 
-  server.connection({
-    port: Config.get('/port/web')
-  });
+  server.connection();
 
   server.register([AuthPlugin], () => {
     server.auth.strategy('session', 'cookie', {
@@ -59,16 +56,19 @@ lab.beforeEach(function (done) {
     });
   });
 
-  server.views({
-    engines: {
-      hbs: require('handlebars')
-    },
-    path: './server/web',
-    layout: true,
-    relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+  server.register(require('vision'), () => {
+    server.views({
+      engines: {
+        hbs: require('handlebars')
+      },
+      path: './server/web',
+      layout: true,
+      helpersPath: 'templates/helpers',
+      partialsPath: 'templates/partials',
+      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+    });
+    server.register(plugins, done);
   });
-
-  server.register(plugins, done);
 });
 
 const slug = 'oh-yea';
@@ -207,7 +207,7 @@ lab.experiment('test', function () {
         config: {
           handler: function (req, reply) {
             var hits = {123: true};
-            req.session.set('hits', hits);
+            req.yar.set('hits', hits);
             return reply('session set');
           }
         }
@@ -244,7 +244,7 @@ lab.experiment('test', function () {
         request.headers = {};
         request.headers.cookie = 'session=' + cookie[1];
         server.inject(request, function (response) {
-          var hits = response.request.session.get('hits');
+          var hits = response.request.yar.get('hits');
           Code.expect(hits[1]).to.equal(true);
 
           done();
@@ -278,7 +278,7 @@ lab.experiment('test', function () {
         request.headers = {};
         request.headers.cookie = 'session=' + cookie[1];
         server.inject(request, function (response) {
-          var hits = response.request.session.get('hits');
+          var hits = response.request.yar.get('hits');
           Code.expect(hits[123]).to.equal(true);
 
           done();
@@ -355,7 +355,7 @@ lab.experiment('test', function () {
         config: {
           handler: function (req, reply) {
             var owns = {1: true};
-            req.session.set('own', owns);
+            req.yar.set('own', owns);
             return reply('session set');
           }
         }
@@ -379,8 +379,8 @@ lab.experiment('test', function () {
         config: {
           handler: function (req, reply) {
             var owns = {2: true};
-            req.session.set('own', owns);
-            req.session.set('admin', true);
+            req.yar.set('own', owns);
+            req.yar.set('admin', true);
             return reply('session set');
           }
         }
@@ -486,7 +486,7 @@ lab.experiment('test', function () {
         config: {
           handler: function (req, reply) {
             var owns = {1: true};
-            req.session.set('own', owns);
+            req.yar.set('own', owns);
             return reply('session set');
           }
         }
