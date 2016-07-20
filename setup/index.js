@@ -35,12 +35,14 @@ var schema = {
     'bell_cookie_pass': {
       description: 'Cookie Password for Oauth',
       required: true,
-      default: ''
+      conform: (val) => val.length >= 32,
+      default: 'password-should-be-32-characters'
     },
     'cookie_pass': {
       description: 'Cookie Password',
       required: true,
-      default: ''
+      conform: (val) => val.length >= 32,
+      default: 'password-should-be-32-characters'
     },
     'github_client_id': {
       description: 'GitHub Client ID',

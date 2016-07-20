@@ -10,3 +10,4 @@ node_modules
 docker-compose.yml
 docker-compose.e2e.yml
 Dockerfile
+Dockerfile-e2e-runner

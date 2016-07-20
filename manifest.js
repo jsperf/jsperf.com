@@ -25,79 +25,101 @@ var manifest = {
     port: config.get('/port/web'),
     labels: ['web']
   }],
-  plugins: [
-    {'blipp': {}},
-    {'good': {
-      reporters: [{
-        reporter: 'good-console',
-        args: [{
-          log: '*',
-          response: '*'
-        }]
-      }]
-    }},
-    {'inert': {}},
-    {'vision': {}},
-    {'visionary': {
-      engines: {
-        hbs: 'handlebars'
-      },
-      relativeTo: __dirname,
-      path: './server/web',
-      layout: true,
-      helpersPath: 'templates/helpers',
-      partialsPath: 'templates/partials',
-      context: {
-        $filter: 'env',
-        development: _.assign(visionaryContextDefault, {
-          debug: true,
-          cssFile: 'main.src.css?' + Date.now()
-        }),
-        $default: visionaryContextDefault
+  registrations: [
+    { plugin: 'blipp' },
+    {
+      plugin: {
+        register: 'good',
+        options: {
+          ops: {
+            interval: 10000
+          },
+          reporters: {
+            console: [
+              { module: 'good-console' },
+              'stdout'
+            ]
+          }
+        }
       }
-    }},
-    {'yar': {
-      cookieOptions: {
-        // name: 'jsPerf', FIXME
-        password: config.get('/browserscope'),
-        isSecure: !config.get('/debug'),
-        isHttpOnly: true
+    },
+    { plugin: 'inert' },
+    { plugin: 'vision' },
+    {
+      plugin: {
+        register: 'visionary',
+        options: {
+          engines: {
+            hbs: 'handlebars'
+          },
+          relativeTo: __dirname,
+          path: './server/web',
+          layout: true,
+          helpersPath: 'templates/helpers',
+          partialsPath: 'templates/partials',
+          context: {
+            $filter: 'env',
+            development: _.assign(visionaryContextDefault, {
+              debug: true,
+              cssFile: 'main.src.css?' + Date.now()
+            }),
+            $default: visionaryContextDefault
+          }
+        }
       }
-    }},
-    {'bell': {}},
-    {'hapi-auth-cookie': {}},
-    {'./server/web/auth/strategies': {
-      session: {
-        password: config.get('/auth/session/pass'),
-        cookie: config.get('/auth/session/name'),
-        isSecure: config.get('/auth/session/secure')
-      },
-      oauth: {
-        password: config.get('/auth/oauth/cookiePass'),
-        clientId: config.get('/auth/oauth/github/id'),
-        clientSecret: config.get('/auth/oauth/github/secret'),
-        isSecure: config.get('/auth/oauth/secure'),
-        location: config.get('/scheme') + '://' + config.get('/domain')
+    },
+    {
+      plugin: {
+        register: 'yar',
+        options: {
+          cookieOptions: {
+            // name: 'jsPerf', FIXME
+            password: config.get('/auth/session/pass'),
+            isSecure: !config.get('/debug'),
+            isHttpOnly: true
+          }
+        }
       }
-    }},
-    {'./server/api/json': {}},
-    {'./server/api/jsonp': {}},
-    {'./server/web/auth/github': {}},
-    {'./server/web/browse': {}},
-    {'./server/web/comment': {}},
-    {'./server/web/contributors': {}},
-    {'./server/web/errors': {}},
-    {'./server/web/faq': {}},
-    {'./server/web/health': {}},
-    {'./server/web/home': {}},
-    {'./server/web/popular': {}},
-    {'./server/web/public': {}},
-    {'./server/web/redirects': {}},
-    {'./server/web/search': {}},
-    {'./server/web/sitemap/xml': {}},
-    {'./server/web/test': {}},
-    {'./server/web/edit': {}},
-    {'./server/web/delete': {}}
+    },
+    { plugin: 'bell' },
+    { plugin: 'hapi-auth-cookie' },
+    {
+      plugin: {
+        register: './server/web/auth/strategies',
+        options: {
+          session: {
+            password: config.get('/auth/session/pass'),
+            cookie: config.get('/auth/session/name'),
+            isSecure: config.get('/auth/session/secure')
+          },
+          oauth: {
+            password: config.get('/auth/oauth/cookiePass'),
+            clientId: config.get('/auth/oauth/github/id'),
+            clientSecret: config.get('/auth/oauth/github/secret'),
+            isSecure: config.get('/auth/oauth/secure'),
+            location: config.get('/scheme') + '://' + config.get('/domain')
+          }
+        }
+      }
+    },
+    { plugin: './server/api/json' },
+    { plugin: './server/api/jsonp' },
+    { plugin: './server/web/auth/github' },
+    { plugin: './server/web/browse' },
+    { plugin: './server/web/comment' },
+    { plugin: './server/web/contributors' },
+    { plugin: './server/web/errors' },
+    { plugin: './server/web/faq' },
+    { plugin: './server/web/health' },
+    { plugin: './server/web/home' },
+    { plugin: './server/web/popular' },
+    { plugin: './server/web/public' },
+    { plugin: './server/web/redirects' },
+    { plugin: './server/web/search' },
+    { plugin: './server/web/sitemap/xml' },
+    { plugin: './server/web/test' },
+    { plugin: './server/web/edit' },
+    { plugin: './server/web/delete' }
   ]
 };
 

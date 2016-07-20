@@ -33,7 +33,7 @@
     "confidence": "^1.0.0",
     "debug": "^2.2.0",
     "dotenv": "2.0.0",
-    "glue": "^2.0.0",
+    "glue": "3.3.0",
     "good": "7.0.1",
     "good-console": "6.1.2",
     "handlebars": "^3.0.0",

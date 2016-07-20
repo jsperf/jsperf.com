@@ -1,10 +1,10 @@
 hub:
-  image: selenium/hub:2.46.0
+  image: selenium/hub:2.53.0
   ports:
     - '4444:4444'
 
 firefox:
-  image: selenium/node-firefox:2.46.0
+  image: selenium/node-firefox:2.53.0
   restart: on-failure
   links:
     - hub
