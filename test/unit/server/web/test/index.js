@@ -37,12 +37,17 @@ var AuthPlugin = {
   options: {}
 };
 
+const ScooterPlugin = {
+  register: require('scooter'),
+  options: {}
+};
+
 var lab = exports.lab = Lab.script();
 var request, server;
 const now = new Date();
 
 lab.beforeEach(function (done) {
-  var plugins = [ TestPlugin, YarPlugin ];
+  var plugins = [ TestPlugin, YarPlugin, ScooterPlugin ];
   server = new Hapi.Server();
 
   server.connection();

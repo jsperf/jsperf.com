@@ -9,7 +9,8 @@
     "start": "node server.js",
     "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
     "test-e2e": "lab -L -m 10000 test/e2e",
-    "watch": "nodemon --ext js,hbs server.js"
+    "watch": "nodemon --ext js,hbs server.js",
+    "snyk-protect": "snyk protect"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,7 @@
   },
   "homepage": "https://github.com/jsperf/jsperf.com",
   "dependencies": {
-    "@mathias/benchmark.js-wrapper-jsperf": "^1.0.2",
+    "@mathias/benchmark.js-wrapper-jsperf": "1.0.2",
     "bell": "^3.0.0",
     "blipp": "^2.0.1",
     "boom": "^2.8.0",
@@ -47,9 +48,11 @@
     "lodash": "^3.3.1",
     "marked": "^0.3.4",
     "mysql": "^2.5.5",
+    "scooter": "4.0.0",
     "vision": "4.1.0",
     "visionary": "6.0.0",
-    "yar": "7.0.2"
+    "yar": "7.0.2",
+    "snyk": "^1.17.1"
   },
   "devDependencies": {
     "cheerio": "0.20.0",
@@ -64,5 +67,6 @@
     "proxyquire": "^1.4.0",
     "selenium-webdriver": "2.53.3",
     "sinon": "^1.15.4"
-  }
+  },
+  "snyk": true
 }
