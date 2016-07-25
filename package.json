@@ -10,8 +10,7 @@
     "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
     "test-e2e": "lab -L -m 10000 test/e2e",
     "watch": "nodemon --ext js,hbs server.js",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "snyk-protect": "snyk protect"
   },
   "repository": {
     "type": "git",
@@ -38,7 +37,7 @@
     "glue": "3.3.0",
     "good": "7.0.1",
     "good-console": "6.1.2",
-    "handlebars": "4.0.5",
+    "handlebars": "^3.0.0",
     "hapi": "13.5.0",
     "hapi-auth-cookie": "^3.0.1",
     "highlight.js": "^8.7.0",
