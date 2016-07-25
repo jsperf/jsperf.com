@@ -27,6 +27,7 @@ var manifest = {
   }],
   registrations: [
     { plugin: 'blipp' },
+    { plugin: 'scooter' },
     {
       plugin: {
         register: 'good',

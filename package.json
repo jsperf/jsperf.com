@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/jsperf/jsperf.com",
   "dependencies": {
-    "@mathias/benchmark.js-wrapper-jsperf": "^1.0.2",
+    "@mathias/benchmark.js-wrapper-jsperf": "1.0.2",
     "bell": "^3.0.0",
     "blipp": "^2.0.1",
     "boom": "^2.8.0",
@@ -47,6 +47,7 @@
     "lodash": "^3.3.1",
     "marked": "^0.3.4",
     "mysql": "^2.5.5",
+    "scooter": "4.0.0",
     "vision": "4.1.0",
     "visionary": "6.0.0",
     "yar": "7.0.2"
