@@ -22,9 +22,9 @@ This edit will create a new revision.
         >
     </div>
     <div>
-      <label for="author-email">Email </label>
+      <label for="authorEmail">Email </label>
       <label class="inline">
-        <input type="email" name="author-email" id="author-email"
+        <input type="email" name="authorEmail" id="authorEmail"
           {{#if isAdmin}}
             value="{{page.authorEmail}}"
           {{else if isOwn}}
@@ -34,8 +34,8 @@ This edit will create a new revision.
       </label>
     </div>
     <div>
-      <label for="author-url">URL </label>
-      <input type="url" name="author-url" id="author-url"
+      <label for="authorURL">URL </label>
+      <input type="url" name="authorURL" id="authorURL"
       {{#if isAdmin}}
         value="{{page.authorURL}}"
       {{else if isOwn}}
@@ -50,6 +50,8 @@ This edit will create a new revision.
       <label for="title">Title <em title="This field is required">*</em> </label>
       <input type="text" name="title" id="title" value="{{page.title}}" required>
       {{error page.titleError}}
+
+      <input type="hidden" name="slug" id="slug" value="{{page.slug}}">
     </div>
     <div>
       <label for="visible">Published </label>
@@ -77,13 +79,13 @@ This edit will create a new revision.
     <fieldset>
       <h3>Preparation code</h3>
       <div>
-        <label for="prep-html">Preparation code HTML
+        <label for="initHTML">Preparation code HTML
           <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)
           </span>
           <span>(useful when testing DOM operations or including libraries)
           </span>
         </label>
-        <textarea name="prep-html" id="prep-html" maxlength="{{mediumTextLength}}">{{page.initHTML}}</textarea>
+        <textarea name="initHTML" id="initHTML" maxlength="{{mediumTextLength}}">{{page.initHTML}}</textarea>
         <p id="add-libraries">Include JavaScript libraries as follows: <code>&lt;script src="https://cdn.example.com/library.js">&lt;/script></code></p>
         </p>
       </div>
@@ -145,4 +147,3 @@ This edit will create a new revision.
 {{else}}
    <a class="login" href="/auth/github"><i class="fa fa-github"></i> Login with GitHub to Edit Test Cases</a>
 {{/if}}
-

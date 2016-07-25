@@ -26,6 +26,7 @@ var manifest = {
     labels: ['web']
   }],
   registrations: [
+    { plugin: 'hapi-qs' },
     { plugin: 'blipp' },
     {
       plugin: {
