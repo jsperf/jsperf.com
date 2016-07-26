@@ -11,7 +11,7 @@ for service in $services; do
     --link jsperfcom_db_1:db \
     --env DOMAIN=$DOMAIN \
     --env SCHEME=$SCHEME \
-    --env PORT=3000 \
+    --env PORT=$PORT \
     --env ADMIN_EMAIL=$ADMIN_EMAIL \
     --env BROWSERSCOPE=$BROWSERSCOPE \
     --env BELL_COOKIE_PASS=$BELL_COOKIE_PASS \
