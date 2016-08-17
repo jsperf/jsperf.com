@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/jsperf/jsperf.com",
   "dependencies": {
-    "@mathias/benchmark.js-wrapper-jsperf": "1.0.2",
+    "@mathias/benchmark.js-wrapper-jsperf": "1.0.3",
     "bell": "^8.0.1",
     "blipp": "^2.0.1",
     "boom": "^3.2.2",
