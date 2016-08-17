@@ -1,5 +1,5 @@
 var Confidence = require('confidence');
-var _ = require('lodash');
+var _assign = require('lodash.assign');
 var config = require('./config');
 
 var criteria = {
@@ -61,7 +61,7 @@ var manifest = {
           partialsPath: 'templates/partials',
           context: {
             $filter: 'env',
-            development: _.assign(visionaryContextDefault, {
+            development: _assign(visionaryContextDefault, {
               debug: true,
               cssFile: 'main.src.css?' + Date.now()
             }),

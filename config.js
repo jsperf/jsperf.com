@@ -1,7 +1,7 @@
 require('dotenv').load();
 
 var Confidence = require('confidence');
-var _ = require('lodash');
+var _assign = require('lodash.assign');
 var configLib = require('./lib/config');
 
 configLib.normalizeDomain();
@@ -55,7 +55,7 @@ var config = {
 var store = new Confidence.Store(config);
 
 exports.get = function (key, overrides) {
-  _.assign(criteria, overrides);
+  _assign(criteria, overrides);
   return store.get(key, criteria);
 };
 

@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _assign = require('lodash.assign');
 var Joi = require('joi');
 
 const defaults = require('../../lib/defaults');
@@ -22,7 +22,7 @@ exports.register = function (server, options, next) {
         authorized = true;
       }
 
-      reply.view('home/index', _.assign(defaults.testPageContext, {
+      reply.view('home/index', _assign(defaults.testPageContext, {
         test: [defaults.test, defaults.test],
         authorized: authorized
       }));
@@ -41,7 +41,7 @@ exports.register = function (server, options, next) {
           errObj.genError = errObj.message;
         }
 
-        reply.view('home/index', _.assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
+        reply.view('home/index', _assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
       Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {

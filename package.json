@@ -46,14 +46,15 @@
     "inert": "4.0.1",
     "joi": "^9.0.4",
     "jsesc": "^2.2.0",
-    "lodash": "^4.15.0",
+    "lodash.assign": "4.2.0",
+    "lodash.omit": "4.5.0",
     "marked": "^0.3.6",
     "mysql": "^2.5.5",
     "scooter": "4.0.0",
+    "snyk": "^1.17.1",
     "vision": "4.1.0",
     "visionary": "6.0.1",
-    "yar": "7.0.2",
-    "snyk": "^1.17.1"
+    "yar": "7.0.2"
   },
   "devDependencies": {
     "cheerio": "0.20.0",
