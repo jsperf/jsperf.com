@@ -102,7 +102,10 @@ exports.register = function (server, options, next) {
     },
     handler: function (request, reply) {
       getTestPage(request)
-        .then(model => reply.view('test/index', model))
+        .then((model) => {
+          model.userAgent = request.plugins.scooter.toString();
+          reply.view('test/index', model);
+        })
         .catch(reply);
     }
   });

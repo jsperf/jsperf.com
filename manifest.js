@@ -28,6 +28,7 @@ var manifest = {
   registrations: [
     { plugin: 'hapi-qs' },
     { plugin: 'blipp' },
+    { plugin: 'scooter' },
     {
       plugin: {
         register: 'good',
