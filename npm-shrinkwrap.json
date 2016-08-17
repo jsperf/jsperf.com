@@ -1780,6 +1780,40 @@
       "from": "hapi-for-you@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/hapi-for-you/-/hapi-for-you-1.0.0.tgz"
     },
+    "hapi-qs": {
+      "version": "1.1.1",
+      "from": "hapi-qs@latest",
+      "resolved": "https://registry.npmjs.org/hapi-qs/-/hapi-qs-1.1.1.tgz",
+      "dependencies": {
+        "hoek": {
+          "version": "3.0.4",
+          "from": "hoek@>=3.0.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/hoek/-/hoek-3.0.4.tgz"
+        },
+        "isemail": {
+          "version": "2.2.0",
+          "from": "isemail@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/isemail/-/isemail-2.2.0.tgz"
+        },
+        "joi": {
+          "version": "7.3.0",
+          "from": "joi@>=7.0.1 <8.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-7.3.0.tgz"
+        },
+        "topo": {
+          "version": "2.0.2",
+          "from": "topo@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/topo/-/topo-2.0.2.tgz",
+          "dependencies": {
+            "hoek": {
+              "version": "4.0.1",
+              "from": "hoek@>=4.0.0 <5.0.0",
+              "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.0.1.tgz"
+            }
+          }
+        }
+      }
+    },
     "hapi-scope-start": {
       "version": "2.1.1",
       "from": "hapi-scope-start@>=2.0.0 <3.0.0",

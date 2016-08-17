@@ -30,6 +30,7 @@ module.exports = {
     let queries = [];
 
     tests.forEach(test => {
+      // FIXME
       if (!test.title && !test.code) {
         if (update && test.id) {
           queries.push(db.genericQuery(`DELETE FROM tests WHERE pageID = ${pageID} AND testID = ${test.id}`));
@@ -44,7 +45,9 @@ module.exports = {
       }
     });
     return Promise.all(queries).then((results) => {
+      debug('bulkUpdate results', results);
       results.forEach((result) => {
+        debug('bulkUpdate result', result);
         if (result.affectedRows !== 1) {
           throw new Error('Not all tests inserted');
         }
