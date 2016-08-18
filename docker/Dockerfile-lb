@@ -1,4 +1,4 @@
-FROM gliderlabs/alpine
+FROM gliderlabs/alpine:3.4
 
 RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 
@@ -7,9 +7,11 @@ RUN apk-install nginx curl runit@testing
 RUN curl -L -o /tmp/consul-template.zip http://releases.hashicorp.com/consul-template/0.12.0/consul-template_0.12.0_linux_amd64.zip
 RUN unzip /tmp/consul-template.zip -d /usr/local/bin
 
+# create default paths for nginx to run
+RUN mkdir -p /run/nginx
+
 ADD nginx.service /etc/service/nginx/run
 ADD consul-template.service /etc/service/consul-template/run
-
 ADD nginx.conf /etc/consul-templates/nginx.conf
 
 CMD ["/sbin/runsvdir", "/etc/service"]

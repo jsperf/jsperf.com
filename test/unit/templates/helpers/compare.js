@@ -137,7 +137,7 @@ lab.experiment('Template Helper compare', function () {
         });
 
         Code.expect(fnStub.called).to.be.true();
-        Code.expect(comment).to.deep.include({ isOwner: true });
+        Code.expect(comment).to.include({ isOwner: true });
 
         done();
       });

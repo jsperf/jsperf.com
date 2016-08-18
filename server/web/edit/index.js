@@ -76,16 +76,14 @@ exports.register = function (server, options, next) {
         if (err) {
           let errObj = {};
           try {
-            let valErr = err.details[0];
+            const valErr = err.details[0];
             switch (valErr.path) {
               case 'title':
                 errObj.titleError = defaults.errors.title;
                 break;
               default:
-                // test errors are deeply nested because objects inside array
-                let testErr = valErr.context.reason[0];
-                let idx = testErr.path.split('.')[1];
-                switch (testErr.context.key) {
+                const idx = valErr.path.split('.')[1];
+                switch (valErr.context.key) {
                   case 'title':
                     request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
                     break;

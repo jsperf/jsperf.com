@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var _assign = require('lodash.assign');
 var Joi = require('joi');
 
 const defaults = require('../../lib/defaults');
@@ -22,7 +22,7 @@ exports.register = function (server, options, next) {
         authorized = true;
       }
 
-      reply.view('home/index', _.assign(defaults.testPageContext, {
+      reply.view('home/index', _assign(defaults.testPageContext, {
         test: [defaults.test, defaults.test],
         authorized: authorized
       }));
@@ -41,7 +41,7 @@ exports.register = function (server, options, next) {
           errObj.genError = errObj.message;
         }
 
-        reply.view('home/index', _.assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
+        reply.view('home/index', _assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
       Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {
@@ -50,7 +50,7 @@ exports.register = function (server, options, next) {
           // `abortEarly` option defaults to `true` so can rely on 0 index
           // but just in case...
           try {
-            var valErr = er.details[0];
+            const valErr = er.details[0];
 
             switch (valErr.path) {
               case 'title':
@@ -60,11 +60,8 @@ exports.register = function (server, options, next) {
                 errObj.slugError = defaults.errors.slug;
                 break;
               default:
-                // test errors are deeply nested because objects inside array
-                var testErr = valErr.context.reason[0];
-                var idx = testErr.path.split('.')[1];
-
-                switch (testErr.context.key) {
+                const idx = valErr.path.split('.')[1];
+                switch (valErr.context.key) {
                   case 'title':
                     request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
                     break;
