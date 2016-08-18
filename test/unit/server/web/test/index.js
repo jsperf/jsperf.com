@@ -66,11 +66,14 @@ lab.beforeEach(function (done) {
       engines: {
         hbs: require('handlebars')
       },
+      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..'),
       path: './server/web',
       layout: true,
       helpersPath: 'templates/helpers',
       partialsPath: 'templates/partials',
-      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+      context: {
+        domain: 'jsperf.test'
+      }
     });
     server.register(plugins, done);
   });
@@ -78,7 +81,7 @@ lab.beforeEach(function (done) {
 
 const slug = 'oh-yea';
 
-lab.experiment('test', function () {
+lab.experiment('web/test plugin', function () {
   lab.beforeEach(function (done) {
     request = {
       method: 'GET',
@@ -674,14 +677,28 @@ lab.experiment('atom', () => {
   });
 
   lab.test('it responds with atom feed', done => {
+    const d = new Date();
     pagesServiceStub.getVisibleBySlugWithRevisions = slug => {
-      var d = new Date();
       return Promise.resolve([
         {
-          published: d
+          title: 'Unit Test',
+          slug: 'unit-test',
+          published: d,
+          updated: d
         },
         [
           {
+            title: 'Unit',
+            author: 'Max',
+            revision: 1,
+            // info intentionally missing
+            published: d,
+            updated: d
+          }, {
+            title: 'Test',
+            author: 'Max',
+            revision: 2,
+            info: 'desc',
             published: d,
             updated: d
           }
@@ -692,7 +709,46 @@ lab.experiment('atom', () => {
     server.inject(request, response => {
       Code.expect(response.statusCode).to.equal(200);
       Code.expect(response.headers['content-type']).to.equal('application/atom+xml;charset=UTF-8');
-      Code.expect(response.result).to.be.string().and.to.startWith('<feed').and.to.contain('<entry>');
+
+      const dIso = d.toISOString();
+      const strip = (str) => str.replace(/\s/g, '');
+      Code.expect(strip(response.result)).to.equal(strip(`
+        <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+            <title>Unit Test</title>
+            <subtitle>The latest revisions for this jsPerf test case</subtitle>
+            <link rel="self" type="application/atom+xml" href="http://jsperf.test/unit-test.atom" />
+            <link rel="alternate" type="text/html" href="http://jsperf.test/unit-test" />
+            <updated>${d.toString()}</updated>
+            <id>tag:jsperf.test,2010:/unit-test</id>
+
+                <entry>
+                    <title>Unit</title>
+                    <author>
+                        <name>Max</name>
+                    </author>
+                    <link rel="alternate" type="text/html" href="http://jsperf.test/unit-test" />
+                    <summary>
+                          No description entered
+                    </summary>
+                    <id>tag:jsperf.test,2010:/unit-test</id>
+                    <published>${dIso}</published>
+                    <updated>${dIso}</updated>
+                </entry>
+                <entry>
+                    <title>Test</title>
+                    <author>
+                        <name>Max</name>
+                    </author>
+                    <link rel="alternate" type="text/html" href="http://jsperf.test/unit-test/2" />
+                    <summary>
+                        desc
+                    </summary>
+                    <id>tag:jsperf.test,2010:/unit-test/2</id>
+                    <published>${dIso}</published>
+                    <updated>${dIso}</updated>
+                </entry>
+        </feed>
+      `));
 
       done();
     });

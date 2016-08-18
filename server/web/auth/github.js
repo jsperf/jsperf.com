@@ -5,8 +5,8 @@ exports.register = function (server, options, next) {
     config: {
       auth: 'github',
       handler: function (request, reply) {
-        request.auth.session.clear();
-        request.auth.session.set(request.auth.credentials.profile);
+        request.cookieAuth.clear();
+        request.cookieAuth.set(request.auth.credentials.profile);
         return reply.redirect('/');
       }
     }

@@ -89,10 +89,10 @@ We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https
 npm test
 
 # directory
-npm test -- test/server/web
+npm test -- test/unit/server/web
 
 # file
-npm test -- test/server/web/contributors/index.js
+npm test -- test/unit/server/web/contributors/index.js
 ```
 
 _If you'd just like to lint and save a little time, you can run `npm run lint` which skips the tests._

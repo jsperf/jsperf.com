@@ -1,6 +1,6 @@
 'use strict';
 // TODO make hapi plugin
-var _ = require('lodash');
+var _omit = require('lodash.omit');
 var debug = require('debug')('jsperf:services:pages');
 
 var pagesRepo = require('../repositories/pages');
@@ -33,7 +33,7 @@ module.exports = {
   create: function (payload) {
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
       .then(function (testKey) {
-        var page = _.omit(payload, 'test');
+        var page = _omit(payload, 'test');
         page.browserscopeID = testKey;
         page.published = new Date();
 
@@ -47,7 +47,7 @@ module.exports = {
     let newRev = ++maxRev;
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, newRev)
       .then(testKey => {
-        let page = _.omit(payload, 'test');
+        let page = _omit(payload, 'test');
         page.browserscopeID = testKey;
         if (isOwn) {
           return pagesRepo.updateById(page, pageId);
