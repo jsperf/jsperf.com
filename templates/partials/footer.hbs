@@ -29,12 +29,12 @@
   </footer>
 
   {{#if benchmark}}
-    <script src="/test.js"></script>
+    <script src="/public/_js/test.js"></script>
     <script>
       {{#if page.browserscopeID}}
         ui.browserscope.key = '{{ page.browserscopeID }}'
       {{/if}}
-      
+
       {{#each page.test}}
         ui.add(
           {{{ cleanJsString title }}},
@@ -44,7 +44,7 @@
           }
         );
       {{/each}}
-      
+
       {{#if page.setup}}
         Benchmark.prototype.setup = {{{ cleanJsString page.setup }}}
       {{/if}}
@@ -52,7 +52,7 @@
         Benchmark.prototype.teardown = {{{ cleanJsString page.setup }}}
       {{/if}}
     </script>
-    
+
     {{{ page.initHTML }}}
   {{else}}
     {{#if mainJS}}
