@@ -2,11 +2,6 @@
   "name": "jsperf.com",
   "version": "2.0.0",
   "dependencies": {
-    "@mathias/benchmark.js-wrapper-jsperf": {
-      "version": "1.0.3",
-      "from": "@mathias/benchmark.js-wrapper-jsperf@1.0.3",
-      "resolved": "https://registry.npmjs.org/@mathias/benchmark.js-wrapper-jsperf/-/benchmark.js-wrapper-jsperf-1.0.3.tgz"
-    },
     "abab": {
       "version": "1.0.3",
       "from": "abab@>=1.0.0 <2.0.0",

@@ -37,7 +37,6 @@ gulp.task('js', function () {
   .pipe(addSrc.prepend('client/ui.js'))
   .pipe(addSrc.prepend(require.resolve('benchmark')))
   .pipe(addSrc.prepend(require.resolve('platform')))
-  // Use whatever version of lodash Benchmark.js is using (hopefully?)
 	.pipe(addSrc.prepend(require.resolve('lodash')))
 
 	.pipe(concat('test.js'))
