@@ -419,7 +419,7 @@ lab.experiment('POST', function () {
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(400);
 
-        Code.expect(response.result).to.include('Please enter a code snippet.');
+        Code.expect(response.result).to.include(defaults.errors.code);
 
         done();
       });
@@ -431,7 +431,7 @@ lab.experiment('POST', function () {
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(400);
 
-        Code.expect(response.result).to.include('Please review required fields and save again.');
+        Code.expect(response.result).to.include(defaults.errors.general);
 
         done();
       });
