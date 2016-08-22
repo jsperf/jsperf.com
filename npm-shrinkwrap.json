@@ -180,9 +180,9 @@
       "resolved": "https://registry.npmjs.org/beeper/-/beeper-1.1.0.tgz"
     },
     "bell": {
-      "version": "8.0.1",
-      "from": "bell@8.0.1",
-      "resolved": "https://registry.npmjs.org/bell/-/bell-8.0.1.tgz"
+      "version": "8.1.1",
+      "from": "bell@8.1.1",
+      "resolved": "https://registry.npmjs.org/bell/-/bell-8.1.1.tgz"
     },
     "benchmark": {
       "version": "2.1.1",
