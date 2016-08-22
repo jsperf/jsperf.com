@@ -4,6 +4,7 @@
   "description": "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
   "main": "index.js",
   "scripts": {
+    "build": "gulp",
     "clean": "rm npm-debug.log lcov.info coverage.html",
     "lint": "SELENIUM_REMOTE_URL=http://skip JSPERF_REMOTE_URL=http://skip lab -d -L",
     "start": "node server.js",
@@ -27,7 +28,6 @@
   },
   "homepage": "https://github.com/jsperf/jsperf.com",
   "dependencies": {
-    "@mathias/benchmark.js-wrapper-jsperf": "1.0.3",
     "bell": "8.1.1",
     "blipp": "2.3.0",
     "boom": "3.2.2",
@@ -57,18 +57,29 @@
     "yar": "7.0.2"
   },
   "devDependencies": {
+    "benchmark": "2.1.1",
     "cheerio": "0.20.0",
     "code": "3.0.2",
     "eslint-config-semistandard": "6.0.2",
     "eslint-config-standard": "5.3.5",
     "eslint-plugin-promise": "2.0.1",
     "eslint-plugin-standard": "2.0.0",
+    "gulp": "3.9.1",
+    "gulp-add-src": "0.2.0",
+    "gulp-concat": "2.6.0",
+    "gulp-insert": "0.5.0",
+    "gulp-remote-src": "0.4.1",
+    "gulp-replace": "0.5.4",
+    "gulp-uglify": "2.0.0",
     "lab": "11.0.0",
+    "lodash": "4.15.0",
     "nodemon": "1.3.7",
+    "platform": "1.3.1",
     "prompt": "^1.0.0",
     "proxyquire": "1.4.0",
     "selenium-webdriver": "2.53.3",
-    "sinon": "1.15.4"
+    "sinon": "1.15.4",
+    "snyk": "1.17.1"
   },
   "snyk": true
 }

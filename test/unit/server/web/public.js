@@ -67,15 +67,6 @@ lab.experiment('Public', function () {
     });
   });
 
-  lab.test('it serves test.js', function (done) {
-    request.url = '/test.js';
-    server.inject(request, function (response) {
-      Code.expect(response.statusCode).to.equal(200);
-
-      done();
-    });
-  });
-
   lab.test('it serves robots.txt', function (done) {
     request.url = '/robots.txt';
     server.inject(request, function (response) {
