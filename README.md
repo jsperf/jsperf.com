@@ -74,6 +74,12 @@ Add an entry to the hosts file to redirect jsPerf’s database connections to `l
 DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf npm start
 ```
 
+### Building the client
+
+```
+npm run build
+```
+
 ## Testing
 
 We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab lints with [eslint](http://eslint.org/) using the [semistandard style](https://github.com/Flet/semistandard). 100% code coverage by unit tests is required. To run the test suite:
