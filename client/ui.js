@@ -28,7 +28,8 @@
   var toString = {}.toString;
 
   /** Namespace */
-  var ui = new Benchmark.Suite();
+  // Benchmark.Suite is not a constructor
+  var ui = new Benchmark.Suite; // eslint-disable-line new-parens
 
   /** Object containing various CSS class names */
   var classNames = {
