@@ -9,7 +9,7 @@ for service in $services; do
   docker rm $service
   docker run -d --name 'jsperfcom_web_'$timestamp'_'$enum -P \
     --link jsperfcom_db_1:db \
-    --env-file /etc/environment
+    --env-file /etc/environment \
     --env DB_ENV_MYSQL_DATABASE=jsperf \
     --env DB_ENV_MYSQL_PASSWORD=$MYSQL_PASSWORD \
     --env DB_ENV_MYSQL_USER=jsperf \
