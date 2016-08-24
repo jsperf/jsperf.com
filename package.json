@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "benchmark": "2.1.1",
-    "cheerio": "0.20.0",
+    "cheerio": "0.22.0",
     "code": "3.0.2",
     "eslint-config-semistandard": "6.0.2",
     "eslint-config-standard": "5.3.5",
