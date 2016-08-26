@@ -30,7 +30,7 @@
   "dependencies": {
     "bell": "8.1.1",
     "blipp": "2.3.0",
-    "boom": "3.2.2",
+    "boom": "4.0.0",
     "confidence": "3.0.1",
     "debug": "2.2.0",
     "dotenv": "2.0.0",
