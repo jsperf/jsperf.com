@@ -35,7 +35,7 @@
     "debug": "2.2.0",
     "dotenv": "2.0.0",
     "glue": "3.4.0",
-    "good": "7.0.1",
+    "good": "7.0.2",
     "good-console": "6.1.2",
     "handlebars": "4.0.5",
     "hapi": "14.2.0",
