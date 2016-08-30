@@ -12,6 +12,18 @@ const CommentPlugin = proxyquire('../../../../../server/web/comment', {
   '../../services/comments': commentsServiceMock
 });
 
+const cookiePass = 'password-should-be-32-characters';
+
+const YarPlugin = {
+  register: require('yar'),
+  options: { cookieOptions: { password: cookiePass } }
+};
+
+const AuthPlugin = {
+  register: require('hapi-auth-cookie'),
+  options: {}
+};
+
 const lab = exports.lab = Lab.script();
 let s;
 let server;
@@ -19,26 +31,15 @@ let server;
 lab.beforeEach(function (done) {
   s = sinon.sandbox.create();
 
-  const cookiePass = 'password-should-be-32-characters';
-  const YarPlugin = {
-    register: require('yar'),
-    options: { cookieOptions: { password: cookiePass } }
-  };
-
-  const AuthPlugin = {
-    register: require('hapi-auth-cookie'),
-    options: {}
-  };
-
   server = new Hapi.Server();
   server.connection();
-  server.register([YarPlugin, AuthPlugin], () => {
+  server.register([ AuthPlugin ], () => {
     server.auth.strategy('session', 'cookie', {
       password: cookiePass
     });
-  });
 
-  server.register([ CommentPlugin ], done);
+    server.register([ YarPlugin, CommentPlugin ], done);
+  });
 });
 
 lab.afterEach((done) => {

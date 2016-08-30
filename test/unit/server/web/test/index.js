@@ -585,7 +585,6 @@ lab.experiment('create comment', () => {
         );
 
         request.headers = {};
-        request.info = {};
 
         done();
       });
@@ -642,8 +641,8 @@ lab.experiment('create comment', () => {
           });
         });
 
-        lab.test('remoteAdress', done => {
-          request.info.remoteAdress = '127.0.0.1';
+        lab.test('remoteAddress', done => {
+          request.remoteAddress = '127.0.0.1';
 
           server.inject(request, response => {
             Code.expect(response.statusCode).to.equal(200);
