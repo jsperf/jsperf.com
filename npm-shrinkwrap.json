@@ -183,6 +183,18 @@
       "from": "balanced-match@>=0.4.1 <0.5.0",
       "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.4.2.tgz"
     },
+    "bcrypt-pbkdf": {
+      "version": "1.0.0",
+      "from": "bcrypt-pbkdf@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.0.tgz",
+      "dependencies": {
+        "tweetnacl": {
+          "version": "0.14.3",
+          "from": "tweetnacl@>=0.14.3 <0.15.0",
+          "resolved": "https://registry.npmjs.org/tweetnacl/-/tweetnacl-0.14.3.tgz"
+        }
+      }
+    },
     "beeper": {
       "version": "1.1.0",
       "from": "beeper@>=1.0.0 <2.0.0",
@@ -3625,9 +3637,9 @@
       }
     },
     "package-json": {
-      "version": "2.3.3",
+      "version": "2.4.0",
       "from": "package-json@>=2.0.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/package-json/-/package-json-2.3.3.tgz"
+      "resolved": "https://registry.npmjs.org/package-json/-/package-json-2.4.0.tgz"
     },
     "parse-filepath": {
       "version": "1.0.1",
@@ -3899,6 +3911,11 @@
       "from": "regex-cache@>=0.4.2 <0.5.0",
       "resolved": "https://registry.npmjs.org/regex-cache/-/regex-cache-0.4.3.tgz"
     },
+    "registry-auth-token": {
+      "version": "3.0.1",
+      "from": "registry-auth-token@>=3.0.1 <4.0.0",
+      "resolved": "https://registry.npmjs.org/registry-auth-token/-/registry-auth-token-3.0.1.tgz"
+    },
     "registry-url": {
       "version": "3.1.0",
       "from": "registry-url@>=3.0.3 <4.0.0",
@@ -4092,9 +4109,9 @@
       }
     },
     "snyk": {
-      "version": "1.18.1",
-      "from": "snyk@1.18.1",
-      "resolved": "https://registry.npmjs.org/snyk/-/snyk-1.18.1.tgz",
+      "version": "1.19.1",
+      "from": "snyk@1.19.1",
+      "resolved": "https://registry.npmjs.org/snyk/-/snyk-1.19.1.tgz",
       "dependencies": {
         "ansi-regex": {
           "version": "2.0.0",
@@ -4115,11 +4132,6 @@
           "version": "2.0.0",
           "from": "has-ansi@>=2.0.0 <3.0.0",
           "resolved": "https://registry.npmjs.org/has-ansi/-/has-ansi-2.0.0.tgz"
-        },
-        "lodash": {
-          "version": "3.10.1",
-          "from": "lodash@>=3.10.1 <4.0.0",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
         },
         "strip-ansi": {
           "version": "3.0.1",
@@ -4233,9 +4245,9 @@
       "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
     },
     "sshpk": {
-      "version": "1.9.2",
+      "version": "1.10.0",
       "from": "sshpk@>=1.7.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/sshpk/-/sshpk-1.9.2.tgz",
+      "resolved": "https://registry.npmjs.org/sshpk/-/sshpk-1.10.0.tgz",
       "dependencies": {
         "assert-plus": {
           "version": "1.0.0",
