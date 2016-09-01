@@ -2400,9 +2400,9 @@
       "resolved": "https://registry.npmjs.org/handlebars/-/handlebars-4.0.5.tgz"
     },
     "hapi": {
-      "version": "15.0.2",
-      "from": "hapi@15.0.2",
-      "resolved": "https://registry.npmjs.org/hapi/-/hapi-15.0.2.tgz",
+      "version": "15.0.3",
+      "from": "hapi@15.0.3",
+      "resolved": "https://registry.npmjs.org/hapi/-/hapi-15.0.3.tgz",
       "dependencies": {
         "statehood": {
           "version": "5.0.0",
@@ -3736,9 +3736,9 @@
       "resolved": "https://registry.npmjs.org/pluralize/-/pluralize-1.2.1.tgz"
     },
     "podium": {
-      "version": "1.2.1",
+      "version": "1.2.3",
       "from": "podium@>=1.2.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/podium/-/podium-1.2.1.tgz"
+      "resolved": "https://registry.npmjs.org/podium/-/podium-1.2.3.tgz"
     },
     "prelude-ls": {
       "version": "1.1.2",
