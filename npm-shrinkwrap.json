@@ -937,14 +937,14 @@
       "resolved": "https://registry.npmjs.org/eslint-config-hapi/-/eslint-config-hapi-10.0.0.tgz"
     },
     "eslint-config-semistandard": {
-      "version": "6.0.2",
-      "from": "eslint-config-semistandard@6.0.2",
-      "resolved": "https://registry.npmjs.org/eslint-config-semistandard/-/eslint-config-semistandard-6.0.2.tgz"
+      "version": "7.0.0",
+      "from": "eslint-config-semistandard@7.0.0",
+      "resolved": "https://registry.npmjs.org/eslint-config-semistandard/-/eslint-config-semistandard-7.0.0.tgz"
     },
     "eslint-config-standard": {
-      "version": "5.3.5",
-      "from": "eslint-config-standard@5.3.5",
-      "resolved": "https://registry.npmjs.org/eslint-config-standard/-/eslint-config-standard-5.3.5.tgz"
+      "version": "6.0.0",
+      "from": "eslint-config-standard@6.0.0",
+      "resolved": "https://registry.npmjs.org/eslint-config-standard/-/eslint-config-standard-6.0.0.tgz"
     },
     "eslint-plugin-hapi": {
       "version": "4.0.0",

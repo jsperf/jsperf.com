@@ -82,7 +82,8 @@ lab.experiment('deleting', function () {
     pagesServiceStub.deleteBySlug = sinon.stub().returns(Promise.resolve(3));
 
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           req.yar.set('admin', true);
@@ -110,7 +111,8 @@ lab.experiment('deleting', function () {
     pagesServiceStub.deleteBySlug = sinon.stub().returns(Promise.resolve(1));
 
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           req.yar.set('admin', true);
@@ -139,7 +141,8 @@ lab.experiment('deleting', function () {
     pagesServiceStub.deleteBySlug = sinon.stub().returns(Promise.resolve(0));
 
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           req.yar.set('admin', true);
