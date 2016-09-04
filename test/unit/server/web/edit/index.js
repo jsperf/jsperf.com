@@ -218,7 +218,8 @@ lab.experiment('GET', function () {
 
   lab.test('responds with "editing original" message for the original author', function (done) {
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           var owns = {1: true};
@@ -245,7 +246,8 @@ lab.experiment('GET', function () {
 
   lab.test('displays an "creating new revision" message for not the author', function (done) {
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           var owns = {1: false};
@@ -272,7 +274,8 @@ lab.experiment('GET', function () {
 
   lab.test("it displays the author's details name if being viewed by an admin", function (done) {
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           req.yar.set('admin', true);
@@ -300,7 +303,8 @@ lab.experiment('GET', function () {
 
   lab.test("it displays the author's details if being viewed by the author", function (done) {
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           let owns = {1: true};
@@ -329,7 +333,8 @@ lab.experiment('GET', function () {
 
   lab.test("it does not display the author's details if not being viewed by the author or an admin", function (done) {
     server.route({
-      method: 'GET', path: '/setsession',
+      method: 'GET',
+      path: '/setsession',
       config: {
         handler: function (req, reply) {
           let owns = {1: false};
@@ -517,7 +522,8 @@ lab.experiment('POST', function () {
       };
 
       server.route({
-        method: 'GET', path: '/setsession',
+        method: 'GET',
+        path: '/setsession',
         config: {
           handler: function (req, reply) {
             var owns = {1: true};
@@ -585,7 +591,8 @@ lab.experiment('POST', function () {
       };
 
       server.route({
-        method: 'GET', path: '/setsession',
+        method: 'GET',
+        path: '/setsession',
         config: {
           handler: function (req, reply) {
             req.yar.set('admin', true);

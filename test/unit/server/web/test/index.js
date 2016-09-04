@@ -211,7 +211,8 @@ lab.experiment('web/test plugin', function () {
     lab.beforeEach(function (done) {
       // Add a method of adding session data
       server.route({
-        method: 'GET', path: '/setsession',
+        method: 'GET',
+        path: '/setsession',
         config: {
           handler: function (req, reply) {
             var hits = {123: true};
@@ -359,7 +360,8 @@ lab.experiment('web/test plugin', function () {
 
     lab.test('sets noIndex to true if page is flaged as "owned" in the session', function (done) {
       server.route({
-        method: 'GET', path: '/setsession',
+        method: 'GET',
+        path: '/setsession',
         config: {
           handler: function (req, reply) {
             var owns = {1: true};
@@ -383,7 +385,8 @@ lab.experiment('web/test plugin', function () {
 
     lab.test('sets noIndex to true if page is being viewed by an admin', function (done) {
       server.route({
-        method: 'GET', path: '/setsession',
+        method: 'GET',
+        path: '/setsession',
         config: {
           handler: function (req, reply) {
             var owns = {2: true};
@@ -490,7 +493,8 @@ lab.experiment('web/test plugin', function () {
       }]));
 
       server.route({
-        method: 'GET', path: '/setsession',
+        method: 'GET',
+        path: '/setsession',
         config: {
           handler: function (req, reply) {
             var owns = {1: true};

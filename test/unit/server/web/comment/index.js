@@ -72,7 +72,8 @@ lab.experiment('comment', () => {
       commentsServiceMock.delete = s.stub().returns(Promise.resolve());
 
       server.route({
-        method: 'GET', path: '/setsession',
+        method: 'GET',
+        path: '/setsession',
         config: {
           handler: function (req, reply) {
             req.yar.set('admin', true);
