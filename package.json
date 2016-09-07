@@ -54,7 +54,7 @@
     "snyk": "1.19.1",
     "vision": "4.1.0",
     "visionary": "6.0.1",
-    "yar": "7.0.2"
+    "yar": "7.0.3"
   },
   "devDependencies": {
     "benchmark": "2.1.1",
