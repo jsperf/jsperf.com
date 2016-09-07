@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/jsperf/jsperf.com",
   "dependencies": {
-    "bell": "8.1.1",
+    "bell": "8.2.0",
     "blipp": "2.3.0",
     "boom": "4.0.0",
     "confidence": "3.0.1",
