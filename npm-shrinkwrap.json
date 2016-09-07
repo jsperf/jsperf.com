@@ -201,14 +201,21 @@
       "resolved": "https://registry.npmjs.org/beeper/-/beeper-1.1.0.tgz"
     },
     "bell": {
-      "version": "8.1.1",
-      "from": "bell@8.1.1",
-      "resolved": "https://registry.npmjs.org/bell/-/bell-8.1.1.tgz",
+      "version": "8.2.0",
+      "from": "bell@8.2.0",
+      "resolved": "https://registry.npmjs.org/bell/-/bell-8.2.0.tgz",
       "dependencies": {
-        "boom": {
-          "version": "3.2.2",
-          "from": "boom@>=3.0.0 <4.0.0",
-          "resolved": "https://registry.npmjs.org/boom/-/boom-3.2.2.tgz"
+        "wreck": {
+          "version": "9.0.0",
+          "from": "wreck@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/wreck/-/wreck-9.0.0.tgz",
+          "dependencies": {
+            "boom": {
+              "version": "3.2.2",
+              "from": "boom@>=3.0.0 <4.0.0",
+              "resolved": "https://registry.npmjs.org/boom/-/boom-3.2.2.tgz"
+            }
+          }
         }
       }
     },
