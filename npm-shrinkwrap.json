@@ -4271,9 +4271,9 @@
       "resolved": "https://registry.npmjs.org/stack-trace/-/stack-trace-0.0.9.tgz"
     },
     "statehood": {
-      "version": "4.0.3",
-      "from": "statehood@>=4.0.0 <5.0.0",
-      "resolved": "https://registry.npmjs.org/statehood/-/statehood-4.0.3.tgz",
+      "version": "5.0.0",
+      "from": "statehood@>=5.0.0 <6.0.0",
+      "resolved": "https://registry.npmjs.org/statehood/-/statehood-5.0.0.tgz",
       "dependencies": {
         "boom": {
           "version": "3.2.2",
@@ -4994,9 +4994,9 @@
       "resolved": "https://registry.npmjs.org/yallist/-/yallist-2.0.0.tgz"
     },
     "yar": {
-      "version": "7.0.2",
-      "from": "yar@7.0.2",
-      "resolved": "https://registry.npmjs.org/yar/-/yar-7.0.2.tgz"
+      "version": "8.0.0",
+      "from": "yar@8.0.0",
+      "resolved": "https://registry.npmjs.org/yar/-/yar-8.0.0.tgz"
     },
     "yargs": {
       "version": "4.8.1",
