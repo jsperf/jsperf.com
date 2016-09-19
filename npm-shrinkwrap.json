@@ -3243,9 +3243,9 @@
       "resolved": "https://registry.npmjs.org/lodash.templatesettings/-/lodash.templatesettings-3.1.1.tgz"
     },
     "lolex": {
-      "version": "1.1.0",
-      "from": "lolex@1.1.0",
-      "resolved": "https://registry.npmjs.org/lolex/-/lolex-1.1.0.tgz"
+      "version": "1.3.2",
+      "from": "lolex@1.3.2",
+      "resolved": "https://registry.npmjs.org/lolex/-/lolex-1.3.2.tgz"
     },
     "longest": {
       "version": "1.0.1",
@@ -4091,9 +4091,9 @@
       "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.0.tgz"
     },
     "sinon": {
-      "version": "1.15.4",
-      "from": "sinon@1.15.4",
-      "resolved": "https://registry.npmjs.org/sinon/-/sinon-1.15.4.tgz"
+      "version": "1.17.6",
+      "from": "sinon@1.17.6",
+      "resolved": "https://registry.npmjs.org/sinon/-/sinon-1.17.6.tgz"
     },
     "slice-ansi": {
       "version": "0.0.4",
