@@ -44,7 +44,7 @@
     "highlight.js": "9.6.0",
     "hoek": "4.0.1",
     "inert": "4.0.1",
-    "joi": "9.0.4",
+    "joi": "9.1.0",
     "jsesc": "2.2.0",
     "lodash.assign": "4.2.0",
     "lodash.omit": "4.5.0",
