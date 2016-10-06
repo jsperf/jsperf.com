@@ -245,8 +245,6 @@ lab.experiment('web/test plugin', function () {
         updated: now
       }, [], [], []]));
 
-      pagesServiceStub.updateHits.returns(Promise.resolve());
-
       server.inject('/setsession', function (res) {
         var header = res.headers['set-cookie'];
         var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
@@ -315,15 +313,16 @@ lab.experiment('web/test plugin', function () {
         updated: now
       }, [], [], []]));
 
-      const expectedError = new Error('TODO');
-      pagesServiceStub.updateHits.returns(Promise.reject(expectedError));
+      const expectedError = new Error('catches-errors-from-page-service');
+      pagesServiceStub.updateHits = () => Promise.reject(expectedError);
 
       server.inject('/setsession', function (res) {
         var header = res.headers['set-cookie'];
         var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
         request.headers = {};
         request.headers.cookie = 'session=' + cookie[1];
-        server.inject(request, function () {
+        server.inject(request, function (response) {
+          Code.expect(response.statusCode).to.equal(200);
           const debugCall = debugSpy.getCall(0).args[0];
 
           Code.expect(debugCall.message).to.equal(expectedError.message);
@@ -547,7 +546,7 @@ lab.experiment('create comment', () => {
     });
 
     lab.test('it catches error', done => {
-      pagesServiceStub.getBySlug.returns(Promise.reject(new Error('testing')));
+      pagesServiceStub.getBySlug = () => Promise.reject(new Error('testing'));
 
       server.inject(request, res => {
         Code.expect(res.statusCode).to.equal(500);
@@ -556,7 +555,7 @@ lab.experiment('create comment', () => {
     });
 
     lab.test('not found', function (done) {
-      pagesServiceStub.getBySlug.returns(Promise.reject(new Error('Not found')));
+      pagesServiceStub.getBySlug = () => Promise.reject(new Error('Not found'));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(404);

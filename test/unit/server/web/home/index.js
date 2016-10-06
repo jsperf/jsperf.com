@@ -218,9 +218,7 @@ lab.experiment('home', function () {
 
       lab.test('handles error', function (done) {
         var errMsg = 'testing-very-unique-msg';
-        pagesServiceStub.checkIfSlugAvailable = function (a, b) {
-          return Promise.reject(new Error(errMsg));
-        };
+        pagesServiceStub.checkIfSlugAvailable = () => Promise.reject(new Error(errMsg));
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -232,9 +230,7 @@ lab.experiment('home', function () {
       });
 
       lab.test('not available', function (done) {
-        pagesServiceStub.checkIfSlugAvailable = function (a, b) {
-          return Promise.resolve(false);
-        };
+        pagesServiceStub.checkIfSlugAvailable = () => Promise.resolve(false);
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(400);
