@@ -51,13 +51,15 @@ exports.register = function (server, options, next) {
         // update hits once per page per session
         var hits = request.yar.get('hits') || {};
         if (!hits[page.id]) {
-          pagesService.updateHits(page.id)
-          .then(function () {
-            hits[page.id] = true;
-            request.yar.set('hits', hits);
-          })
-          // TODO: report error some place useful
-          .catch(debug);
+          Promise.resolve().then(() => {
+            pagesService.updateHits(page.id)
+            .then(function () {
+              hits[page.id] = true;
+              request.yar.set('hits', hits);
+            })
+            // TODO: report error some place useful
+            .catch(debug);
+          }).catch(console.error);
         }
 
         var own = request.yar.get('own') || {};

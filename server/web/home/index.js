@@ -40,7 +40,6 @@ exports.register = function (server, options, next) {
         if (errObj.message) {
           errObj.genError = errObj.message;
         }
-
         reply.view('home/index', _assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
@@ -75,7 +74,6 @@ exports.register = function (server, options, next) {
           } catch (ex) {
             errObj.genError = defaults.errors.general;
           }
-
           errResp(errObj);
         } else {
           // Joi defaults any properties not present in `request.payload` so use `payload` from here on out
@@ -88,12 +86,11 @@ exports.register = function (server, options, next) {
                 slugError: defaults.errors.slugDupe
               });
             } else {
-              return pagesService.create(payload);
+              return pagesService.create(payload).then(function () {
+                request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+                reply.redirect('/' + payload.slug);
+              });
             }
-          })
-          .then(function () {
-            request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
-            reply.redirect('/' + payload.slug);
           })
           .catch(errResp);
         }
