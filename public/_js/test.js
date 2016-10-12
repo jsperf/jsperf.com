@@ -22651,7 +22651,7 @@
 
     var iwin = frames[name],
         idoc = iwin.document,
-        href = 'main.css';
+        href = '/public/_css/main.src.css';
 
     _.some(document.styleSheets, function(sheet) {
       var value = sheet.href;
