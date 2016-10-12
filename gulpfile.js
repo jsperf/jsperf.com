@@ -62,6 +62,7 @@ gulp.task('js', function () {
   ))
   .pipe(replace('root.platform = parse()', 'platform = parse()'))
   .pipe(replace('var _ = runInContext()', '_ = runInContext()'))
+  .pipe(replace('var _ = context && context._ || require(\'lodash\') || root._;', ''))
   .pipe(replace('(freeWindow || freeSelf || {})._ = _', ''))
   .pipe(replace('root._ = _', ''))
 
