@@ -42,7 +42,7 @@ gulp.task('js', function () {
   .pipe(concat('test.js'))
 
   // Set the Google Analytics ID.
-  .pipe(replace('gaId = \'\'', 'gaId = \'UA-6065217-40\''))
+  .pipe(replace(`gaId = ''`, `gaId = 'UA-6065217-40'`))
 
   // jsPerf is browser-only. Ensure we’re detected as a browser environment,
   // even if this is an AMD test, for example.
@@ -53,10 +53,10 @@ gulp.task('js', function () {
   .pipe(replace(/(if\s*\()(typeof define|freeDefine)\b/, '$1false'))
 
   // Specify the correct path to our CSS file.
-  .pipe(replace('href = \'main.css\'', 'href = \'/public/_css/main.src.css\''))
+  .pipe(replace(`href = 'main.css'`, `href = '/public/_css/main.src.css'`))
 
   // Set the CSS selector for the Browserscope results.
-  .pipe(replace('\'selector\': \'\'', '\'selector\': \'#bs-results\''))
+  .pipe(replace(`'selector': ''`, `'selector': '#bs-results'`))
 
   // Avoid exposing `_` and `platform` as global variables.
   .pipe(insert.wrap(
@@ -65,13 +65,18 @@ gulp.task('js', function () {
   ))
   .pipe(replace('root.platform = parse()', 'platform = parse()'))
   .pipe(replace('var _ = runInContext()', '_ = runInContext()'))
-  .pipe(replace('var _ = context && context._ || require(\'lodash\') || root._;', ''))
+  .pipe(replace(`var _ = context && context._ || require('lodash') || root._;`, ''))
   .pipe(replace('(freeWindow || freeSelf || {})._ = _', ''))
   .pipe(replace('root._ = _', ''))
 
   // Ensure that Benchmark.js uses the local copies of lodash and Platform.js.
-  .pipe(replace('var _ = context && context._ || req(\'lodash\') || root._;', ''))
-  .pipe(replace('\'platform\': context.platform', '\'platform\': platform'))
+  .pipe(replace(`var _ = context && context._ || req('lodash') || root._;`, ''))
+  .pipe(replace(`'platform': context.platform`, `'platform': platform`))
+
+  // Ugly hack to avoid “`ui` is not defined” (#212) most of the time. 😒😫
+  // TODO: Figure out what’s happening and fix this properly.
+  .pipe(replace(`loadScript('https://www.google.com/jsapi?autoload='`, `setTimeout(function() { loadScript('https://www.google.com/jsapi?autoload='`))
+  .pipe(replace(`'}'), idoc);`, `'}'), idoc); }, 2000);`))
 
   // Minify the result.
   // .pipe(uglify())
