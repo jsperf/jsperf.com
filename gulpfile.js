@@ -52,6 +52,9 @@ gulp.task('js', function () {
   .pipe(replace(/freeRequire = (?:[^;]+)/, 'freeRequire = false'))
   .pipe(replace(/(if\s*\()(typeof define|freeDefine)\b/, '$1false'))
 
+  // Specify the correct path to our CSS file.
+  .pipe(replace('href = \'main.css\'', 'href = \'/public/_css/main.src.css\''))
+
   // Set the CSS selector for the Browserscope results.
   .pipe(replace('\'selector\': \'\'', '\'selector\': \'#bs-results\''))
 
