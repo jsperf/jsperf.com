@@ -21148,7 +21148,7 @@
      */
     'load': function () {
       // only for pages with a comment form
-      if (has.runner) {
+      if (has.runner && $('author')) {
         // init the ui
         addClass('controls', classNames.show);
         addListener('run', 'click', handlers.button.run);
