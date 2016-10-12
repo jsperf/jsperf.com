@@ -22692,14 +22692,14 @@
 
     // the "autoload" string is created following the guide at
     // https://developers.google.com/loader/?hl=en#auto-loading
-    loadScript('https://www.google.com/jsapi?autoload=' + encodeURIComponent('{' +
+    setTimeout(function() { loadScript('https://www.google.com/jsapi?autoload=' + encodeURIComponent('{' +
       'modules:[{' +
         'name:"visualization",' +
         'version:1,' +
         'packages:["corechart","table"],' +
         'callback:ui.browserscope.load' +
       '}]' +
-    '}'), idoc);
+    '}'), idoc); }, 2000);
   });
 
   // hide the chart while benchmarks are running
