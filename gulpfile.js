@@ -9,7 +9,7 @@ const concat = require('gulp-concat');
 const insert = require('gulp-insert');
 const remoteSrc = require('gulp-remote-src');
 const replace = require('gulp-replace');
-// const uglify = require('gulp-uglify');
+const uglify = require('gulp-uglify');
 
 const BENCHMARKJS_VERSION = require('./package.json').devDependencies.benchmark;
 
@@ -79,7 +79,7 @@ gulp.task('js', function () {
   .pipe(replace(`'}'), idoc);`, `'}'), idoc); }, 2000);`))
 
   // Minify the result.
-  // .pipe(uglify())
+  .pipe(uglify())
 
   .pipe(gulp.dest('./public/_js/'));
 });
