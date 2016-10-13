@@ -21147,8 +21147,8 @@
      * @private
      */
     'load': function () {
-      // only for pages with a comment form
-      if (has.runner && $('author')) {
+      // only for test pages
+      if (has.runner) {
         // init the ui
         addClass('controls', classNames.show);
         addListener('run', 'click', handlers.button.run);
@@ -21156,9 +21156,10 @@
         setHTML('run', texts.run.ready);
         setStatus(texts.status.ready);
 
-        // prefill author details
-        if (has.localStorage) {
-          _.each([$('author'), $('authorEmail'), $('authorUrl')], function (element) {
+        // prefill author details (only for pages with a comment form)
+        var $author = $('author');
+        if ($author && has.localStorage) {
+          _.each([$author, $('authorEmail'), $('authorUrl')], function (element) {
             element.value = localStorage[element.id] || '';
             element.oninput = element.onkeydown = function (event) {
               event && event.type < 'k' && (element.onkeydown = null);
@@ -21172,7 +21173,7 @@
           if (console.firebug || /firebug/i.test(console.table())) {
             addClass('firebug', classNames.show);
           }
-        } catch (e) {}
+        } catch (exception) {}
       }
       // clear length so tests can be manually queued
       ui.length = 0;
