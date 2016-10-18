@@ -228,7 +228,7 @@
         // prefill author details (only for pages with a comment form)
         var $author = $('author');
         if ($author && has.localStorage) {
-          _.each([$author, $('authorEmail'), $('authorUrl')], function (element) {
+          _.each([$author, $('authorEmail'), $('authorURL')], function (element) {
             element.value = localStorage[element.id] || '';
             element.oninput = element.onkeydown = function (event) {
               event && event.type < 'k' && (element.onkeydown = null);
