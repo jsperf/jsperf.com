@@ -1,6 +1,6 @@
 var _assign = require('lodash.assign');
 var Joi = require('joi');
-
+const Hoek = require('hoek');
 const defaults = require('../../lib/defaults');
 const schema = require('../../lib/schema');
 var pagesService = require('../../services/pages');
@@ -22,7 +22,7 @@ exports.register = function (server, options, next) {
         authorized = true;
       }
 
-      reply.view('home/index', _assign(defaults.testPageContext, {
+      reply.view('home/index', Hoek.applyToDefaults(defaults.testPageContext, {
         test: [defaults.test, defaults.test],
         authorized: authorized
       }));
@@ -40,7 +40,7 @@ exports.register = function (server, options, next) {
         if (errObj.message) {
           errObj.genError = errObj.message;
         }
-        reply.view('home/index', _assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
+        reply.view('home/index', _assign({}, defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
       Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {
