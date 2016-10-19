@@ -9,7 +9,7 @@
   {{else}}
     Test case
   {{/compare}}
-  created {{formatAuthor page.author page.authorURL}}
+  created by {{formatAuthor page.author page.authorURL}}
   <time datetime="{{DatetoISOString page.published}}" pubdate>{{relativeDate page.published}}</time>
 
   {{#compare page.published page.updated operator="diffRelativeDate"}}
