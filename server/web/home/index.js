@@ -21,8 +21,7 @@ exports.register = function (server, options, next) {
       if (request.auth.isAuthenticated) {
         authorized = true;
       }
-
-      reply.view('home/index', _assign(defaults.testPageContext, {
+      reply.view('home/index', _assign({}, defaults.testPageContext, {
         test: [defaults.test, defaults.test],
         authorized: authorized
       }));
@@ -40,7 +39,7 @@ exports.register = function (server, options, next) {
         if (errObj.message) {
           errObj.genError = errObj.message;
         }
-        reply.view('home/index', _assign(defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
+        reply.view('home/index', _assign({}, defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
       };
 
       Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {
