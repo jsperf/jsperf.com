@@ -38,7 +38,7 @@
     "good": "7.0.2",
     "good-console": "6.1.2",
     "handlebars": "4.0.5",
-    "hapi": "15.1.1",
+    "hapi": "15.2.0",
     "hapi-auth-cookie": "6.1.1",
     "hapi-qs": "1.1.1",
     "highlight.js": "9.7.0",
