@@ -6,10 +6,18 @@ var addCode = require('../../../../templates/helpers/addCode');
 var lab = exports.lab = Lab.script();
 
 lab.experiment('Template Helper addCode', function () {
-  lab.test('replaces sets of back ticks with code markup', function (done) {
-    var res = addCode('My `pretty` Title');
+  lab.test('replaces a set of backticks with code markup', function (done) {
+    var res = addCode('My `pretty` title');
     Code.expect(res).to.be.an.object();
-    Code.expect(res.string).to.equal('My <code>pretty</code> Title');
+    Code.expect(res.string).to.equal('My <code>pretty</code> title');
+
+    done();
+  });
+
+  lab.test('replaces multiple sets of backticks with code markup', function (done) {
+    var res = addCode('My `pretty` title with multiple `code` spans');
+    Code.expect(res).to.be.an.object();
+    Code.expect(res.string).to.equal('My <code>pretty</code> title with multiple <code>code</code> spans');
 
     done();
   });
