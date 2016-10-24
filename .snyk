@@ -4,3 +4,6 @@ patch:
   'npm:marked:20150520':
     - marked:
         patched: '2016-07-25T01:12:09.411Z'
+  'npm:moment:20161019':
+    - good-console > moment:
+        patched: '2016-10-24T15:06:43.155Z'

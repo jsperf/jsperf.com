@@ -11,7 +11,8 @@
     "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
     "test-e2e": "lab -L -m 10000 test/e2e",
     "watch": "nodemon --ext js,hbs server.js",
-    "snyk-protect": "snyk protect"
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -51,7 +52,7 @@
     "marked": "0.3.6",
     "mysql": "2.5.5",
     "scooter": "4.0.0",
-    "snyk": "1.19.1",
+    "snyk": "^1.19.1",
     "vision": "4.1.0",
     "visionary": "6.0.1",
     "yar": "8.1.0"
