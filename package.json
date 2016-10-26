@@ -36,7 +36,7 @@
     "dotenv": "2.0.0",
     "glue": "4.0.0",
     "good": "7.0.2",
-    "good-console": "6.1.2",
+    "good-console": "6.3.1",
     "handlebars": "4.0.5",
     "hapi": "15.2.0",
     "hapi-auth-cookie": "6.1.1",
