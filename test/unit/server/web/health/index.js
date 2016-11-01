@@ -4,8 +4,6 @@ const Hapi = require('hapi');
 const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
-const Config = require('../../../../../config');
-
 const mockDb = { genericQuery: function () {} };
 
 var HealthPlugin = proxyquire('../../../../../server/web/health/index', {
@@ -19,9 +17,7 @@ lab.beforeEach(function (done) {
   s = sinon.sandbox.create();
 
   server = new Hapi.Server();
-  server.connection({
-    port: Config.get('/port/web')
-  });
+  server.connection();
 
   server.register([ HealthPlugin ], done);
 });

@@ -4,46 +4,74 @@
 
 [Chat on `irc.freenode.net` in the `#jsperf` channel](https://webchat.freenode.net/?channels=jsperf).
 
-## How to run a local copy of jsPerf for testing/debugging
+## How to run a local copy of jsPerf
 
 ### Prerequisites
 
-1. Clone the repository: `git clone https://github.com/jsperf/jsperf.com.git`
-2. Use the version of `node` for this project defined in `.nvmrc`: `nvm install` ([More on `nvm`](https://github.com/creationix/nvm))
-2. Install dependencies: `npm install`
-3. Get a [Browserscope.org](http://www.browserscope.org/) API key by signing in and going to [the settings page](http://www.browserscope.org/user/settings). (You'll need this in the last step)
-4. Register a new OAuth GitHub development application by going to [your settings page in github](https://github.com/settings/applications/new). Take note to copy the "Client ID" and "Client Secret". The callback URL is simply the root url of the application, e.g., `http://localhost:3000`
-5. Setup environment configuration: `node setup`
+1. [Node.js](https://nodejs.org/en/) (see preferred version in [`.nvmrc`](https://github.com/jsperf/jsperf.com/blob/master/.nvmrc))
+2. [MySQL](https://dev.mysql.com/downloads/mysql/)
+  1. Install
+    1. macOS: `brew install mysql`
+  2. Initialize: `mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"`
+3. Get a [Browserscope.org](http://www.browserscope.org/) API key by signing in and going to [the settings page](http://www.browserscope.org/user/settings).
+4. Register a [new OAuth GitHub application](https://github.com/settings/applications/new). Leave the callback URL blank. Copy the "Client ID" and "Client Secret".
 
-##### Setup
+### Setup
 
-You’ll need [Node.js](https://nodejs.org/en/) and [MySQL](https://dev.mysql.com/downloads/mysql/) installed.
-
-Start the MySQL server, create a database, a user, and create the database-tables using the `tables.js` file. Replace with your own credentials.
-
-```
-DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf node setup/tables.js
-```
-
-Add an entry to the hosts file to redirect jsPerf’s database connections to `localhost` (which is where MySQL is likely running) with the following:
+1. Install dependencies: `npm install`
+2. Create a `.env` file (will be ignored by git) with the following variables (`VAR_NAME=value`):
 
 ```
-127.0.0.1 db
+NODE_ENV=development
+# from Prerequisites step 2.2
+MYSQL_USER=jsuser
+MYSQL_PASSWORD=jspass
+MYSQL_DATABASE=jsperf
+# from Prerequisites step 3
+BROWSERSCOPE=
+# from Prerequisites step 4
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+GITHUB_CALLBACK=http://localhost:3000
+
+BELL_COOKIE_PASS=your_choice
+COOKIE_PASS=something_else
+
+# customizable but not recommended for local development
+# SCHEME=http
+# DOMAIN=localhost
+# PORT=3000
+# MYSQL_HOST=localhost
+# MYSQL_PORT=3306
 ```
 
-##### Running jsPerf
+Lastly, create the necessary tables:
 
 ```
-DB_ENV_MYSQL_PASSWORD=password DB_ENV_MYSQL_DATABASE=jsperf DB_ENV_MYSQL_USER=jsperf npm start
+node setup/tables.js
 ```
+
+### Start
+
+- [x] correct version of `node`
+- [x] `mysql` running
+- [x] `.env` created with your values
+
+```
+npm start
+```
+
+## Contributing
 
 ### Building the client
+
+If you make any changes inside [`client/`](https://github.com/jsperf/jsperf.com/tree/master/client), then you'll need to manually re-build the final asset.
 
 ```
 npm run build
 ```
 
-## Testing
+### Testing
 
 We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab lints with [eslint](http://eslint.org/) using the [semistandard style](https://github.com/Flet/semistandard). 100% code coverage by unit tests is required. To run the test suite:
 
@@ -61,10 +89,6 @@ npm test -- test/unit/server/web/contributors/index.js
 _If you want to only lint and save a little time, use `npm run lint` which skips the tests._
 
 _If you are missing code coverage, open `coverage.html` in the root of the project for a detailed visual report._
-
-## Gotchas
-
-- ES6 Template Strings are not supported by esprima which means you can't generate coverage reports which means `npm test` won't pass.
 
 ### Adding new dependencies
 

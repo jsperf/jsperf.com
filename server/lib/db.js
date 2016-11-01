@@ -10,11 +10,11 @@ module.exports = {
     }
     return new Promise(function (resolve, reject) {
       var conn = mysql.createConnection({
-        host: 'db',
-        port: 3306,
-        user: process.env.DB_ENV_MYSQL_USER,
-        password: process.env.DB_ENV_MYSQL_PASSWORD,
-        database: process.env.DB_ENV_MYSQL_DATABASE,
+        host: config.get('/mysql/host'),
+        port: config.get('/mysql/port'),
+        user: config.get('/mysql/user'),
+        password: config.get('/mysql/pass'),
+        database: config.get('/mysql/db'),
         // query and rows will print to stdout
         debug: config.get('/debug') ? ['ComQueryPacket', 'RowDataPacket'] : false,
         charset: 'utf8mb4'

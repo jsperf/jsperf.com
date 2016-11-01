@@ -3,7 +3,7 @@ var _assign = require('lodash.assign');
 var config = require('./config');
 
 var criteria = {
-  env: process.env.NODE_ENV
+  env: config.get('/env')
 };
 
 var visionaryContextDefault = {
@@ -23,7 +23,7 @@ var manifest = {
     }
   },
   connections: [{
-    port: config.get('/port/web'),
+    port: config.get('/port'),
     labels: ['web']
   }],
   registrations: [
@@ -78,7 +78,7 @@ var manifest = {
           cookieOptions: {
             // name: 'jsPerf', FIXME
             password: config.get('/auth/session/pass'),
-            isSecure: !config.get('/debug'),
+            isSecure: config.get('/auth/session/secure'),
             isHttpOnly: true
           }
         }
@@ -100,13 +100,12 @@ var manifest = {
             clientId: config.get('/auth/oauth/github/id'),
             clientSecret: config.get('/auth/oauth/github/secret'),
             isSecure: config.get('/auth/oauth/secure'),
-            location: config.get('/scheme') + '://' + config.get('/domain')
+            location: config.get('/auth/oauth/github/callback')
           }
         }
       }
     },
     { plugin: './server/api/json' },
-    { plugin: './server/api/jsonp' },
     { plugin: './server/web/auth/github' },
     { plugin: './server/web/browse' },
     { plugin: './server/web/comment' },

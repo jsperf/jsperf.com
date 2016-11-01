@@ -4,7 +4,11 @@ var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 
 var mysqlStub = {};
-var configStub = {};
+let configStubMockGet;
+var configStub = {
+  get: () => configStubMockGet,
+  '@noCallThru': true
+};
 
 var db = proxyquire('../../../../server/lib/db', {
   'mysql': mysqlStub,
@@ -42,6 +46,7 @@ lab.experiment('Database Lib', function () {
 
     lab.beforeEach(function (done) {
       queryStub = sinon.stub();
+      configStubMockGet = false;
 
       done();
     });
@@ -69,14 +74,13 @@ lab.experiment('Database Lib', function () {
     });
 
     lab.test('enables debug for MySQL connection when config debug enabled', function (done) {
-      configStub.get = function () { return true; };
+      configStubMockGet = true;
       sinon.spy(mysqlStub, 'createConnection');
       queryStub.callsArgWith(2, null);
       db.genericQuery('SELECT 1;')
       .then(function () {
         Code.expect(mysqlStub.createConnection.args[0][0].debug).to.be.array();
-        // cleanup
-        delete configStub.get;
+
         done();
       });
     });

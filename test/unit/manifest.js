@@ -1,8 +1,15 @@
-var Lab = require('lab');
-var Code = require('code');
-var Manifest = require('../../manifest');
+const Lab = require('lab');
+const Code = require('code');
+const Proxyquire = require('proxyquire');
 
-var lab = exports.lab = Lab.script();
+const Manifest = Proxyquire('../../manifest', {
+  './config': {
+    get: function () { return {}; },
+    '@noCallThru': true
+  }
+});
+
+const lab = exports.lab = Lab.script();
 
 lab.experiment('Manifest', function () {
   lab.test('it gets manifest data', function (done) {

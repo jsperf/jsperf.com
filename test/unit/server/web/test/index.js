@@ -72,6 +72,7 @@ lab.beforeEach(function (done) {
       helpersPath: 'templates/helpers',
       partialsPath: 'templates/partials',
       context: {
+        scheme: 'http',
         domain: 'jsperf.test'
       }
     });

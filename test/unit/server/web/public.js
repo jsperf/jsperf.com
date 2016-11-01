@@ -2,8 +2,6 @@ var Lab = require('lab');
 var Code = require('code');
 var Hapi = require('hapi');
 
-var Config = require('../../../../config');
-
 var PublicPlugin = require('../../../../server/web/public');
 
 var lab = exports.lab = Lab.script();
@@ -12,9 +10,7 @@ var request, server;
 lab.beforeEach(function (done) {
   var plugins = [ require('inert'), PublicPlugin ];
   server = new Hapi.Server();
-  server.connection({
-    port: Config.get('/port/web')
-  });
+  server.connection();
   server.register(plugins, done);
 });
 
