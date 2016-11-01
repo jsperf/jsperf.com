@@ -34,8 +34,8 @@ GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
 GITHUB_CALLBACK=http://localhost:3000
 
-BELL_COOKIE_PASS=your_choice
-COOKIE_PASS=something_else
+BELL_COOKIE_PASS=password-should-be-32-characters
+COOKIE_PASS=password-should-be-32-characters
 
 # customizable but not recommended for local development
 # SCHEME=http

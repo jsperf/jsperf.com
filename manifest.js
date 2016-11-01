@@ -131,6 +131,8 @@ var manifest = {
     { plugin: './server/repositories/comments' },
     { plugin: './server/repositories/pages' },
     { plugin: './server/repositories/tests' },
+    { plugin: './server/services/comments' },
+    { plugin: './server/services/pages' },
     { plugin: './server/api/json' },
     { plugin: './server/web/auth/github' },
     { plugin: './server/web/browse' },
