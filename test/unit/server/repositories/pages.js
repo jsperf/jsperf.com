@@ -1,21 +1,52 @@
-var Lab = require('lab');
-var Code = require('code');
-var proxyquire = require('proxyquire');
-var sinon = require('sinon');
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var dbStub = {};
+const Pages = require('../../../../server/repositories/pages');
 
-var pages = proxyquire('../../../../server/repositories/pages', {
-  '../lib/db': dbStub
-});
+const MockDb = {
+  register: (server, options, next) => {
+    server.expose('genericQuery', function () {});
+    next();
+  }
+};
 
-var lab = exports.lab = Lab.script();
+MockDb.register.attributes = {
+  name: 'db'
+};
+
+const lab = exports.lab = Lab.script();
 
 lab.experiment('Pages Repository', function () {
   const table = 'pages';
+  let server, pages, genericQueryStub;
 
-  lab.beforeEach(function (done) {
-    dbStub.genericQuery = sinon.stub();
+  lab.before((done) => {
+    server = new Hapi.Server();
+
+    server.connection();
+
+    server.register([
+      MockDb,
+      Pages
+    ], (err) => {
+      if (err) return done(err);
+
+      pages = server.plugins['repositories/pages'];
+
+      done();
+    });
+  });
+
+  lab.beforeEach((done) => {
+    genericQueryStub = sinon.stub(server.plugins.db, 'genericQuery');
+
+    done();
+  });
+
+  lab.afterEach((done) => {
+    genericQueryStub.restore();
 
     done();
   });
@@ -35,12 +66,12 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('inserts payload', function (done) {
-      dbStub.genericQuery.returns(Promise.resolve({ insertId: insertId }));
+      genericQueryStub.returns(Promise.resolve({ insertId }));
 
       pages.create(payload)
       .then(function (newId) {
         Code.expect(
-          dbStub.genericQuery.calledWithExactly(
+          genericQueryStub.calledWithExactly(
             'INSERT INTO ?? SET ?',
             [
               'pages',
@@ -58,7 +89,7 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       pages.create(payload)
       .catch(function (err) {
@@ -84,12 +115,12 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns single row', function (done) {
-      dbStub.genericQuery.returns(Promise.resolve([{ id: id }]));
+      genericQueryStub.returns(Promise.resolve([{ id: id }]));
 
       pages.get(testFields, testWhere)
       .then(function (row) {
         Code.expect(
-          dbStub.genericQuery.calledWithExactly(
+          genericQueryStub.calledWithExactly(
             'SELECT ?? FROM ?? WHERE ? LIMIT 1',
             [
               testFields,
@@ -109,7 +140,7 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       pages.get(testFields, testWhere)
       .catch(function (err) {
@@ -123,7 +154,7 @@ lab.experiment('Pages Repository', function () {
 
   lab.experiment('getLatestVisible', function () {
     lab.test('returns number of rows of latest, visible pages', function (done) {
-      dbStub.genericQuery.returns(Promise.resolve([]));
+      genericQueryStub.returns(Promise.resolve([]));
 
       pages.getLatestVisible(250)
       .then(function (rows) {
@@ -137,7 +168,7 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getLatestVisible(250)
       .catch(function (err) {
@@ -151,7 +182,7 @@ lab.experiment('Pages Repository', function () {
 
   lab.experiment('getLatestVisibleForAuthor', function () {
     lab.test('returns number of rows of latest, visible pages for author', function (done) {
-      dbStub.genericQuery.returns(Promise.resolve([]));
+      genericQueryStub.returns(Promise.resolve([]));
 
       pages.getLatestVisibleForAuthor('test-author')
       .then(function (rows) {
@@ -165,7 +196,7 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getLatestVisibleForAuthor('test-author')
       .catch(function (err) {
@@ -181,12 +212,12 @@ lab.experiment('Pages Repository', function () {
     lab.test('returns page given slug', function (done) {
       var slug = 'test-slug';
       var rev = 1;
-      dbStub.genericQuery.returns(Promise.resolve({}));
+      genericQueryStub.returns(Promise.resolve({}));
 
       pages.getBySlug(slug, rev)
       .then(function (page) {
         Code.expect(page).to.be.object();
-        Code.expect(dbStub.genericQuery.calledWithExactly(
+        Code.expect(genericQueryStub.calledWithExactly(
           'SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ?',
           [table, slug, table, slug, rev]
         )).to.be.true();
@@ -200,12 +231,12 @@ lab.experiment('Pages Repository', function () {
     lab.test('returns page given slug and rev', done => {
       const slug = 'test-slug';
       const rev = 1;
-      dbStub.genericQuery.returns(Promise.resolve({}));
+      genericQueryStub.returns(Promise.resolve({}));
 
       pages.getVisibleBySlug(slug, rev)
         .then(page => {
           Code.expect(page).to.be.object();
-          Code.expect(dbStub.genericQuery.calledWithExactly(
+          Code.expect(genericQueryStub.calledWithExactly(
             'SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ? AND visible = ?',
             [table, slug, table, slug, rev, 'y']
           )).to.be.true();
@@ -219,12 +250,12 @@ lab.experiment('Pages Repository', function () {
     lab.test('returns search results', function (done) {
       var searchTerms = 'test query';
       var wc = '%' + searchTerms + '%';
-      dbStub.genericQuery.returns(Promise.resolve([]));
+      genericQueryStub.returns(Promise.resolve([]));
 
       pages.find(searchTerms)
       .then(function (page) {
         Code.expect(page).to.be.array();
-        Code.expect(dbStub.genericQuery.calledWithExactly(
+        Code.expect(genericQueryStub.calledWithExactly(
           'SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;',
           [wc, wc]
         )).to.be.true();
@@ -237,12 +268,12 @@ lab.experiment('Pages Repository', function () {
   lab.experiment('findBySlug', function () {
     lab.test('returns query results', function (done) {
       var slug = 'oh-yea';
-      dbStub.genericQuery.returns(Promise.resolve([]));
+      genericQueryStub.returns(Promise.resolve([]));
 
       pages.findBySlug(slug)
       .then(function (p) {
         Code.expect(p).to.be.array();
-        Code.expect(dbStub.genericQuery.calledWithExactly(
+        Code.expect(genericQueryStub.calledWithExactly(
           'SELECT published, updated, author, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
           [slug]
         )).to.be.true();
@@ -256,12 +287,12 @@ lab.experiment('Pages Repository', function () {
   lab.experiment('findVisibleBySlug', () => {
     lab.test('returns query results', done => {
       var slug = 'oh-yea';
-      dbStub.genericQuery.returns(Promise.resolve([]));
+      genericQueryStub.returns(Promise.resolve([]));
 
       pages.findVisibleBySlug(slug)
         .then(p => {
           Code.expect(p).to.be.array();
-          Code.expect(dbStub.genericQuery.calledWithExactly(
+          Code.expect(genericQueryStub.calledWithExactly(
             'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
             [slug, 'y']
           )).to.be.true();
@@ -275,16 +306,16 @@ lab.experiment('Pages Repository', function () {
     lab.test('returns query results', done => {
       var slug = 'oh-yea';
       var rev = 2;
-      dbStub.genericQuery.returns(Promise.resolve([{}, { affectedRows: 1 }]));
+      genericQueryStub.returns(Promise.resolve([{}, { affectedRows: 1 }]));
 
       pages.deleteOneRevisionBySlug(slug, rev)
         .then(p => {
-          Code.expect(dbStub.genericQuery.onFirstCall().stub.calledWithExactly(
+          Code.expect(genericQueryStub.onFirstCall().stub.calledWithExactly(
             'DELETE FROM tests WHERE pageID IN (SELECT id FROM pages WHERE slug = ? AND revision = ?)',
             [slug, rev]
           )).to.be.true();
 
-          Code.expect(dbStub.genericQuery.onSecondCall().stub.calledWithExactly(
+          Code.expect(genericQueryStub.onSecondCall().stub.calledWithExactly(
             'DELETE FROM pages WHERE slug = ? AND revision = ?',
             [slug, rev]
           )).to.be.true();
@@ -297,16 +328,16 @@ lab.experiment('Pages Repository', function () {
   lab.experiment('deleteAllRevisionsBySlug', () => {
     lab.test('returns query results', done => {
       var slug = 'oh-yea';
-      dbStub.genericQuery.returns(Promise.resolve([{}, { affectedRows: 3 }]));
+      genericQueryStub.returns(Promise.resolve([{}, { affectedRows: 3 }]));
 
       pages.deleteAllRevisionsBySlug(slug)
         .then(p => {
-          Code.expect(dbStub.genericQuery.onFirstCall().stub.calledWithExactly(
+          Code.expect(genericQueryStub.onFirstCall().stub.calledWithExactly(
             'DELETE FROM tests WHERE pageID IN (SELECT id FROM pages WHERE slug = ?)',
             [slug]
           )).to.be.true();
 
-          Code.expect(dbStub.genericQuery.onSecondCall().stub.calledWithExactly(
+          Code.expect(genericQueryStub.onSecondCall().stub.calledWithExactly(
             'DELETE FROM pages WHERE slug = ?',
             [slug]
           )).to.be.true();
@@ -321,7 +352,7 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getSitemap()
       .catch(function (err) {
@@ -333,7 +364,7 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns tests to use for sitemap', function (done) {
-      dbStub.genericQuery.returns(Promise.resolve([]));
+      genericQueryStub.returns(Promise.resolve([]));
 
       pages.getSitemap()
       .then(function (results) {
@@ -349,7 +380,7 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getPopularRecent()
       .catch(function (err) {
@@ -361,7 +392,7 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns at most 30 recent popular tests', function (done) {
-      dbStub.genericQuery.returns(Promise.resolve(new Array(30)));
+      genericQueryStub.returns(Promise.resolve(new Array(30)));
 
       pages.getPopularRecent()
       .then(function (results) {
@@ -377,7 +408,7 @@ lab.experiment('Pages Repository', function () {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getPopularAllTime()
       .catch(function (err) {
@@ -389,7 +420,7 @@ lab.experiment('Pages Repository', function () {
     });
 
     lab.test('returns at most 30 recent popular tests', function (done) {
-      dbStub.genericQuery.returns(Promise.resolve(new Array(30)));
+      genericQueryStub.returns(Promise.resolve(new Array(30)));
 
       pages.getPopularAllTime()
       .then(function (results) {
@@ -403,11 +434,11 @@ lab.experiment('Pages Repository', function () {
   lab.experiment('updateHits', function () {
     lab.test('update query for hits + 1', function (done) {
       var pageID = 1;
-      dbStub.genericQuery.returns(Promise.resolve());
+      genericQueryStub.returns(Promise.resolve());
 
       pages.updateHits(pageID)
       .then(function () {
-        Code.expect(dbStub.genericQuery.calledWithExactly(
+        Code.expect(genericQueryStub.calledWithExactly(
           'UPDATE ?? SET hits = hits + 1 WHERE id = ?',
           [table, pageID]
         )).to.be.true();
@@ -421,11 +452,11 @@ lab.experiment('Pages Repository', function () {
     lab.test('generic update query', function (done) {
       var modify = { browserscopeID: 'abc123' };
       var where = { id: 1 };
-      dbStub.genericQuery.returns(Promise.resolve());
+      genericQueryStub.returns(Promise.resolve());
 
       pages.update(modify, where)
       .then(function () {
-        Code.expect(dbStub.genericQuery.calledWithExactly(
+        Code.expect(genericQueryStub.calledWithExactly(
           'UPDATE ?? SET ? WHERE ?',
           [table, modify, where]
         )).to.be.true();
@@ -439,11 +470,11 @@ lab.experiment('Pages Repository', function () {
     lab.test('generic update query', function (done) {
       var modify = { browserscopeID: 'abc123' };
       var pageID = 1;
-      dbStub.genericQuery.returns(Promise.resolve());
+      genericQueryStub.returns(Promise.resolve());
 
       pages.updateById(modify, pageID)
       .then(function () {
-        Code.expect(dbStub.genericQuery.calledWithExactly(
+        Code.expect(genericQueryStub.calledWithExactly(
           'UPDATE ?? SET ? WHERE id = ?',
           [table, modify, pageID]
         )).to.be.true();
@@ -455,7 +486,7 @@ lab.experiment('Pages Repository', function () {
     lab.test('returns updated pageId', function (done) {
       var modify = { browserscopeID: 'abc123' };
       var pageID = 1;
-      dbStub.genericQuery.returns(Promise.resolve());
+      genericQueryStub.returns(Promise.resolve());
 
       pages.updateById(modify, pageID)
       .then(newId => {

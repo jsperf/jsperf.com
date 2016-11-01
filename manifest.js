@@ -105,6 +105,32 @@ var manifest = {
         }
       }
     },
+    {
+      plugin: {
+        register: './server/lib/db',
+        options: {
+          host: config.get('/mysql/host'),
+          port: config.get('/mysql/port'),
+          user: config.get('/mysql/user'),
+          pass: config.get('/mysql/pass'),
+          db: config.get('/mysql/db'),
+          debug: config.get('/debug')
+        }
+      }
+    },
+    {
+      plugin: {
+        register: './server/repositories/browserscope',
+        options: {
+          api_key: config.get('/browserscope'),
+          scheme: config.get('/scheme'),
+          domain: config.get('/domain')
+        }
+      }
+    },
+    { plugin: './server/repositories/comments' },
+    { plugin: './server/repositories/pages' },
+    { plugin: './server/repositories/tests' },
     { plugin: './server/api/json' },
     { plugin: './server/web/auth/github' },
     { plugin: './server/web/browse' },

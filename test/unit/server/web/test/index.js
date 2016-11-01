@@ -19,12 +19,9 @@ const commentsServiceStub = {
   create () {}
 };
 
-var debugSpy = sinon.spy();
-
 var TestPlugin = proxyquire('../../../../../server/web/test/index', {
   '../../services/pages': pagesServiceStub,
-  '../../services/comments': commentsServiceStub,
-  'debug': function () { return debugSpy; }
+  '../../services/comments': commentsServiceStub
 });
 
 var YarPlugin = {
@@ -324,9 +321,6 @@ lab.experiment('web/test plugin', function () {
         request.headers.cookie = 'session=' + cookie[1];
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(200);
-          const debugCall = debugSpy.getCall(0).args[0];
-
-          Code.expect(debugCall.message).to.equal(expectedError.message);
 
           done();
         });

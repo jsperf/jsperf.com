@@ -1,12 +1,10 @@
-'use strict';
-// TODO make hapi plugin
-var debug = require('debug')('jsperf:repositories:tests');
-var db = require('../lib/db');
-
+const name = 'repositories/tests';
 const table = 'tests';
 
-module.exports = {
-  bulkCreate: function (pageID, tests) {
+exports.register = function (server, options, next) {
+  const db = server.plugins.db;
+
+  server.expose('bulkCreate', function (pageID, tests) {
     var columns = ['pageID', 'title', 'defer', 'code'];
 
     var values = [];
@@ -23,9 +21,9 @@ module.exports = {
           throw new Error('Not all tests inserted');
         }
       });
-  },
+  });
 
-  bulkUpdate: function (pageID, tests, update) {
+  server.expose('bulkUpdate', function (pageID, tests, update) {
     const columns = ['pageID', 'title', 'defer', 'code'];
     let queries = [];
 
@@ -45,9 +43,9 @@ module.exports = {
       }
     });
     return Promise.all(queries).then((results) => {
-      debug('bulkUpdate results', results);
+      server.log(['debug'], `${name}::bulkUpdate results - ${JSON.stringify(results)}`);
       results.forEach((result) => {
-        debug('bulkUpdate result', result);
+        server.log(['debug'], `${name}::bulkUpdate result - ${JSON.stringify(result)}`);
         if (result.affectedRows !== 1) {
           throw new Error('Not all tests inserted');
         }
@@ -55,11 +53,18 @@ module.exports = {
 
       return Promise.resolve(results);
     });
-  },
+  });
 
-  findByPageID: function (pageID) {
-    debug('findByPageID', arguments);
+  server.expose('findByPageID', function (pageID) {
+    server.log(['debug'], `${name}::findByPageID: ${JSON.stringify(arguments)}`);
 
     return db.genericQuery('SELECT * FROM ?? WHERE pageID = ?', [table, pageID]);
-  }
+  });
+
+  return next();
+};
+
+exports.register.attributes = {
+  name,
+  dependencies: ['db']
 };

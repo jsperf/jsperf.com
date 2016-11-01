@@ -10,11 +10,9 @@ var proxyquire = require('proxyquire');
 var pagesServiceStub = {
   deleteBySlug: () => {}
 };
-var debugSpy = sinon.spy();
 
 var DeletePlugin = proxyquire('../../../../../server/web/delete/index', {
-  '../../services/pages': pagesServiceStub,
-  'debug': function () { return debugSpy; }
+  '../../services/pages': pagesServiceStub
 });
 
 var YarPlugin = {

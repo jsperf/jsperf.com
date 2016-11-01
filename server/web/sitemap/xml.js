@@ -1,6 +1,6 @@
-var pagesRepo = require('../../repositories/pages');
-
 exports.register = function (server, options, next) {
+  const pagesRepo = server.plugins['repositories/pages'];
+
   server.route({
     method: 'GET',
     path: '/sitemap.xml',
@@ -23,5 +23,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/sitemap'
+  name: 'web/sitemap',
+  dependencies: ['repositories/pages']
 };

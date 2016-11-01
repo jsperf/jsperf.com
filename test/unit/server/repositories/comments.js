@@ -1,19 +1,50 @@
 const Lab = require('lab');
 const Code = require('code');
-const proxyquire = require('proxyquire');
+const Hapi = require('hapi');
 const sinon = require('sinon');
 
-const dbStub = {};
+const Comments = require('../../../../server/repositories/comments');
 
-const comments = proxyquire('../../../../server/repositories/comments', {
-  '../lib/db': dbStub
-});
+const MockDb = {
+  register: (server, options, next) => {
+    server.expose('genericQuery', function () {});
+    next();
+  }
+};
+
+MockDb.register.attributes = {
+  name: 'db'
+};
 
 const lab = exports.lab = Lab.script();
 
 lab.experiment('Comments Repository', () => {
-  lab.beforeEach(done => {
-    dbStub.genericQuery = sinon.stub();
+  let server, comments, genericQueryStub;
+
+  lab.before((done) => {
+    server = new Hapi.Server();
+
+    server.connection();
+
+    server.register([
+      MockDb,
+      Comments
+    ], (err) => {
+      if (err) return done(err);
+
+      comments = server.plugins['repositories/comments'];
+      done();
+    });
+  });
+
+  lab.beforeEach((done) => {
+    genericQueryStub = sinon.stub(server.plugins.db, 'genericQuery');
+
+    done();
+  });
+
+  lab.afterEach((done) => {
+    genericQueryStub.restore();
 
     done();
   });
@@ -21,12 +52,12 @@ lab.experiment('Comments Repository', () => {
   lab.experiment('findByPageID', () => {
     lab.test('selects all from comments where pageID', done => {
       var pageID = 1;
-      dbStub.genericQuery.returns(Promise.resolve([]));
+      genericQueryStub.returns(Promise.resolve([]));
 
       comments.findByPageID(pageID)
       .then(() => {
         Code.expect(
-          dbStub.genericQuery.calledWithExactly(
+          genericQueryStub.calledWithExactly(
             'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
             ['comments', pageID]
           )
@@ -52,12 +83,12 @@ lab.experiment('Comments Repository', () => {
     });
 
     lab.test('inserts payload', done => {
-      dbStub.genericQuery.returns(Promise.resolve({ insertId: insertId }));
+      genericQueryStub.returns(Promise.resolve({ insertId: insertId }));
 
       comments.create(payload)
         .then(newId => {
           Code.expect(
-            dbStub.genericQuery.calledWithExactly(
+            genericQueryStub.calledWithExactly(
               'INSERT INTO ?? SET ?',
               [
                 'comments',
@@ -75,7 +106,7 @@ lab.experiment('Comments Repository', () => {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
-      dbStub.genericQuery.returns(Promise.reject(testErr));
+      genericQueryStub.returns(Promise.reject(testErr));
 
       comments.create(payload)
         .catch(function (err) {
@@ -89,10 +120,10 @@ lab.experiment('Comments Repository', () => {
 
   lab.experiment('delete', () => {
     lab.test('should delete specific comment', (done) => {
-      dbStub.genericQuery.returns(Promise.resolve());
+      genericQueryStub.returns(Promise.resolve());
       const id = 1;
       comments.delete(id).then(() => {
-        Code.expect(dbStub.genericQuery.calledWithExactly(
+        Code.expect(genericQueryStub.calledWithExactly(
           'DELETE FROM ?? WHERE id = ?',
           ['comments', id]
         )).to.be.true();

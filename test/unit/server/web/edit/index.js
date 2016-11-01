@@ -33,11 +33,9 @@ var pagesServiceStub = {
   updateHits: function () {},
   getBySlug: function () {}
 };
-var debugSpy = sinon.spy();
 
 var TestPlugin = proxyquire('../../../../../server/web/edit/index', {
-  '../../services/pages': pagesServiceStub,
-  'debug': function () { return debugSpy; }
+  '../../services/pages': pagesServiceStub
 });
 
 var YarPlugin = {

@@ -1,21 +1,28 @@
-var path = require('path');
+const path = require('path');
 
-var Lab = require('lab');
-var Code = require('code');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var pagesRepoStub = {};
+const SitemapPlugin = require('../../../../../server/web/sitemap/xml');
 
-var SitemapPlugin = proxyquire('../../../../../server/web/sitemap/xml', {
-  '../../repositories/pages': pagesRepoStub
-});
+const MockRepo = {
+  register: (server, options, next) => {
+    server.expose('getSitemap', function () {});
+    next();
+  }
+};
 
-var lab = exports.lab = Lab.script();
-var request, server;
+MockRepo.register.attributes = {
+  name: 'repositories/pages'
+};
+
+const lab = exports.lab = Lab.script();
+let request, server, getSitemapStub;
 
 lab.beforeEach(function (done) {
-  var plugins = [ SitemapPlugin ];
+  const plugins = [ MockRepo, SitemapPlugin ];
   server = new Hapi.Server();
   server.connection();
   server.register(require('vision'), () => {
@@ -29,7 +36,12 @@ lab.beforeEach(function (done) {
       partialsPath: 'templates/partials',
       relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
     });
-    server.register(plugins, done);
+    server.register(plugins, (err) => {
+      if (err) return done(err);
+
+      getSitemapStub = sinon.stub(server.plugins['repositories/pages'], 'getSitemap');
+      done();
+    });
   });
 });
 
@@ -44,9 +56,7 @@ lab.experiment('sitemap', function () {
   });
 
   lab.test('it responds with sitemap XML', function (done) {
-    pagesRepoStub.getSitemap = function () {
-      return Promise.resolve([]);
-    };
+    getSitemapStub.returns(Promise.resolve([]));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
@@ -61,9 +71,7 @@ lab.experiment('sitemap', function () {
   });
 
   lab.test('it responds with error', function (done) {
-    pagesRepoStub.getSitemap = function () {
-      return Promise.reject(new Error());
-    };
+    getSitemapStub.returns(Promise.reject(new Error()));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(500);

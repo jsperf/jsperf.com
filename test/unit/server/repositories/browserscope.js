@@ -1,21 +1,33 @@
-var Lab = require('lab');
-var Code = require('code');
-var proxyquire = require('proxyquire');
-var EventEmitter = require('events').EventEmitter;
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const proxyquire = require('proxyquire');
+const EventEmitter = require('events').EventEmitter;
 
-var httpsStub = {};
+const httpsStub = {};
 
-var browserscope = proxyquire('../../../../server/repositories/browserscope', {
-  https: httpsStub,
-  '../../config': {
-    get: () => true,
-    '@noCallThru': true
-  }
+const Browserscope = proxyquire('../../../../server/repositories/browserscope', {
+  https: httpsStub
 });
 
-var lab = exports.lab = Lab.script();
+const lab = exports.lab = Lab.script();
 
 lab.experiment('Browserscope Repository', function () {
+  let server, browserscope;
+
+  lab.before((done) => {
+    server = new Hapi.Server();
+
+    server.connection();
+
+    server.register([Browserscope], (err) => {
+      if (err) return done(err);
+
+      browserscope = server.plugins['repositories/browserscope'];
+      done();
+    });
+  });
+
   lab.experiment('addTest', function () {
     var emitter;
 

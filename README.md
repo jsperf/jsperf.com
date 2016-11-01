@@ -76,14 +76,7 @@ npm run build
 We use [lab](https://github.com/hapijs/lab) as our test utility and [code](https://github.com/hapijs/code) as our assertion library. Lab lints with [eslint](http://eslint.org/) using the [semistandard style](https://github.com/Flet/semistandard). 100% code coverage by unit tests is required. To run the test suite:
 
 ```
-# everything
 npm test
-
-# directory
-npm test -- test/unit/server/web
-
-# file
-npm test -- test/unit/server/web/contributors/index.js
 ```
 
 _If you want to only lint and save a little time, use `npm run lint` which skips the tests._
@@ -112,19 +105,3 @@ Greenkeeper [is working on updating `npm-shrinkwrap.json`](https://github.com/gr
 5. Shrinkwrap the updated dependency `npm shrinkwrap --dev`
 6. Commit `git commit -am 'shrinkwrap updated dependency'`
 7. Push so updated dependency is tested and Pull Request can be merged `git push origin greenkeeper-<package>-0.0.0`
-
-## Debugging
-
-If you'd like extra debugging information when running the server, run with the `DEBUG` environment variable set to `*` for everything including dependencies or `jsperf*` for only this project's debugging statements.
-
-```bash
-DEBUG=jsperf* npm start
-```
-
-To add more debugging, require [the `debug` module](https://www.npmjs.com/package/debug) and namespace according to the path to the file. For example, if you want to add debugging information in `server/web/errors`, the debug name would be `jsperf:web:errors`. This allows you to finely tune which debug statements you turn on.
-
-To only turn on `web` debug statements and not `services`:
-
-```bash
-DEBUG=jsperf:web* npm start
-```
