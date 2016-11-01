@@ -21783,12 +21783,19 @@
    * @returns {Object} The new script element.
    */
   function loadScript(src, sibling, context) {
-    context = sibling ? sibling.ownerDocument || [sibling, sibling = 0][0] : context;
-    var script = createElement('script', context),
-        nextSibling = sibling ? sibling.nextSibling : query('script', context).pop();
-
+    if (sibling) {
+      context = sibling.ownerDocument;
+      if (!context) {
+        context = sibling;
+        sibling = query('script', context).pop();
+      }
+    }
+    if (!sibling) {
+      sibling = query('*', context).pop();
+    }
+    var script = createElement('script', context);
     script.src = src;
-    return (sibling || nextSibling).parentNode.insertBefore(script,  nextSibling);
+    return sibling.parentNode.insertBefore(script, sibling.nextSibling);
   }
 
   /**
@@ -21953,7 +21960,7 @@
    */
   function createSnapshot() {
     // clone benches, exclude those that are errored, unrun, or have hz of Infinity
-    var benches = _.invoke(filter(ui.benchmarks, 'successful'), 'clone'),
+    var benches = _.invokeMap(filter(ui.benchmarks, 'successful'), 'clone'),
         fastest = filter(benches, 'fastest'),
         slowest = filter(benches, 'slowest');
 
@@ -22226,7 +22233,7 @@
       setMessage(me.texts.loading);
       // request Browserscope chart data and pass it to `google.visualization.Query.setResponse()`
       (new visualization.Query(
-        '//www.browserscope.org/gviz_table_data?category=usertest_' + me.key + '&v=' + filterMap[filterBy],
+        'https://www.browserscope.org/gviz_table_data?category=usertest_' + me.key + '&v=' + filterMap[filterBy],
         { 'sendMethod': 'scriptInjection' }
       ))
       .send(onComplete);
@@ -22263,7 +22270,7 @@
       // set "posting" message and attempt to post the results snapshot
       setMessage(me.texts.post);
 
-      // Note: We originally created an iframe to avoid Browerscope's old limit
+      // Note: We originally created an iframe to avoid Browserscope's old limit
       // of one beacon per page load. It's currently used to implement custom
       // request timeout and retry routines.
       var idoc = win.frames[name].document;
@@ -22376,7 +22383,7 @@
       !response && visualization && setMessage(me.texts.error);
       retry(true);
     }
-    // visualization chart gallary
+    // visualization chart gallery
     // https://developers.google.com/chart/interactive/docs/gallery
     else if (!ui.running) {
       var data = cloneData(response.getDataTable()),
@@ -22685,22 +22692,25 @@
     // the frame window of the charts
     me.chartWindow = iwin;
 
-    // the element the charts are inserted into
-    me.container = query('#bs-chart', idoc)[0];
+    // ensure that content in iframe is processed by executing on next tick
+    setTimeout(function() {
+      // the element the charts are inserted into
+      me.container = query('#bs-chart', idoc)[0];
 
-    // Browserscope's UA div is inserted before an element with the id of "bs-ua-script"
-    loadScript('https://www.browserscope.org/ua?o=js', me.container).id = 'bs-ua-script';
+      // Browserscope's UA div is inserted before an element with the id of "bs-ua-script"
+      loadScript('https://www.browserscope.org/ua?o=js', me.container).id = 'bs-ua-script';
 
-    // the "autoload" string is created following the guide at
-    // https://developers.google.com/loader/?hl=en#auto-loading
-    setTimeout(function() { loadScript('https://www.google.com/jsapi?autoload=' + encodeURIComponent('{' +
-      'modules:[{' +
-        'name:"visualization",' +
-        'version:1,' +
-        'packages:["corechart","table"],' +
-        'callback:ui.browserscope.load' +
-      '}]' +
-    '}'), idoc); }, 2000);
+      // the "autoload" string is created following the guide at
+      // https://developers.google.com/loader/?hl=en#auto-loading
+      setTimeout(function() { loadScript('https://www.google.com/jsapi?autoload=' + encodeURIComponent('{' +
+        'modules:[{' +
+          'name:"visualization",' +
+          'version:1,' +
+          'packages:["corechart","table"],' +
+          'callback:ui.browserscope.load' +
+        '}]' +
+      '}'), idoc); }, 2000);
+    }, 1);
   });
 
   // hide the chart while benchmarks are running
