@@ -1,21 +1,27 @@
-var Lab = require('lab');
-var Code = require('code');
-var Hapi = require('hapi');
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var proxyquire = require('proxyquire');
-var pagesServiceStub = {
-  '@noCallThru': true
+const JsonPlugin = require('../../../../server/api/json');
+
+const lab = exports.lab = Lab.script();
+let request, server;
+const expect = Code.expect;
+
+const MockPagesService = {
+  register: (server, options, next) => {
+    server.expose('getBySlug', function () {});
+    next();
+  }
 };
-var JsonPlugin = proxyquire('../../../../server/api/json', {
-  '../services/pages': pagesServiceStub
-});
 
-var lab = exports.lab = Lab.script();
-var request, server;
-var expect = Code.expect;
+MockPagesService.register.attributes = {
+  name: 'services/pages'
+};
 
 lab.beforeEach(function (done) {
-  var plugins = [ JsonPlugin ];
+  const plugins = [ MockPagesService, JsonPlugin ];
   server = new Hapi.Server();
   server.connection();
   server.register(plugins, done);
@@ -69,9 +75,9 @@ lab.experiment('json', function () {
         }
       ]
     ];
-    pagesServiceStub.getBySlug = function (cnt) {
-      return Promise.resolve(data);
-    };
+
+    sinon.stub(server.plugins['services/pages'], 'getBySlug').returns(Promise.resolve(data));
+
     server.inject(request, function (response) {
       expect(response.statusCode).to.equal(200);
       expect(response.headers['content-type']).to.equal('application/json; charset=utf-8');
@@ -84,9 +90,8 @@ lab.experiment('json', function () {
   });
 
   lab.test('it returns errors', function (done) {
-    pagesServiceStub.getBySlug = function (cnt) {
-      return Promise.reject(new Error('DB is down'));
-    };
+    sinon.stub(server.plugins['services/pages'], 'getBySlug').returns(Promise.reject(new Error('DB is down')));
+
     server.inject(request, function (response) {
       expect(response.headers['content-type']).to.equal('application/json; charset=utf-8');
       expect(response.result.statusCode).to.equal(500);

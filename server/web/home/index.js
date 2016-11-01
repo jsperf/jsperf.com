@@ -1,11 +1,11 @@
-var _assign = require('lodash.assign');
-var Joi = require('joi');
-
+const _assign = require('lodash.assign');
+const Joi = require('joi');
 const defaults = require('../../lib/defaults');
 const schema = require('../../lib/schema');
-var pagesService = require('../../services/pages');
 
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
+
   server.route({
     method: 'GET',
     path: '/',
@@ -101,5 +101,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/home'
+  name: 'web/home',
+  dependencies: ['services/pages']
 };

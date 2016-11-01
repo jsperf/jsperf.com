@@ -1,8 +1,6 @@
-'use strict';
-
-var pagesService = require('../../services/pages');
-
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
+
   server.route({
     method: 'GET',
     config: {
@@ -47,5 +45,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/delete'
+  name: 'web/delete',
+  dependencies: ['services/pages']
 };

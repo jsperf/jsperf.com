@@ -697,6 +697,12 @@
       "resolved": "https://registry.npmjs.org/create-error-class/-/create-error-class-3.0.2.tgz",
       "dev": true
     },
+    "create-thenable": {
+      "version": "1.0.2",
+      "from": "create-thenable@>=1.0.0 <1.1.0",
+      "resolved": "https://registry.npmjs.org/create-thenable/-/create-thenable-1.0.2.tgz",
+      "dev": true
+    },
     "cryptiles": {
       "version": "3.1.1",
       "from": "cryptiles@>=3.0.0 <4.0.0",
@@ -3048,6 +3054,12 @@
         }
       }
     },
+    "native-promise-only": {
+      "version": "0.8.1",
+      "from": "native-promise-only@>=0.8.1 <0.9.0",
+      "resolved": "https://registry.npmjs.org/native-promise-only/-/native-promise-only-0.8.1.tgz",
+      "dev": true
+    },
     "natives": {
       "version": "1.1.0",
       "from": "natives@>=1.1.0 <2.0.0",
@@ -3792,6 +3804,12 @@
       "resolved": "https://registry.npmjs.org/sinon/-/sinon-1.17.6.tgz",
       "dev": true
     },
+    "sinon-as-promised": {
+      "version": "4.0.2",
+      "from": "sinon-as-promised@latest",
+      "resolved": "https://registry.npmjs.org/sinon-as-promised/-/sinon-as-promised-4.0.2.tgz",
+      "dev": true
+    },
     "slice-ansi": {
       "version": "0.0.4",
       "from": "slice-ansi@0.0.4",
@@ -4479,6 +4497,12 @@
       "version": "0.0.3",
       "from": "undefsafe@0.0.3",
       "resolved": "https://registry.npmjs.org/undefsafe/-/undefsafe-0.0.3.tgz",
+      "dev": true
+    },
+    "unique-concat": {
+      "version": "0.2.2",
+      "from": "unique-concat@>=0.2.2 <0.3.0",
+      "resolved": "https://registry.npmjs.org/unique-concat/-/unique-concat-0.2.2.tgz",
       "dev": true
     },
     "unique-stream": {

@@ -1,12 +1,10 @@
-'use strict';
-
-var path = require('path');
-var Lab = require('lab');
-var sinon = require('sinon');
-var Code = require('code');
+const path = require('path');
+const Lab = require('lab');
+const sinon = require('sinon');
+const Code = require('code');
 const Hoek = require('hoek');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
+const Hapi = require('hapi');
+
 const defaults = require('../../../../../server/lib/defaults');
 const testNow = new Date();
 const defaultPageData = {
@@ -29,30 +27,34 @@ const defaultPageData = {
   updated: testNow
 };
 
-var pagesServiceStub = {
-  updateHits: function () {},
-  getBySlug: function () {}
-};
+const TestPlugin = require('../../../../../server/web/edit/index');
 
-var TestPlugin = proxyquire('../../../../../server/web/edit/index', {
-  '../../services/pages': pagesServiceStub
-});
-
-var YarPlugin = {
+const YarPlugin = {
   register: require('yar'),
   options: { cookieOptions: { password: 'password-should-be-32-characters' } }
 };
 
-var AuthPlugin = {
+const AuthPlugin = {
   register: require('hapi-auth-cookie'),
   options: {}
 };
 
-var lab = exports.lab = Lab.script();
-var request, server;
+const MockPagesService = {
+  register: (server, options, next) => {
+    server.expose('getBySlug', function () {});
+    server.expose('edit', function () {});
+    next();
+  }
+};
+
+MockPagesService.register.attributes = {
+  name: 'services/pages'
+};
+
+const lab = exports.lab = Lab.script();
+let request, server, pagesServiceStub;
 
 lab.beforeEach(function (done) {
-  var plugins = [ TestPlugin, YarPlugin ];
   server = new Hapi.Server();
 
   server.connection();
@@ -77,7 +79,20 @@ lab.beforeEach(function (done) {
       partialsPath: 'templates/partials',
       relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
     });
-    server.register(plugins, done);
+    server.register([
+      YarPlugin,
+      MockPagesService,
+      TestPlugin
+    ], (err) => {
+      if (err) return done(err);
+
+      pagesServiceStub = {
+        getBySlug: sinon.stub(server.plugins['services/pages'], 'getBySlug'),
+        edit: sinon.stub(server.plugins['services/pages'], 'edit')
+      };
+
+      done();
+    });
   });
 });
 
@@ -90,9 +105,6 @@ lab.experiment('GET', function () {
       credentials: {'test': 'profile'},
       url: `/${slug}/1/edit`
     };
-
-    pagesServiceStub.getBySlug = sinon.stub();
-    pagesServiceStub.updateHits = sinon.stub().returns(Promise.resolve());
 
     done();
   });
@@ -455,26 +467,18 @@ lab.experiment('POST', function () {
 
   lab.experiment('new revision', function () {
     lab.beforeEach(function (done) {
-      pagesServiceStub.getBySlug = function (a, b) {
-        request.payload.maxRev = 44;
-        return Promise.resolve([request.payload]);
-      };
-
-      done();
-    });
-
-    lab.afterEach(function (done) {
-      pagesServiceStub.getBySlug = function () {};
-      pagesServiceStub.edit = function () {};
+      pagesServiceStub.getBySlug.returns(
+        Promise.resolve([
+          Hoek.applyToDefaults(request.payload, { maxRev: 44 })
+        ])
+      );
 
       done();
     });
 
     lab.test('handles error', function (done) {
       var errMsg = 'testing-very-very-unique-msg';
-      pagesServiceStub.edit = function (a) {
-        return Promise.reject(new Error(errMsg));
-      };
+      pagesServiceStub.edit.throws(new Error(errMsg));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(400);
@@ -486,11 +490,12 @@ lab.experiment('POST', function () {
     });
 
     lab.test('calls edit page service with new revision params', function (done) {
-      pagesServiceStub.edit = sinon.stub();
-      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
+      pagesServiceStub.edit.returns(Promise.resolve(request.payload));
 
       server.inject(request, response => {
-        let firstCallArgs = pagesServiceStub.edit.args[0];
+        Code.expect(pagesServiceStub.edit.called).to.be.true();
+
+        const firstCallArgs = pagesServiceStub.edit.args[0];
 
         Code.expect(firstCallArgs[0].slug).to.equal(request.payload.slug);
         Code.expect(firstCallArgs[1]).to.equal(false);
@@ -501,7 +506,6 @@ lab.experiment('POST', function () {
     });
 
     lab.test('redirects to new url after revision insertion', function (done) {
-      pagesServiceStub.edit = sinon.stub();
       pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
 
       server.inject(request, response => {
@@ -515,9 +519,7 @@ lab.experiment('POST', function () {
 
   lab.experiment('owner revision', function () {
     lab.beforeEach(function (done) {
-      pagesServiceStub.getBySlug = function (a, b) {
-        return Promise.resolve([defaultPageData]);
-      };
+      pagesServiceStub.getBySlug.returns(Promise.resolve([defaultPageData]));
 
       server.route({
         method: 'GET',
@@ -534,15 +536,7 @@ lab.experiment('POST', function () {
       done();
     });
 
-    lab.afterEach(function (done) {
-      pagesServiceStub.getBySlug = function () {};
-      pagesServiceStub.edit = function () {};
-
-      done();
-    });
-
     lab.test('calls edit page service with update params', function (done) {
-      pagesServiceStub.edit = sinon.stub();
       pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
 
       server.inject('/setsession', function (res) {
@@ -563,7 +557,6 @@ lab.experiment('POST', function () {
     });
 
     lab.test('redirects to original url after update', function (done) {
-      pagesServiceStub.edit = sinon.stub();
       let stubPage = Hoek.applyToDefaults(request.payload, {revision: 1});
       pagesServiceStub.edit.onCall(0).returns(Promise.resolve(stubPage));
 
@@ -584,9 +577,7 @@ lab.experiment('POST', function () {
 
   lab.experiment('admin revision', function () {
     lab.beforeEach(function (done) {
-      pagesServiceStub.getBySlug = function (a, b) {
-        return Promise.resolve([defaultPageData]);
-      };
+      pagesServiceStub.getBySlug.returns(Promise.resolve([defaultPageData]));
 
       server.route({
         method: 'GET',
@@ -602,15 +593,7 @@ lab.experiment('POST', function () {
       done();
     });
 
-    lab.afterEach(function (done) {
-      pagesServiceStub.getBySlug = function () {};
-      pagesServiceStub.edit = function () {};
-
-      done();
-    });
-
     lab.test('calls edit page service with update params', function (done) {
-      pagesServiceStub.edit = sinon.stub();
       pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
 
       server.inject('/setsession', function (res) {

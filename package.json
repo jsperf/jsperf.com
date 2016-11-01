@@ -72,6 +72,7 @@
     "prompt": "^1.0.0",
     "proxyquire": "1.4.0",
     "sinon": "1.17.6",
+    "sinon-as-promised": "4.0.2",
     "snyk": "1.19.1"
   },
   "snyk": true

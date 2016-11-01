@@ -1,21 +1,26 @@
-var path = require('path');
+const path = require('path');
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var Lab = require('lab');
-var Code = require('code');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
+const SearchPlugin = require('../../../../../server/web/search/index');
 
-var pagesServiceStub = {};
+const MockPagesService = {
+  register: (server, options, next) => {
+    server.expose('find', function () {});
+    next();
+  }
+};
 
-var SearchPlugin = proxyquire('../../../../../server/web/search/index', {
-  '../../services/pages': pagesServiceStub
-});
+MockPagesService.register.attributes = {
+  name: 'services/pages'
+};
 
-var lab = exports.lab = Lab.script();
-var request, server;
+const lab = exports.lab = Lab.script();
+let request, server, pagesServiceStub;
 
 lab.beforeEach(function (done) {
-  var plugins = [ SearchPlugin ];
   server = new Hapi.Server();
   server.connection();
   server.register(require('vision'), () => {
@@ -29,7 +34,16 @@ lab.beforeEach(function (done) {
       partialsPath: 'templates/partials',
       relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
     });
-    server.register(plugins, done);
+    server.register([
+      MockPagesService,
+      SearchPlugin
+    ], (err) => {
+      if (err) return done(err);
+
+      sinon.stub(server.plugins['services/pages'], 'find', () => pagesServiceStub);
+
+      done();
+    });
   });
 });
 
@@ -70,9 +84,7 @@ lab.experiment('search', function () {
   });
 
   lab.test('it responds with an error from querying', function (done) {
-    pagesServiceStub.find = function (q) {
-      return Promise.reject(new Error());
-    };
+    pagesServiceStub = Promise.reject(new Error());
 
     request.url += '?q=a';
 
@@ -84,9 +96,7 @@ lab.experiment('search', function () {
   });
 
   lab.test('it responds with no results from querying', function (done) {
-    pagesServiceStub.find = function (q) {
-      return Promise.resolve([]);
-    };
+    pagesServiceStub = Promise.resolve([]);
 
     request.url += '?q=a';
 
@@ -102,16 +112,14 @@ lab.experiment('search', function () {
     var currentTime = new Date();
     var testUrl = 'http://example.com';
     var testTitle = 'Test result';
-    pagesServiceStub.find = function (searchTerms) {
-      return Promise.resolve([{
-        url: testUrl,
-        revision: 1,
-        title: testTitle,
-        revisionCount: 1,
-        testCount: 1,
-        updated: currentTime
-      }]);
-    };
+    pagesServiceStub = Promise.resolve([{
+      url: testUrl,
+      revision: 1,
+      title: testTitle,
+      revisionCount: 1,
+      testCount: 1,
+      updated: currentTime
+    }]);
 
     request.url += '?q=test';
 
@@ -140,17 +148,15 @@ lab.experiment('search', function () {
       var currentTime = new Date();
       var testUrl = 'http://example.com';
       var testTitle = 'Test result';
-      pagesServiceStub.find = function (searchTerms) {
-        return Promise.resolve([{
-          url: testUrl,
-          revision: 1,
-          title: testTitle,
-          revisionCount: 1,
-          testCount: 1,
-          updated: currentTime,
-          published: currentTime
-        }]);
-      };
+      pagesServiceStub = Promise.resolve([{
+        url: testUrl,
+        revision: 1,
+        title: testTitle,
+        revisionCount: 1,
+        testCount: 1,
+        updated: currentTime,
+        published: currentTime
+      }]);
 
       request.url += '.atom?q=test';
 

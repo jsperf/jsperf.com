@@ -1,17 +1,14 @@
-'use strict';
-
-var Boom = require('boom');
-var hljs = require('highlight.js');
-var regex = require('../../lib/regex');
+const Boom = require('boom');
+const hljs = require('highlight.js');
+const regex = require('../../lib/regex');
 const Joi = require('joi');
 const schema = require('../../lib/schema');
 const defaults = require('../../lib/defaults');
 
-// services
-const pagesService = require('../../services/pages');
-const commentsService = require('../../services/comments');
-
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
+  const commentsService = server.plugins['services/comments'];
+
   const getTestPage = (request) => {
     return pagesService.getBySlug(request.params.testSlug, request.params.rev || 1)
       .then(values => {
@@ -217,5 +214,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/test'
+  name: 'web/test',
+  dependencies: ['services/pages', 'services/comments']
 };

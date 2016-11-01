@@ -1,13 +1,12 @@
-'use strict';
-
-var Boom = require('boom');
-var pagesService = require('../../services/pages');
+const Boom = require('boom');
 const defaults = require('../../lib/defaults');
 const schema = require('../../lib/schema');
 const Hoek = require('hoek');
 const Joi = require('joi');
 
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
+
   server.route({
     method: 'GET',
     config: {
@@ -59,7 +58,7 @@ exports.register = function (server, options, next) {
       }
     },
     handler: function (request, reply) {
-      let errResp = function (errObj) {
+      const errResp = function (errObj) {
         if (errObj.message) {
           errObj.genError = errObj.message;
         }
@@ -91,10 +90,11 @@ exports.register = function (server, options, next) {
                     request.payload.test[idx].codeError = defaults.errors.code;
                     break;
                   default:
-                    throw new Error('unknown validation error');
+                    throw err;
                 }
             }
           } catch (ex) {
+            server.log(['error'], ex);
             errObj.genError = defaults.errors.general;
           }
           errResp(errObj);
@@ -134,5 +134,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/edit'
+  name: 'web/edit',
+  dependencies: ['services/pages']
 };
