@@ -2639,9 +2639,9 @@
       "resolved": "https://registry.npmjs.org/load-json-file/-/load-json-file-1.1.0.tgz"
     },
     "lodash": {
-      "version": "4.16.4",
-      "from": "lodash@4.16.4",
-      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.4.tgz",
+      "version": "4.16.5",
+      "from": "lodash@4.16.5",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.16.5.tgz",
       "dev": true
     },
     "lodash._basecopy": {
