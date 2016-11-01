@@ -1,4 +1,4 @@
-const table = 'umzugMigrations';
+const table = 'migrations';
 
 class CustomStorage {
   constructor (options) {
@@ -24,7 +24,15 @@ class CustomStorage {
     // pending migrations. The result has to be an
     // array with the names of the migration files.
     return this.genericQuery('SELECT name FROM ?? ORDER BY id ASC;', [ table ])
-    .then((rows) => rows.map((r) => r.name));
+    .then((rows) => rows.map((r) => r.name))
+    .catch((err) => {
+      if (err.code === 'ER_NO_SUCH_TABLE') {
+        // first run
+        return [];
+      }
+
+      throw err;
+    });
   }
 }
 
