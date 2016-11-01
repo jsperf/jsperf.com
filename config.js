@@ -16,7 +16,17 @@ const envSchema = Joi.object().keys({
   MYSQL_PORT: Joi.number().optional().default(3306),
   MYSQL_USER: Joi.string().required(),
   MYSQL_PASSWORD: Joi.string().required(),
-  MYSQL_DATABASE: Joi.string().required()
+  MYSQL_DATABASE: Joi.string().required(),
+  LOGGLY_TOKEN: Joi.string().when('NODE_ENV', {
+    is: 'production',
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional()
+  }),
+  LOGGLY_SUBDOMAIN: Joi.string().when('NODE_ENV', {
+    is: 'production',
+    then: Joi.string().required(),
+    otherwise: Joi.string().optional()
+  })
 }).unknown(true); // allow other keys in process.env not defined here
 
 const result = Joi.validate(process.env, envSchema);
@@ -68,6 +78,10 @@ var config = {
     user: process.env.MYSQL_USER,
     pass: process.env.MYSQL_PASSWORD,
     db: process.env.MYSQL_DATABASE
+  },
+  loggly: {
+    token: process.env.LOGGLY_TOKEN,
+    subdomain: process.env.LOGGLY_SUBDOMAIN
   }
 };
 

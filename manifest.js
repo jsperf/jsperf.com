@@ -34,14 +34,32 @@ var manifest = {
       plugin: {
         register: 'good',
         options: {
-          ops: {
-            interval: 10000
-          },
           reporters: {
-            console: [
-              { module: 'good-console' },
-              'stdout'
-            ]
+            $filter: 'env',
+            production: {
+              loggly: [{
+                module: 'good-squeeze',
+                name: 'Squeeze',
+                args: [{log: '*', request: '*', error: '*', response: '*'}]
+              }, {
+                module: 'good-loggly',
+                args: [{
+                  token: config.get('/loggly/token'),
+                  subdomain: config.get('/loggly/subdomain'),
+                  // tags: ['global', 'tags', 'for', 'all', 'requests'],
+                  name: 'jsperf',
+                  hostname: config.get('/domain'),
+                  threshold: 20,
+                  maxDelay: 15000
+                }]
+              }]
+            },
+            $default: {
+              console: [
+                { module: 'good-console' },
+                'stdout'
+              ]
+            }
           }
         }
       }

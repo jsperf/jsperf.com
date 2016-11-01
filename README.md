@@ -43,6 +43,8 @@ COOKIE_PASS=password-should-be-32-characters
 # PORT=3000
 # MYSQL_HOST=localhost
 # MYSQL_PORT=3306
+# LOGGLY_TOKEN=
+# LOGGLY_SUBDOMAIN=
 ```
 
 Lastly, create the necessary tables:
