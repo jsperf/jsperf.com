@@ -3,7 +3,9 @@ var Code = require('code');
 var Hapi = require('hapi');
 
 var proxyquire = require('proxyquire');
-var pagesServiceStub = {};
+var pagesServiceStub = {
+  '@noCallThru': true
+};
 var JsonPlugin = proxyquire('../../../../server/api/json', {
   '../services/pages': pagesServiceStub
 });
