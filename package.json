@@ -49,7 +49,7 @@
     "lodash.assign": "4.2.0",
     "lodash.omit": "4.5.0",
     "marked": "0.3.6",
-    "mysql": "2.5.5",
+    "mysql": "2.12.0",
     "scooter": "4.0.0",
     "snyk": "1.19.1",
     "vision": "4.1.0",
