@@ -1,37 +1,36 @@
-'use strict';
+const path = require('path');
+const Lab = require('lab');
+const sinon = require('sinon');
+const Code = require('code');
+const Hapi = require('hapi');
 
-var path = require('path');
-var Lab = require('lab');
-var sinon = require('sinon');
-var Code = require('code');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
+const DeletePlugin = require('../../../../../server/web/delete/index');
 
-var pagesServiceStub = {
-  deleteBySlug: () => {}
-};
-var debugSpy = sinon.spy();
-
-var DeletePlugin = proxyquire('../../../../../server/web/delete/index', {
-  '../../services/pages': pagesServiceStub,
-  'debug': function () { return debugSpy; }
-});
-
-var YarPlugin = {
+const YarPlugin = {
   register: require('yar'),
   options: { cookieOptions: { password: 'password-should-be-32-characters' } }
 };
 
-var AuthPlugin = {
+const AuthPlugin = {
   register: require('hapi-auth-cookie'),
   options: {}
 };
 
-var lab = exports.lab = Lab.script();
-var request, server;
+const MockPagesService = {
+  register: (server, options, next) => {
+    server.expose('deleteBySlug', function () {});
+    next();
+  }
+};
+
+MockPagesService.register.attributes = {
+  name: 'services/pages'
+};
+
+const lab = exports.lab = Lab.script();
+let request, server;
 
 lab.beforeEach(done => {
-  var plugins = [ DeletePlugin, YarPlugin ];
   server = new Hapi.Server();
 
   server.connection();
@@ -56,7 +55,11 @@ lab.beforeEach(done => {
       partialsPath: 'templates/partials',
       relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
     });
-    server.register(plugins, done);
+    server.register([
+      YarPlugin,
+      MockPagesService,
+      DeletePlugin
+    ], done);
   });
 });
 
@@ -79,7 +82,7 @@ lab.experiment('deleting', function () {
   });
 
   lab.test('multiple revisions while being admin', done => {
-    pagesServiceStub.deleteBySlug = sinon.stub().returns(Promise.resolve(3));
+    sinon.stub(server.plugins['services/pages'], 'deleteBySlug').returns(Promise.resolve(3));
 
     server.route({
       method: 'GET',
@@ -108,7 +111,7 @@ lab.experiment('deleting', function () {
   });
 
   lab.test('a single revision while being admin', done => {
-    pagesServiceStub.deleteBySlug = sinon.stub().returns(Promise.resolve(1));
+    sinon.stub(server.plugins['services/pages'], 'deleteBySlug').returns(Promise.resolve(1));
 
     server.route({
       method: 'GET',
@@ -138,7 +141,7 @@ lab.experiment('deleting', function () {
   });
 
   lab.test('a revision that does not exist while being admin', done => {
-    pagesServiceStub.deleteBySlug = sinon.stub().returns(Promise.resolve(0));
+    sinon.stub(server.plugins['services/pages'], 'deleteBySlug').returns(Promise.resolve(0));
 
     server.route({
       method: 'GET',

@@ -1,22 +1,18 @@
-var debug = require('debug')('jsperf:web:errors');
-
 exports.register = function (server, options, next) {
   server.ext('onPreResponse', function (request, reply) {
     if (!request.response.isBoom) {
       return reply.continue();
     }
 
-    var statusCode = request.response.output.statusCode;
-    var handledCodes = [404, 403, 400]; // This can eventually be cached glob call (redis backed?)
+    const statusCode = request.response.output.statusCode;
+    const handledCodes = [404, 403, 400]; // This can eventually be cached glob call (redis backed?)
 
-    if (handledCodes.some(function (handledCode) {
-      return handledCode === statusCode;
-    })) {
+    if (handledCodes.some((handledCode) => handledCode === statusCode)) {
       return reply.view('errors/' + statusCode).code(statusCode);
-    } else {
-      debug(request.response);
-      return reply.view('errors/general').code(500);
     }
+
+    server.log(['debug'], request.response);
+    return reply.view('errors/general').code(500);
   });
 
   return next();

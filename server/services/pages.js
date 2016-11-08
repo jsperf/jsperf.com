@@ -1,15 +1,14 @@
-'use strict';
-// TODO make hapi plugin
-var _omit = require('lodash.omit');
-var debug = require('debug')('jsperf:services:pages');
+const _omit = require('lodash.omit');
 
-var pagesRepo = require('../repositories/pages');
-var testsRepo = require('../repositories/tests');
-var browserscopeRepo = require('../repositories/browserscope');
-var commentsRepo = require('../repositories/comments');
+const name = 'services/pages';
 
-module.exports = {
-  checkIfSlugAvailable: function (server, slug) {
+exports.register = function (server, options, next) {
+  const pagesRepo = server.plugins['repositories/pages'];
+  const testsRepo = server.plugins['repositories/tests'];
+  const browserscopeRepo = server.plugins['repositories/browserscope'];
+  const commentsRepo = server.plugins['repositories/comments'];
+
+  server.expose('checkIfSlugAvailable', function (server, slug) {
     return new Promise(function (resolve, reject) {
       // routes registered by the app should be considered reserved
       var routeTable = server.table();
@@ -29,8 +28,9 @@ module.exports = {
         })
         .catch(reject);
     });
-  },
-  create: function (payload) {
+  });
+
+  server.expose('create', function (payload) {
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
       .then(function (testKey) {
         var page = _omit(payload, 'test');
@@ -42,8 +42,9 @@ module.exports = {
       .then(function (pageID) {
         return testsRepo.bulkCreate(pageID, payload.test);
       });
-  },
-  edit: function (payload, isOwn, maxRev, pageId) {
+  });
+
+  server.expose('edit', function (payload, isOwn, maxRev, pageId) {
     let newRev = ++maxRev;
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, newRev)
       .then(testKey => {
@@ -60,8 +61,9 @@ module.exports = {
       .then(function (pageID) {
         return testsRepo.bulkUpdate(pageID, payload.test, isOwn);
       });
-  },
-  getPopular: function () {
+  });
+
+  server.expose('getPopular', function () {
     return Promise.all([
       pagesRepo.getPopularRecent(),
       pagesRepo.getPopularAllTime()
@@ -72,18 +74,18 @@ module.exports = {
           allTime: values[1]
         };
       });
-  },
+  });
 
-  find: function (searchTerms) {
-    return pagesRepo.find(searchTerms);
-  },
+  server.expose('find', function () {
+    return pagesRepo.find.apply(this, arguments);
+  });
 
-  updateHits: function (pageID) {
-    return pagesRepo.updateHits(pageID);
-  },
+  server.expose('updateHits', function () {
+    return pagesRepo.updateHits.apply(this, arguments);
+  });
 
-  getBySlug: function (slug, rev) {
-    debug('getBySlug', arguments);
+  server.expose('getBySlug', function (slug, rev) {
+    server.log(['debug'], `${name}::getBySlug: ${JSON.stringify(arguments)}`);
     var page;
     const values = [];
 
@@ -134,9 +136,10 @@ module.exports = {
         values.push(comments);
         return values;
       });
-  },
-  getVisibleBySlugWithRevisions: slug => {
-    debug('getVisibleBySlugWithRevisions', arguments);
+  });
+
+  server.expose('getVisibleBySlugWithRevisions', function (slug) {
+    server.log(['debug'], `${name}::getVisibleBySlugWithRevisions ${JSON.stringify(arguments)}`);
     const values = [];
 
     // can we find the page?
@@ -155,19 +158,19 @@ module.exports = {
         values.push(revisions);
         return values;
       });
-  },
+  });
 
-  deleteBySlug: function (slug, rev) {
-    debug('deleteBySlug', arguments);
+  server.expose('deleteBySlug', function (slug, rev) {
+    server.log(['debug'], `${name}::deleteBySlug ${JSON.stringify(arguments)}`);
 
     if (rev > 1) {
       return pagesRepo.deleteOneRevisionBySlug(slug, rev);
     } else {
       return pagesRepo.deleteAllRevisionsBySlug(slug);
     }
-  },
+  });
 
-  publish: function (pageID) {
+  server.expose('publish', function (pageID) {
     const now = new Date();
     const modify = {
       visible: 'y',
@@ -175,7 +178,19 @@ module.exports = {
       published: now
     };
 
-    debug('publish', pageID, modify);
+    server.log(['debug'], `${name}::publish ${pageID} ${modify}`);
     return pagesRepo.updateById(modify, pageID);
-  }
+  });
+
+  return next();
+};
+
+exports.register.attributes = {
+  name,
+  dependencies: [
+    'repositories/browserscope',
+    'repositories/comments',
+    'repositories/pages',
+    'repositories/tests'
+  ]
 };

@@ -1,4 +1,3 @@
-var pagesService = require('../services/pages');
 
 var mapTest = function (test) {
   return {
@@ -45,6 +44,8 @@ var mapComment = function (comment) {
 };
 
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
+
   server.route({
     method: 'GET',
     path: '/{slug}/{revision}.json',
@@ -70,5 +71,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'api/json'
+  name: 'api/json',
+  dependencies: ['services/pages']
 };

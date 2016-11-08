@@ -1,38 +1,21 @@
 const path = require('path');
 const Lab = require('lab');
 const sinon = require('sinon');
+require('sinon-as-promised');
 const Code = require('code');
 const Hapi = require('hapi');
-const proxyquire = require('proxyquire');
 const cheerio = require('cheerio');
 
 const defaults = require('../../../../../server/lib/defaults');
 
-var pagesServiceStub = {
-  updateHits: function () {},
-  getBySlug: function () {},
-  getVisibleBySlugWithRevisions: () => {},
-  publish: function () {}
-};
+const TestPlugin = require('../../../../../server/web/test/index');
 
-const commentsServiceStub = {
-  create () {}
-};
-
-var debugSpy = sinon.spy();
-
-var TestPlugin = proxyquire('../../../../../server/web/test/index', {
-  '../../services/pages': pagesServiceStub,
-  '../../services/comments': commentsServiceStub,
-  'debug': function () { return debugSpy; }
-});
-
-var YarPlugin = {
+const YarPlugin = {
   register: require('yar'),
   options: { cookieOptions: { password: 'password-should-be-32-characters' } }
 };
 
-var AuthPlugin = {
+const AuthPlugin = {
   register: require('hapi-auth-cookie'),
   options: {}
 };
@@ -42,12 +25,36 @@ const ScooterPlugin = {
   options: {}
 };
 
-var lab = exports.lab = Lab.script();
-var request, server;
+const MockCommentService = {
+  register: (server, options, next) => {
+    server.expose('create', function () {});
+    next();
+  }
+};
+
+MockCommentService.register.attributes = {
+  name: 'services/comments'
+};
+
+const MockPagesService = {
+  register: (server, options, next) => {
+    server.expose('updateHits', function () {});
+    server.expose('getBySlug', function () {});
+    server.expose('publish', function () {});
+    server.expose('getVisibleBySlugWithRevisions', function () {});
+    next();
+  }
+};
+
+MockPagesService.register.attributes = {
+  name: 'services/pages'
+};
+
+const lab = exports.lab = Lab.script();
+let request, server, pagesServiceStub, commentsServiceStub;
 const now = new Date();
 
 lab.beforeEach(function (done) {
-  var plugins = [ TestPlugin, YarPlugin, ScooterPlugin ];
   server = new Hapi.Server();
 
   server.connection();
@@ -72,10 +79,31 @@ lab.beforeEach(function (done) {
       helpersPath: 'templates/helpers',
       partialsPath: 'templates/partials',
       context: {
+        scheme: 'http',
         domain: 'jsperf.test'
       }
     });
-    server.register(plugins, done);
+    server.register([
+      YarPlugin,
+      ScooterPlugin,
+      MockPagesService,
+      MockCommentService,
+      TestPlugin
+    ], (err) => {
+      if (err) return done(err);
+
+      pagesServiceStub = {
+        getBySlug: sinon.stub(server.plugins['services/pages'], 'getBySlug'),
+        updateHits: sinon.stub(server.plugins['services/pages'], 'updateHits').returns(Promise.resolve()),
+        getVisibleBySlugWithRevisions: sinon.stub(server.plugins['services/pages'], 'getVisibleBySlugWithRevisions')
+      };
+
+      commentsServiceStub = {
+        create: sinon.stub(server.plugins['services/comments'], 'create')
+      };
+
+      done();
+    });
   });
 });
 
@@ -88,14 +116,11 @@ lab.experiment('web/test plugin', function () {
       url: '/' + slug
     };
 
-    pagesServiceStub.getBySlug = sinon.stub();
-    pagesServiceStub.updateHits = sinon.stub().returns(Promise.resolve());
-
     done();
   });
 
   lab.test('not found', function (done) {
-    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('Not found')));
+    pagesServiceStub.getBySlug.rejects(new Error('Not found'));
 
     // adding revision to url here covers true case of rev ternary
     request.url += '/999';
@@ -108,7 +133,7 @@ lab.experiment('web/test plugin', function () {
   });
 
   lab.test('fail to get by slug', function (done) {
-    pagesServiceStub.getBySlug.returns(Promise.reject(new Error('real helpful')));
+    pagesServiceStub.getBySlug.rejects(new Error('real helpful'));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(500);
@@ -314,7 +339,7 @@ lab.experiment('web/test plugin', function () {
       }, [], [], []]));
 
       const expectedError = new Error('catches-errors-from-page-service');
-      pagesServiceStub.updateHits = () => Promise.reject(expectedError);
+      pagesServiceStub.updateHits.rejects(expectedError);
 
       server.inject('/setsession', function (res) {
         var header = res.headers['set-cookie'];
@@ -323,9 +348,6 @@ lab.experiment('web/test plugin', function () {
         request.headers.cookie = 'session=' + cookie[1];
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(200);
-          const debugCall = debugSpy.getCall(0).args[0];
-
-          Code.expect(debugCall.message).to.equal(expectedError.message);
 
           done();
         });
@@ -467,7 +489,7 @@ lab.experiment('web/test plugin', function () {
     });
 
     lab.test('handle error', (done) => {
-      pagesServiceStub.getBySlug.returns(Promise.reject(new Error('testing')));
+      pagesServiceStub.getBySlug.rejects(new Error('testing'));
 
       server.inject(request, (res) => {
         Code.expect(res.statusCode).to.equal(500);
@@ -526,9 +548,6 @@ lab.experiment('create comment', () => {
       url: `/${slug}/1`
     };
 
-    pagesServiceStub.getBySlug = sinon.stub();
-    commentsServiceStub.create = sinon.stub();
-
     done();
   });
 
@@ -546,7 +565,7 @@ lab.experiment('create comment', () => {
     });
 
     lab.test('it catches error', done => {
-      pagesServiceStub.getBySlug = () => Promise.reject(new Error('testing'));
+      pagesServiceStub.getBySlug.rejects(new Error('testing'));
 
       server.inject(request, res => {
         Code.expect(res.statusCode).to.equal(500);
@@ -555,7 +574,7 @@ lab.experiment('create comment', () => {
     });
 
     lab.test('not found', function (done) {
-      pagesServiceStub.getBySlug = () => Promise.reject(new Error('Not found'));
+      pagesServiceStub.getBySlug.rejects(new Error('Not found'));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(404);
@@ -664,13 +683,11 @@ lab.experiment('atom', () => {
       url: '/my-test.atom'
     };
 
-    pagesServiceStub.getVisibleBySlugWithRevisions = sinon.stub();
-
     done();
   });
 
   lab.test('not found', done => {
-    pagesServiceStub.getVisibleBySlugWithRevisions.returns(Promise.reject(new Error('Not found')));
+    pagesServiceStub.getVisibleBySlugWithRevisions.rejects(new Error('Not found'));
 
     server.inject(request, response => {
       Code.expect(response.statusCode).to.equal(404);
@@ -680,33 +697,31 @@ lab.experiment('atom', () => {
 
   lab.test('it responds with atom feed', done => {
     const d = new Date();
-    pagesServiceStub.getVisibleBySlugWithRevisions = slug => {
-      return Promise.resolve([
+    pagesServiceStub.getVisibleBySlugWithRevisions.returns(Promise.resolve([
+      {
+        title: 'Unit Test',
+        slug: 'unit-test',
+        published: d,
+        updated: d
+      },
+      [
         {
-          title: 'Unit Test',
-          slug: 'unit-test',
+          title: 'Unit',
+          author: 'Max',
+          revision: 1,
+          // info intentionally missing
           published: d,
           updated: d
-        },
-        [
-          {
-            title: 'Unit',
-            author: 'Max',
-            revision: 1,
-            // info intentionally missing
-            published: d,
-            updated: d
-          }, {
-            title: 'Test',
-            author: 'Max',
-            revision: 2,
-            info: 'desc',
-            published: d,
-            updated: d
-          }
-        ]
-      ]);
-    };
+        }, {
+          title: 'Test',
+          author: 'Max',
+          revision: 2,
+          info: 'desc',
+          published: d,
+          updated: d
+        }
+      ]
+    ]));
 
     server.inject(request, response => {
       Code.expect(response.statusCode).to.equal(200);
@@ -757,7 +772,7 @@ lab.experiment('atom', () => {
   });
 
   lab.test('it responds with generic error', done => {
-    pagesServiceStub.getVisibleBySlugWithRevisions = cnt => Promise.reject(new Error());
+    pagesServiceStub.getVisibleBySlugWithRevisions.rejects(new Error());
 
     server.inject(request, response => {
       Code.expect(response.statusCode).to.equal(500);

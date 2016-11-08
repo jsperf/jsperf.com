@@ -1,6 +1,5 @@
-var pagesService = require('../../services/pages');
-
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
   server.route({
     method: 'GET',
     path: '/popular',
@@ -23,5 +22,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/popular'
+  name: 'web/popular',
+  dependencies: ['services/pages']
 };

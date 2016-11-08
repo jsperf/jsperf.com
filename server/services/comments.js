@@ -1,12 +1,9 @@
-'use strict';
+const name = 'services/comments';
+exports.register = function (server, options, next) {
+  const commentsRepo = server.plugins['repositories/comments'];
 
-const debug = require('debug')('jsperf:services:comments');
-
-const commentsRepo = require('../repositories/comments');
-
-module.exports = {
-  create: function (pageID, ip, payload) {
-    debug('create', arguments);
+  server.expose('create', function (pageID, ip, payload) {
+    server.log(['debug'], `${name}::create: ${JSON.stringify(arguments)}`);
 
     const comment = {
       pageID,
@@ -20,11 +17,18 @@ module.exports = {
 
     return commentsRepo.create(comment)
       .then(id => Object.assign(comment, {id}));
-  },
+  });
 
-  delete: function (commentId) {
-    debug('delete', arguments);
+  server.expose('delete', function (commentId) {
+    server.log(['debug'], `${name}::delete: ${JSON.stringify(arguments)}`);
 
     return commentsRepo.delete(commentId);
-  }
+  });
+
+  return next();
+};
+
+exports.register.attributes = {
+  name,
+  dependencies: ['repositories/comments']
 };

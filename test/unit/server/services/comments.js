@@ -1,25 +1,47 @@
-'use strict';
-
 const Lab = require('lab');
 const Code = require('code');
-const proxyquire = require('proxyquire');
+const Hapi = require('hapi');
 const sinon = require('sinon');
 
-const commentsRepoStub = {};
+const Comments = require('../../../../server/services/comments');
 
-const comments = proxyquire('../../../../server/services/comments', {
-  '../repositories/comments': commentsRepoStub
-});
+const MockRepo = {
+  register: (server, options, next) => {
+    server.expose('create', function () {});
+    server.expose('delete', function () {});
+    next();
+  }
+};
+
+MockRepo.register.attributes = {
+  name: 'repositories/comments'
+};
 
 const lab = exports.lab = Lab.script();
 
 lab.experiment('Comments Service', function () {
-  var s;
+  var s, server, comments, createStub;
 
   lab.beforeEach(function (done) {
     s = sinon.sandbox.create();
 
-    done();
+    server = new Hapi.Server();
+
+    server.connection();
+
+    server.register([
+      MockRepo,
+      Comments
+    ], (err) => {
+      if (err) return done(err);
+
+      createStub = s.stub(server.plugins['repositories/comments'], 'create');
+      s.stub(server.plugins['repositories/comments'], 'delete');
+
+      comments = server.plugins['services/comments'];
+
+      done();
+    });
   });
 
   lab.afterEach(function (done) {
@@ -29,12 +51,10 @@ lab.experiment('Comments Service', function () {
   });
 
   lab.experiment('create', function () {
-    var payload;
+    let payload;
 
     lab.beforeEach(function (done) {
       payload = {};
-
-      commentsRepoStub.create = s.stub();
 
       done();
     });
@@ -43,7 +63,7 @@ lab.experiment('Comments Service', function () {
       const testErrMsg = 'testing';
       const testErr = new Error(testErrMsg);
 
-      commentsRepoStub.create.returns(Promise.reject(testErr));
+      createStub.returns(Promise.reject(testErr));
 
       comments.create(null, null, payload)
       .catch(function (err) {
@@ -56,7 +76,7 @@ lab.experiment('Comments Service', function () {
 
     lab.test('assigns new id to comment before returning', (done) => {
       const id = 2;
-      commentsRepoStub.create.returns(Promise.resolve(id));
+      createStub.returns(Promise.resolve(id));
 
       comments.create(null, null, payload)
       .then((comment) => {
@@ -68,10 +88,11 @@ lab.experiment('Comments Service', function () {
   });
 
   lab.test('delete', (done) => {
-    commentsRepoStub.delete = s.stub().returns(Promise.resolve());
+    const delStub = server.plugins['repositories/comments'].delete;
+    delStub.returns(Promise.resolve());
     const id = 1;
     comments.delete(id).then(() => {
-      Code.expect(commentsRepoStub.delete.calledWith(id)).to.be.true();
+      Code.expect(delStub.calledWith(id)).to.be.true();
 
       done();
     });

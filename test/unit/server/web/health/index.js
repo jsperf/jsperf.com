@@ -1,29 +1,35 @@
 const Lab = require('lab');
 const Code = require('code');
 const Hapi = require('hapi');
-const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
-const Config = require('../../../../../config');
+const HealthPlugin = require('../../../../../server/web/health/index');
 
-const mockDb = { genericQuery: function () {} };
-
-var HealthPlugin = proxyquire('../../../../../server/web/health/index', {
-  '../../lib/db': mockDb
-});
-
-var lab = exports.lab = Lab.script();
+const lab = exports.lab = Lab.script();
 var request, server, s;
+
+const genericQueryStub = sinon.stub();
+const MockDb = {
+  register: (server, options, next) => {
+    server.expose('genericQuery', genericQueryStub);
+    next();
+  }
+};
+
+MockDb.register.attributes = {
+  name: 'db'
+};
 
 lab.beforeEach(function (done) {
   s = sinon.sandbox.create();
 
   server = new Hapi.Server();
-  server.connection({
-    port: Config.get('/port/web')
-  });
+  server.connection();
 
-  server.register([ HealthPlugin ], done);
+  server.register([
+    MockDb,
+    HealthPlugin
+  ], done);
 });
 
 lab.afterEach(function (done) {
@@ -43,7 +49,7 @@ lab.experiment('health', function () {
   });
 
   lab.test('it responds unhealthy', function (done) {
-    s.stub(mockDb, 'genericQuery').returns(Promise.reject(new Error()));
+    genericQueryStub.returns(Promise.reject(new Error()));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(500);
@@ -53,7 +59,7 @@ lab.experiment('health', function () {
   });
 
   lab.test('it responds healthy', function (done) {
-    s.stub(mockDb, 'genericQuery').returns(Promise.resolve());
+    genericQueryStub.returns(Promise.resolve());
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);

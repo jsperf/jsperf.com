@@ -1,5 +1,4 @@
 var Boom = require('boom');
-var pagesRepo = require('../../repositories/pages');
 
 var getUpdatedDate = function (results) {
   var updated;
@@ -14,6 +13,8 @@ var getUpdatedDate = function (results) {
 };
 
 exports.register = function (server, options, next) {
+  const pagesRepo = server.plugins['repositories/pages'];
+
   server.route({
     method: 'GET',
     path: '/browse',
@@ -116,5 +117,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/browse'
+  name: 'web/browse',
+  dependencies: ['repositories/pages']
 };

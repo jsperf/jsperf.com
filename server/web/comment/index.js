@@ -1,9 +1,8 @@
-'use strict';
-
 const Boom = require('boom');
-const commentsService = require('../../services/comments');
 
 exports.register = function (server, options, next) {
+  const commentsService = server.plugins['services/comments'];
+
   server.route({
     method: 'GET',
     config: {
@@ -28,5 +27,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/comment'
+  name: 'web/comment',
+  dependencies: ['services/comments']
 };

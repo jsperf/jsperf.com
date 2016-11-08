@@ -1,18 +1,14 @@
-'use strict';
-
-var Boom = require('boom');
-var debug = require('debug')('jsperf:web:test');
-var hljs = require('highlight.js');
-var regex = require('../../lib/regex');
+const Boom = require('boom');
+const hljs = require('highlight.js');
+const regex = require('../../lib/regex');
 const Joi = require('joi');
 const schema = require('../../lib/schema');
 const defaults = require('../../lib/defaults');
 
-// services
-const pagesService = require('../../services/pages');
-const commentsService = require('../../services/comments');
-
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
+  const commentsService = server.plugins['services/comments'];
+
   const getTestPage = (request) => {
     return pagesService.getBySlug(request.params.testSlug, request.params.rev || 1)
       .then(values => {
@@ -51,15 +47,14 @@ exports.register = function (server, options, next) {
         // update hits once per page per session
         var hits = request.yar.get('hits') || {};
         if (!hits[page.id]) {
-          Promise.resolve().then(() => {
-            pagesService.updateHits(page.id)
-            .then(function () {
-              hits[page.id] = true;
-              request.yar.set('hits', hits);
-            })
-            // TODO: report error some place useful
-            .catch(debug);
-          }).catch(console.error);
+          pagesService.updateHits(page.id)
+          .then(function () {
+            hits[page.id] = true;
+            request.yar.set('hits', hits);
+          })
+          .catch((err) => {
+            server.log(['error'], err);
+          });
         }
 
         var own = request.yar.get('own') || {};
@@ -174,7 +169,7 @@ exports.register = function (server, options, next) {
         throw new Error('Not found');
       })
       .then(function () {
-        debug('publish finished', arguments);
+        server.log(['debug'], 'publish finished: ' + JSON.stringify(arguments));
         reply.redirect(`/${request.params.testSlug}/${request.params.rev}`);
       })
       .catch(function (err) {
@@ -219,5 +214,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/test'
+  name: 'web/test',
+  dependencies: ['services/pages', 'services/comments']
 };

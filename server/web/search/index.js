@@ -1,7 +1,8 @@
-var Boom = require('boom');
-var pagesService = require('../../services/pages');
+const Boom = require('boom');
 
 exports.register = function (server, options, next) {
+  const pagesService = server.plugins['services/pages'];
+
   server.route({
     method: 'GET',
     path: '/search{ext?}',
@@ -53,5 +54,6 @@ exports.register = function (server, options, next) {
 };
 
 exports.register.attributes = {
-  name: 'web/search'
+  name: 'web/search',
+  dependencies: ['services/pages']
 };

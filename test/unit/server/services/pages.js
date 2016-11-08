@@ -1,34 +1,126 @@
-'use strict';
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var Lab = require('lab');
-var Code = require('code');
-var proxyquire = require('proxyquire');
-var sinon = require('sinon');
+const Pages = require('../../../../server/services/pages');
 
-var pagesRepoStub = {};
+const MockPagesRepo = {
+  register: (server, options, next) => {
+    server.expose('get', function () {});
+    server.expose('create', function () {});
+    server.expose('updateById', function () {});
+    server.expose('getPopularRecent', function () {});
+    server.expose('getPopularAllTime', function () {});
+    server.expose('find', function () {});
+    server.expose('updateHits', function () {});
+    server.expose('getBySlug', function () {});
+    server.expose('update', function () {});
+    server.expose('findBySlug', function () {});
+    server.expose('getVisibleBySlug', function () {});
+    server.expose('findVisibleBySlug', function () {});
+    server.expose('deleteOneRevisionBySlug', function () {});
+    server.expose('deleteAllRevisionsBySlug', function () {});
 
-var testsRepoStub = {};
+    next();
+  }
+};
 
-var bsRepoStub = {};
+MockPagesRepo.register.attributes = {
+  name: 'repositories/pages'
+};
 
-var commentsRepoStub = {};
+const MockBsRepo = {
+  register: (server, options, next) => {
+    server.expose('addTest', function () {});
+    next();
+  }
+};
 
-var pages = proxyquire('../../../../server/services/pages', {
-  '../repositories/pages': pagesRepoStub,
-  '../repositories/tests': testsRepoStub,
-  '../repositories/browserscope': bsRepoStub,
-  '../repositories/comments': commentsRepoStub
-});
+MockBsRepo.register.attributes = {
+  name: 'repositories/browserscope'
+};
 
-var lab = exports.lab = Lab.script();
+const MockTestsRepo = {
+  register: (server, options, next) => {
+    server.expose('bulkCreate', function () {});
+    server.expose('bulkUpdate', function () {});
+    server.expose('findByPageID', function () {});
+    next();
+  }
+};
+
+MockTestsRepo.register.attributes = {
+  name: 'repositories/tests'
+};
+
+const MockCommentsRepo = {
+  register: (server, options, next) => {
+    server.expose('findByPageID', function () {});
+    next();
+  }
+};
+
+MockCommentsRepo.register.attributes = {
+  name: 'repositories/comments'
+};
+
+const lab = exports.lab = Lab.script();
 
 lab.experiment('Pages Service', function () {
-  var s;
+  let s, server, pages, pagesRepoStub, bsRepoStub, testsRepoStub, commentsRepoStub;
 
   lab.beforeEach(function (done) {
     s = sinon.sandbox.create();
 
-    done();
+    server = new Hapi.Server();
+
+    server.connection();
+
+    server.register([
+      MockPagesRepo,
+      MockBsRepo,
+      MockTestsRepo,
+      MockCommentsRepo,
+      Pages
+    ], (err) => {
+      if (err) return done(err);
+
+      pages = server.plugins['services/pages'];
+
+      pagesRepoStub = {
+        get: s.stub(server.plugins['repositories/pages'], 'get'),
+        create: s.stub(server.plugins['repositories/pages'], 'create'),
+        updateById: s.stub(server.plugins['repositories/pages'], 'updateById'),
+        getPopularRecent: s.stub(server.plugins['repositories/pages'], 'getPopularRecent'),
+        getPopularAllTime: s.stub(server.plugins['repositories/pages'], 'getPopularAllTime'),
+        find: s.stub(server.plugins['repositories/pages'], 'find'),
+        updateHits: s.stub(server.plugins['repositories/pages'], 'updateHits'),
+        getBySlug: s.stub(server.plugins['repositories/pages'], 'getBySlug'),
+        update: s.stub(server.plugins['repositories/pages'], 'update'),
+        findBySlug: s.stub(server.plugins['repositories/pages'], 'findBySlug'),
+        getVisibleBySlug: s.stub(server.plugins['repositories/pages'], 'getVisibleBySlug'),
+        findVisibleBySlug: s.stub(server.plugins['repositories/pages'], 'findVisibleBySlug'),
+        deleteOneRevisionBySlug: s.stub(server.plugins['repositories/pages'], 'deleteOneRevisionBySlug'),
+        deleteAllRevisionsBySlug: s.stub(server.plugins['repositories/pages'], 'deleteAllRevisionsBySlug')
+      };
+
+      bsRepoStub = {
+        addTest: s.stub(server.plugins['repositories/browserscope'], 'addTest')
+      };
+
+      testsRepoStub = {
+        bulkCreate: s.stub(server.plugins['repositories/tests'], 'bulkCreate'),
+        bulkUpdate: s.stub(server.plugins['repositories/tests'], 'bulkUpdate'),
+        findByPageID: s.stub(server.plugins['repositories/tests'], 'findByPageID')
+      };
+
+      commentsRepoStub = {
+        findByPageID: s.stub(server.plugins['repositories/comments'], 'findByPageID')
+      };
+
+      done();
+    });
   });
 
   lab.afterEach(function (done) {
@@ -58,8 +150,6 @@ lab.experiment('Pages Service', function () {
       serverMock = {
         table: tableStub
       };
-
-      pagesRepoStub.get = s.stub();
 
       done();
     });
@@ -134,12 +224,6 @@ lab.experiment('Pages Service', function () {
     lab.beforeEach(function (done) {
       payload = {};
 
-      bsRepoStub.addTest = s.stub();
-
-      pagesRepoStub.create = s.stub();
-
-      testsRepoStub.bulkCreate = s.stub();
-
       done();
     });
 
@@ -213,16 +297,6 @@ lab.experiment('Pages Service', function () {
 
     lab.beforeEach(function (done) {
       payload = {};
-
-      bsRepoStub.addTest = s.stub();
-
-      pagesRepoStub.create = s.stub();
-
-      pagesRepoStub.updateById = s.stub();
-
-      testsRepoStub.bulkCreate = s.stub();
-
-      testsRepoStub.bulkUpdate = s.stub();
 
       done();
     });
@@ -338,13 +412,6 @@ lab.experiment('Pages Service', function () {
   });
 
   lab.experiment('getPopular', function () {
-    lab.beforeEach(function (done) {
-      pagesRepoStub.getPopularRecent = s.stub();
-      pagesRepoStub.getPopularAllTime = s.stub();
-
-      done();
-    });
-
     lab.test('returns error if getting recent fails', function (done) {
       pagesRepoStub.getPopularRecent.returns(Promise.reject(new Error()));
       pagesRepoStub.getPopularAllTime.returns(Promise.resolve());
@@ -385,12 +452,6 @@ lab.experiment('Pages Service', function () {
   });
 
   lab.experiment('find', function () {
-    lab.beforeEach(function (done) {
-      pagesRepoStub.find = s.stub();
-
-      done();
-    });
-
     lab.test('calls through to repo method of same name', function (done) {
       var testRes = [];
       pagesRepoStub.find.returns(Promise.resolve(testRes));
@@ -405,12 +466,6 @@ lab.experiment('Pages Service', function () {
   });
 
   lab.experiment('updateHits', function () {
-    lab.beforeEach(function (done) {
-      pagesRepoStub.updateHits = s.stub();
-
-      done();
-    });
-
     lab.test('calls through to repo method of same name', function (done) {
       var pageID = 1;
       pagesRepoStub.updateHits.returns(Promise.resolve());
@@ -427,17 +482,6 @@ lab.experiment('Pages Service', function () {
   lab.experiment('getBySlug', function () {
     var slug = 'example';
     var rev = 1;
-
-    lab.beforeEach(function (done) {
-      pagesRepoStub.getBySlug = s.stub();
-      bsRepoStub.addTest = s.stub();
-      pagesRepoStub.update = s.stub();
-      testsRepoStub.findByPageID = s.stub();
-      pagesRepoStub.findBySlug = s.stub();
-      commentsRepoStub.findByPageID = s.stub();
-
-      done();
-    });
 
     lab.test('rejects with error from getting page by stub', function (done) {
       var testErrMsg = 'testing';
@@ -586,13 +630,6 @@ lab.experiment('Pages Service', function () {
     const slug = 'example';
     const rev = 1;
 
-    lab.beforeEach(done => {
-      pagesRepoStub.getVisibleBySlug = s.stub();
-      pagesRepoStub.findVisibleBySlug = s.stub();
-
-      done();
-    });
-
     lab.test('rejects with error from getting page by stub', done => {
       const testErrMsg = 'testing';
       const testErr = new Error(testErrMsg);
@@ -651,7 +688,7 @@ lab.experiment('Pages Service', function () {
 
   lab.experiment('deleting', () => {
     lab.test('revision 1 deletes all revisions', (done) => {
-      pagesRepoStub.deleteAllRevisionsBySlug = s.stub().returns(Promise.resolve(3));
+      pagesRepoStub.deleteAllRevisionsBySlug.returns(Promise.resolve(3));
 
       pages.deleteBySlug('oh-yea', 1)
         .then(values => {
@@ -663,7 +700,7 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('revisions above 1 deletes just one revision', (done) => {
-      pagesRepoStub.deleteOneRevisionBySlug = s.stub().returns(Promise.resolve(1));
+      pagesRepoStub.deleteOneRevisionBySlug.returns(Promise.resolve(1));
 
       pages.deleteBySlug('oh-yea', 2)
         .then(values => {
@@ -677,7 +714,7 @@ lab.experiment('Pages Service', function () {
 
   lab.experiment('publish', () => {
     lab.test('updates page to be visible', (done) => {
-      pagesRepoStub.updateById = s.stub().returns(Promise.resolve());
+      pagesRepoStub.updateById.returns(Promise.resolve());
 
       pages.publish(1)
         .then(() => {

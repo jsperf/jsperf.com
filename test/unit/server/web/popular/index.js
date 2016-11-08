@@ -1,21 +1,26 @@
-var path = require('path');
+const path = require('path');
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var Lab = require('lab');
-var Code = require('code');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
+const PopularPlugin = require('../../../../../server/web/popular/index');
 
-var pagesServiceStub = {};
+const MockPagesService = {
+  register: (server, options, next) => {
+    server.expose('getPopular', function () {});
+    next();
+  }
+};
 
-var PopularPlugin = proxyquire('../../../../../server/web/popular/index', {
-  '../../services/pages': pagesServiceStub
-});
+MockPagesService.register.attributes = {
+  name: 'services/pages'
+};
 
-var lab = exports.lab = Lab.script();
-var request, server;
+const lab = exports.lab = Lab.script();
+var request, server, pagesServiceStub;
 
 lab.beforeEach(function (done) {
-  var plugins = [ PopularPlugin ];
   server = new Hapi.Server();
   server.connection();
   server.register(require('vision'), () => {
@@ -29,7 +34,18 @@ lab.beforeEach(function (done) {
       partialsPath: 'templates/partials',
       relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
     });
-    server.register(plugins, done);
+    server.register([
+      MockPagesService,
+      PopularPlugin
+    ], (err) => {
+      if (err) return done(err);
+
+      pagesServiceStub = {
+        getPopular: sinon.stub(server.plugins['services/pages'], 'getPopular')
+      };
+
+      done();
+    });
   });
 });
 
@@ -44,9 +60,7 @@ lab.experiment('popular', function () {
   });
 
   lab.test('it responds with popular pages', function (done) {
-    pagesServiceStub.getPopular = function () {
-      return Promise.resolve([]);
-    };
+    pagesServiceStub.getPopular.returns(Promise.resolve([]));
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
@@ -61,7 +75,7 @@ lab.experiment('popular', function () {
   });
 
   lab.test('it responds with error', function (done) {
-    pagesServiceStub.getPopular = function () {
+    server.plugins['services/pages'].getPopular = function () {
       return Promise.reject(new Error());
     };
 

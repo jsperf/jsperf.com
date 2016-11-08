@@ -1,34 +1,37 @@
-var path = require('path');
+const path = require('path');
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var Lab = require('lab');
-var Code = require('code');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
+const HomePlugin = require('../../../../../server/web/home/index');
 
-var pagesServiceStub = {
-  checkIfSlugAvailable: function () {},
-  create: function () {}
-};
-
-var HomePlugin = proxyquire('../../../../../server/web/home/index', {
-  '../../services/pages': pagesServiceStub
-});
-
-var YarPlugin = {
+const YarPlugin = {
   register: require('yar'),
   options: { cookieOptions: { password: 'password-should-be-32-characters' } }
 };
 
-var AuthPlugin = {
+const AuthPlugin = {
   register: require('hapi-auth-cookie'),
   options: {}
 };
 
-var lab = exports.lab = Lab.script();
-var request, server;
+const MockPagesService = {
+  register: (server, options, next) => {
+    server.expose('checkIfSlugAvailable', function () {});
+    server.expose('create', function () {});
+    next();
+  }
+};
+
+MockPagesService.register.attributes = {
+  name: 'services/pages'
+};
+
+const lab = exports.lab = Lab.script();
+let request, server;
 
 lab.beforeEach(function (done) {
-  var plugins = [ HomePlugin, YarPlugin ];
   server = new Hapi.Server();
 
   server.connection();
@@ -53,7 +56,11 @@ lab.beforeEach(function (done) {
       partialsPath: 'templates/partials',
       relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
     });
-    server.register(plugins, done);
+    server.register([
+      YarPlugin,
+      MockPagesService,
+      HomePlugin
+    ], done);
   });
 });
 
@@ -210,15 +217,10 @@ lab.experiment('home', function () {
     });
 
     lab.experiment('slug check', function () {
-      lab.afterEach(function (done) {
-        pagesServiceStub.checkIfSlugAvailable = function () {};
-
-        done();
-      });
-
       lab.test('handles error', function (done) {
-        var errMsg = 'testing-very-unique-msg';
-        pagesServiceStub.checkIfSlugAvailable = () => Promise.reject(new Error(errMsg));
+        const errMsg = 'testing-very-unique-msg';
+        sinon.stub(server.plugins['services/pages'], 'checkIfSlugAvailable').returns(Promise.resolve(true));
+        sinon.stub(server.plugins['services/pages'], 'create').throws(new Error(errMsg));
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -230,7 +232,7 @@ lab.experiment('home', function () {
       });
 
       lab.test('not available', function (done) {
-        pagesServiceStub.checkIfSlugAvailable = () => Promise.resolve(false);
+        sinon.stub(server.plugins['services/pages'], 'checkIfSlugAvailable').returns(Promise.resolve(false));
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -244,25 +246,14 @@ lab.experiment('home', function () {
 
     lab.experiment('create page', function () {
       lab.beforeEach(function (done) {
-        pagesServiceStub.checkIfSlugAvailable = function (a, b) {
-          return Promise.resolve(true);
-        };
-
-        done();
-      });
-
-      lab.afterEach(function (done) {
-        pagesServiceStub.checkIfSlugAvailable = function () {};
-        pagesServiceStub.create = function () {};
+        sinon.stub(server.plugins['services/pages'], 'checkIfSlugAvailable').returns(Promise.resolve(true));
 
         done();
       });
 
       lab.test('handles error', function (done) {
         var errMsg = 'testing-very-very-unique-msg';
-        pagesServiceStub.create = function (a) {
-          return Promise.reject(new Error(errMsg));
-        };
+        sinon.stub(server.plugins['services/pages'], 'create').throws(new Error(errMsg));
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(400);
@@ -274,9 +265,7 @@ lab.experiment('home', function () {
       });
 
       lab.test('redirects to slug', function (done) {
-        pagesServiceStub.create = function (a) {
-          return Promise.resolve();
-        };
+        sinon.stub(server.plugins['services/pages'], 'create').returns(Promise.resolve(true));
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(302);

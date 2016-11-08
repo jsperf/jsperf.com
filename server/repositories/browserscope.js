@@ -1,17 +1,14 @@
-// TODO make hapi plugin
-var https = require('https');
-var querystring = require('querystring');
+const https = require('https');
+const querystring = require('querystring');
 
-var config = require('../../config');
-
-module.exports = {
-  addTest: function (title, description, slug) {
+exports.register = function (server, options, next) {
+  server.expose('addTest', function (title, description, slug) {
     return new Promise(function (resolve, reject) {
       var qs = querystring.stringify({
-        'api_key': config.get('/browserscope'),
+        'api_key': options.api_key,
         name: title,
         description: description.substr(0, 60),
-        url: config.get('/scheme') + '://' + config.get('/domain') + '/' + slug
+        url: options.scheme + '://' + options.domain + '/' + slug
       });
 
       https.get('https://www.browserscope.org/user/tests/create?' + qs, function (res) {
@@ -30,5 +27,11 @@ module.exports = {
         });
       }).on('error', reject);
     });
-  }
+  });
+
+  return next();
+};
+
+exports.register.attributes = {
+  name: 'repositories/browserscope'
 };

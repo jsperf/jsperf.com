@@ -1,14 +1,15 @@
-var Code = require('code');
-var Lab = require('lab');
-var Proxyquire = require('proxyquire');
+const Code = require('code');
+const Lab = require('lab');
+const Proxyquire = require('proxyquire');
 
-var Composer = Proxyquire('../../index', {
+const Composer = Proxyquire('../../index', {
   './manifest': {
-    get: function () { return {}; }
+    get: function () { return {}; },
+    '@noCallThru': true
   }
 });
 
-var lab = exports.lab = Lab.script();
+const lab = exports.lab = Lab.script();
 
 lab.experiment('Index', function () {
   lab.test('it composes a server', function (done) {

@@ -3,7 +3,7 @@ var _assign = require('lodash.assign');
 var config = require('./config');
 
 var criteria = {
-  env: process.env.NODE_ENV
+  env: config.get('/env')
 };
 
 var visionaryContextDefault = {
@@ -23,7 +23,7 @@ var manifest = {
     }
   },
   connections: [{
-    port: config.get('/port/web'),
+    port: config.get('/port'),
     labels: ['web']
   }],
   registrations: [
@@ -34,14 +34,32 @@ var manifest = {
       plugin: {
         register: 'good',
         options: {
-          ops: {
-            interval: 10000
-          },
           reporters: {
-            console: [
-              { module: 'good-console' },
-              'stdout'
-            ]
+            $filter: 'env',
+            production: {
+              loggly: [{
+                module: 'good-squeeze',
+                name: 'Squeeze',
+                args: [{log: '*', request: '*', error: '*', response: '*'}]
+              }, {
+                module: 'good-loggly',
+                args: [{
+                  token: config.get('/loggly/token'),
+                  subdomain: config.get('/loggly/subdomain'),
+                  // tags: ['global', 'tags', 'for', 'all', 'requests'],
+                  name: 'jsperf',
+                  hostname: config.get('/domain'),
+                  threshold: 20,
+                  maxDelay: 15000
+                }]
+              }]
+            },
+            $default: {
+              console: [
+                { module: 'good-console' },
+                'stdout'
+              ]
+            }
           }
         }
       }
@@ -78,7 +96,7 @@ var manifest = {
           cookieOptions: {
             // name: 'jsPerf', FIXME
             password: config.get('/auth/session/pass'),
-            isSecure: !config.get('/debug'),
+            isSecure: config.get('/auth/session/secure'),
             isHttpOnly: true
           }
         }
@@ -100,13 +118,40 @@ var manifest = {
             clientId: config.get('/auth/oauth/github/id'),
             clientSecret: config.get('/auth/oauth/github/secret'),
             isSecure: config.get('/auth/oauth/secure'),
-            location: config.get('/scheme') + '://' + config.get('/domain')
+            location: config.get('/auth/oauth/github/callback')
           }
         }
       }
     },
+    {
+      plugin: {
+        register: './server/lib/db',
+        options: {
+          host: config.get('/mysql/host'),
+          port: config.get('/mysql/port'),
+          user: config.get('/mysql/user'),
+          pass: config.get('/mysql/pass'),
+          db: config.get('/mysql/db'),
+          debug: config.get('/debug')
+        }
+      }
+    },
+    {
+      plugin: {
+        register: './server/repositories/browserscope',
+        options: {
+          api_key: config.get('/browserscope'),
+          scheme: config.get('/scheme'),
+          domain: config.get('/domain')
+        }
+      }
+    },
+    { plugin: './server/repositories/comments' },
+    { plugin: './server/repositories/pages' },
+    { plugin: './server/repositories/tests' },
+    { plugin: './server/services/comments' },
+    { plugin: './server/services/pages' },
     { plugin: './server/api/json' },
-    { plugin: './server/api/jsonp' },
     { plugin: './server/web/auth/github' },
     { plugin: './server/web/browse' },
     { plugin: './server/web/comment' },

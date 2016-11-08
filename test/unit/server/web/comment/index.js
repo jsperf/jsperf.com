@@ -1,16 +1,9 @@
-'use strict';
-
 const Lab = require('lab');
 const Code = require('code');
 const Hapi = require('hapi');
-const proxyquire = require('proxyquire');
 const sinon = require('sinon');
 
-const commentsServiceMock = {};
-
-const CommentPlugin = proxyquire('../../../../../server/web/comment', {
-  '../../services/comments': commentsServiceMock
-});
+const CommentPlugin = require('../../../../../server/web/comment');
 
 const cookiePass = 'password-should-be-32-characters';
 
@@ -22,6 +15,17 @@ const YarPlugin = {
 const AuthPlugin = {
   register: require('hapi-auth-cookie'),
   options: {}
+};
+
+const MockCommentService = {
+  register: (server, options, next) => {
+    server.expose('delete', function () {});
+    next();
+  }
+};
+
+MockCommentService.register.attributes = {
+  name: 'services/comments'
 };
 
 const lab = exports.lab = Lab.script();
@@ -38,7 +42,11 @@ lab.beforeEach(function (done) {
       password: cookiePass
     });
 
-    server.register([ YarPlugin, CommentPlugin ], done);
+    server.register([
+      YarPlugin,
+      MockCommentService,
+      CommentPlugin
+    ], done);
   });
 });
 
@@ -69,7 +77,7 @@ lab.experiment('comment', () => {
     });
 
     lab.test('if admin', (done) => {
-      commentsServiceMock.delete = s.stub().returns(Promise.resolve());
+      s.stub(server.plugins['services/comments'], 'delete').returns(Promise.resolve());
 
       server.route({
         method: 'GET',

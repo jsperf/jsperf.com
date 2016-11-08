@@ -1,21 +1,29 @@
-var path = require('path');
+const path = require('path');
 
-var Lab = require('lab');
-var Code = require('code');
-var Hapi = require('hapi');
-var proxyquire = require('proxyquire');
+const Lab = require('lab');
+const Code = require('code');
+const Hapi = require('hapi');
+const sinon = require('sinon');
 
-var pagesRepoStub = {};
+const BrowsePlugin = require('../../../../../server/web/browse/index');
 
-var BrowsePlugin = proxyquire('../../../../../server/web/browse/index', {
-  '../../repositories/pages': pagesRepoStub
-});
+const MockRepo = {
+  register: (server, options, next) => {
+    server.expose('getLatestVisible', function () {});
+    server.expose('getLatestVisibleForAuthor', function () {});
+    next();
+  }
+};
 
-var lab = exports.lab = Lab.script();
-var request, server;
+MockRepo.register.attributes = {
+  name: 'repositories/pages'
+};
+
+const lab = exports.lab = Lab.script();
+let request, server, getLatestVisibleStub, getLatestVisibleForAuthorStub;
 
 lab.beforeEach(function (done) {
-  var plugins = [ BrowsePlugin ];
+  const plugins = [ MockRepo, BrowsePlugin ];
   server = new Hapi.Server();
   server.connection();
   server.register(require('vision'), () => {
@@ -29,7 +37,14 @@ lab.beforeEach(function (done) {
       partialsPath: 'templates/partials',
       relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
     });
-    server.register(plugins, done);
+    server.register(plugins, (err) => {
+      if (err) return done(err);
+
+      getLatestVisibleStub = sinon.stub(server.plugins['repositories/pages'], 'getLatestVisible');
+      getLatestVisibleForAuthorStub = sinon.stub(server.plugins['repositories/pages'], 'getLatestVisibleForAuthor');
+
+      done();
+    });
   });
 });
 
@@ -45,9 +60,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with the browse page', function (done) {
-      pagesRepoStub.getLatestVisible = function (cnt) {
-        return Promise.resolve([]);
-      };
+      getLatestVisibleStub.returns(Promise.resolve([]));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
@@ -57,9 +70,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with generic error', function (done) {
-      pagesRepoStub.getLatestVisible = function (cnt) {
-        return Promise.reject(new Error());
-      };
+      getLatestVisibleStub.returns(Promise.reject(new Error()));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
@@ -80,15 +91,12 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with atom feed', function (done) {
-      pagesRepoStub.getLatestVisible = function (cnt) {
-        var d = new Date();
-        return Promise.resolve([
-          {
-            updated: d,
-            published: d
-          }
-        ]);
-      };
+      getLatestVisibleStub.returns(Promise.resolve([
+        {
+          updated: new Date(),
+          published: new Date()
+        }
+      ]));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
@@ -100,9 +108,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with empty atom feed', function (done) {
-      pagesRepoStub.getLatestVisible = function (cnt) {
-        return Promise.resolve([]);
-      };
+      getLatestVisibleStub.returns(Promise.resolve([]));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
@@ -114,9 +120,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with generic error', function (done) {
-      pagesRepoStub.getLatestVisible = function (cnt) {
-        return Promise.reject(new Error());
-      };
+      getLatestVisibleStub.returns(Promise.reject(new Error()));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(500);
@@ -138,17 +142,14 @@ lab.experiment('browse', function () {
 
     lab.test('it responds with the browse page', function (done) {
       var testTitle = 'My First Test';
-      pagesRepoStub.getLatestVisibleForAuthor = function (author) {
-        var d = new Date();
-        return Promise.resolve([{
-          updated: d,
-          published: d,
-          title: testTitle,
-          testCount: 1,
-          revision: 1,
-          revisionCount: 1
-        }]);
-      };
+      getLatestVisibleForAuthorStub.returns(Promise.resolve([{
+        updated: new Date(),
+        published: new Date(),
+        title: testTitle,
+        testCount: 1,
+        revision: 1,
+        revisionCount: 1
+      }]));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
@@ -159,10 +160,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with not found if no results for author', function (done) {
-      pagesRepoStub.getLatestVisibleForAuthor = function (autor) {
-        return Promise.resolve([]);
-      };
-
+      getLatestVisibleForAuthorStub.returns(Promise.resolve([]));
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(404);
 
@@ -171,9 +169,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with generic error', function (done) {
-      pagesRepoStub.getLatestVisibleForAuthor = function (author) {
-        return Promise.reject(new Error());
-      };
+      getLatestVisibleForAuthorStub.returns(Promise.reject(new Error()));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(500);
@@ -194,15 +190,12 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with atom feed', function (done) {
-      pagesRepoStub.getLatestVisibleForAuthor = function (author) {
-        var d = new Date();
-        return Promise.resolve([
-          {
-            updated: d,
-            published: d
-          }
-        ]);
-      };
+      getLatestVisibleForAuthorStub.returns(Promise.resolve([
+        {
+          updated: new Date(),
+          published: new Date()
+        }
+      ]));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
@@ -214,9 +207,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with empty atom feed', function (done) {
-      pagesRepoStub.getLatestVisibleForAuthor = function (author) {
-        return Promise.resolve([]);
-      };
+      getLatestVisibleForAuthorStub.returns(Promise.resolve([]));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
@@ -228,9 +219,7 @@ lab.experiment('browse', function () {
     });
 
     lab.test('it responds with generic error', function (done) {
-      pagesRepoStub.getLatestVisibleForAuthor = function (author) {
-        return Promise.reject(new Error());
-      };
+      getLatestVisibleForAuthorStub.returns(Promise.reject(new Error()));
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(500);

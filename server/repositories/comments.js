@@ -1,29 +1,33 @@
-// TODO make hapi plugin
-const debug = require('debug')('jsperf:repositories:comments');
-const db = require('../lib/db');
-
+const name = 'repositories/comments';
 const table = 'comments';
 
-module.exports = {
-  findByPageID: function (pageID) {
-    debug('findByPageID', arguments);
+exports.register = function (server, options, next) {
+  server.expose('findByPageID', function (pageID) {
+    server.log(['debug'], `${name}::findByPageID: ${JSON.stringify(arguments)}`);
 
-    return db.genericQuery(
+    return server.plugins.db.genericQuery(
       'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
       [table, pageID]
     );
-  },
+  });
 
-  create: function (payload) {
-    debug('create', arguments);
+  server.expose('create', function (payload) {
+    server.log(['debug'], `${name}::create: ${JSON.stringify(arguments)}`);
 
-    return db.genericQuery('INSERT INTO ?? SET ?', [table, payload])
+    return server.plugins.db.genericQuery('INSERT INTO ?? SET ?', [table, payload])
       .then(result => result.insertId);
-  },
+  });
 
-  delete: function (commentId) {
-    debug('delete', arguments);
+  server.expose('delete', function (commentId) {
+    server.log(['debug'], `${name}::delete: ${JSON.stringify(arguments)}`);
 
-    return db.genericQuery('DELETE FROM ?? WHERE id = ?', [table, commentId]);
-  }
+    return server.plugins.db.genericQuery('DELETE FROM ?? WHERE id = ?', [table, commentId]);
+  });
+
+  return next();
+};
+
+exports.register.attributes = {
+  name,
+  dependencies: ['db']
 };

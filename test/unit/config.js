@@ -1,13 +1,14 @@
-var Lab = require('lab');
-var Code = require('code');
-var Proxyquire = require('proxyquire');
-var Config = Proxyquire('../../config', {
-  './lib/config': {
-    normalizeDomain: function () {}
+const Lab = require('lab');
+const Code = require('code');
+const Proxyquire = require('proxyquire').noPreserveCache();
+
+const Config = Proxyquire('../../config', {
+  'joi': {
+    validate: () => ({})
   }
 });
 
-var lab = exports.lab = Lab.script();
+const lab = exports.lab = Lab.script();
 
 lab.experiment('Config', function () {
   lab.test('it gets config data', function (done) {
@@ -40,5 +41,25 @@ lab.experiment('Config', function () {
       Code.expect(Config.get('/auth/session/secure', {scheme: 'https'})).to.equal(true);
       done();
     });
+  });
+
+  lab.test('validates process.env', (done) => {
+    Code.expect(function () {
+      Proxyquire('../../config', {
+        'joi': {
+          validate: () => ({
+            error: {
+              details: [
+                {
+                  path: 'TESTING'
+                }
+              ]
+            }
+          })
+        }
+      });
+    }).to.throw(Error);
+
+    done();
   });
 });
