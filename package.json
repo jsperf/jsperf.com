@@ -2,6 +2,9 @@
   "name": "jsperf.com",
   "version": "2.0.0",
   "description": "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
+  "engines": {
+    "node": "6.x.x"
+  },
   "scripts": {
     "build": "gulp",
     "lint": "lab -d -L",
