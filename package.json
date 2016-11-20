@@ -78,7 +78,7 @@
     "proxyquire": "1.4.0",
     "sinon": "1.17.6",
     "sinon-as-promised": "4.0.2",
-    "snyk": "1.19.1"
+    "snyk": "1.20.0"
   },
   "snyk": true
 }
