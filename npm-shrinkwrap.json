@@ -1445,9 +1445,9 @@
       "resolved": "https://registry.npmjs.org/good-loggly/-/good-loggly-3.1.0.tgz"
     },
     "good-squeeze": {
-      "version": "5.0.0",
-      "from": "good-squeeze@5.0.0",
-      "resolved": "https://registry.npmjs.org/good-squeeze/-/good-squeeze-5.0.0.tgz"
+      "version": "5.0.1",
+      "from": "good-squeeze@5.0.1",
+      "resolved": "https://registry.npmjs.org/good-squeeze/-/good-squeeze-5.0.1.tgz"
     },
     "got": {
       "version": "5.7.1",
@@ -1798,9 +1798,9 @@
       "dev": true
     },
     "handlebars": {
-      "version": "4.0.5",
-      "from": "handlebars@4.0.5",
-      "resolved": "https://registry.npmjs.org/handlebars/-/handlebars-4.0.5.tgz"
+      "version": "4.0.6",
+      "from": "handlebars@4.0.6",
+      "resolved": "https://registry.npmjs.org/handlebars/-/handlebars-4.0.6.tgz"
     },
     "hapi": {
       "version": "15.2.0",
