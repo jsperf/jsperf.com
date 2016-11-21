@@ -234,7 +234,14 @@
     "bell": {
       "version": "8.3.0",
       "from": "bell@8.3.0",
-      "resolved": "https://registry.npmjs.org/bell/-/bell-8.3.0.tgz"
+      "resolved": "https://registry.npmjs.org/bell/-/bell-8.3.0.tgz",
+      "dependencies": {
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
+        }
+      }
     },
     "benchmark": {
       "version": "2.1.2",
@@ -443,6 +450,11 @@
           "version": "3.2.2",
           "from": "boom@>=3.0.0 <4.0.0",
           "resolved": "https://registry.npmjs.org/boom/-/boom-3.2.2.tgz"
+        },
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
         }
       }
     },
@@ -1420,7 +1432,14 @@
     "glue": {
       "version": "4.0.0",
       "from": "glue@4.0.0",
-      "resolved": "https://registry.npmjs.org/glue/-/glue-4.0.0.tgz"
+      "resolved": "https://registry.npmjs.org/glue/-/glue-4.0.0.tgz",
+      "dependencies": {
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
+        }
+      }
     },
     "good": {
       "version": "7.0.2",
@@ -1817,7 +1836,14 @@
     "hapi": {
       "version": "15.2.0",
       "from": "hapi@15.2.0",
-      "resolved": "https://registry.npmjs.org/hapi/-/hapi-15.2.0.tgz"
+      "resolved": "https://registry.npmjs.org/hapi/-/hapi-15.2.0.tgz",
+      "dependencies": {
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
+        }
+      }
     },
     "hapi-auth-cookie": {
       "version": "6.1.1",
@@ -1936,6 +1962,11 @@
           "version": "3.2.2",
           "from": "boom@>=3.0.0 <4.0.0",
           "resolved": "https://registry.npmjs.org/boom/-/boom-3.2.2.tgz"
+        },
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
         }
       }
     },
@@ -2280,9 +2311,9 @@
       "optional": true
     },
     "joi": {
-      "version": "9.2.0",
-      "from": "joi@9.2.0",
-      "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
+      "version": "10.0.1",
+      "from": "joi@10.0.1",
+      "resolved": "https://registry.npmjs.org/joi/-/joi-10.0.1.tgz"
     },
     "js-tokens": {
       "version": "2.0.0",
@@ -3149,7 +3180,14 @@
     "podium": {
       "version": "1.2.3",
       "from": "podium@>=1.2.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/podium/-/podium-1.2.3.tgz"
+      "resolved": "https://registry.npmjs.org/podium/-/podium-1.2.3.tgz",
+      "dependencies": {
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
+        }
+      }
     },
     "prelude-ls": {
       "version": "1.1.2",
@@ -3499,7 +3537,14 @@
     "shot": {
       "version": "3.3.2",
       "from": "shot@>=3.0.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/shot/-/shot-3.3.2.tgz"
+      "resolved": "https://registry.npmjs.org/shot/-/shot-3.3.2.tgz",
+      "dependencies": {
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
+        }
+      }
     },
     "sigmund": {
       "version": "1.0.1",
@@ -3723,6 +3768,11 @@
           "version": "3.2.2",
           "from": "boom@>=3.0.0 <4.0.0",
           "resolved": "https://registry.npmjs.org/boom/-/boom-3.2.2.tgz"
+        },
+        "joi": {
+          "version": "9.2.0",
+          "from": "joi@>=9.0.0 <10.0.0",
+          "resolved": "https://registry.npmjs.org/joi/-/joi-9.2.0.tgz"
         }
       }
     },
