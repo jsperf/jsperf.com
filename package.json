@@ -59,7 +59,7 @@
   "devDependencies": {
     "benchmark": "2.1.2",
     "cheerio": "0.22.0",
-    "code": "3.0.2",
+    "code": "4.0.0",
     "eslint-config-semistandard": "7.0.0",
     "eslint-config-standard": "6.1.0",
     "eslint-plugin-promise": "3.2.1",
