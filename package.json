@@ -54,7 +54,7 @@
     "umzug": "1.11.0",
     "vision": "4.1.0",
     "visionary": "6.0.1",
-    "yar": "8.1.0"
+    "yar": "8.1.1"
   },
   "devDependencies": {
     "benchmark": "2.1.2",
