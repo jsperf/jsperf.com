@@ -578,9 +578,9 @@
       "dev": true
     },
     "code": {
-      "version": "3.0.2",
-      "from": "code@3.0.2",
-      "resolved": "https://registry.npmjs.org/code/-/code-3.0.2.tgz",
+      "version": "4.0.0",
+      "from": "code@>=4.0.0 <5.0.0",
+      "resolved": "https://registry.npmjs.org/code/-/code-4.0.0.tgz",
       "dev": true
     },
     "code-point-at": {
