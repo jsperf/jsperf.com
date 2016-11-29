@@ -578,9 +578,9 @@
       "dev": true
     },
     "code": {
-      "version": "3.0.2",
-      "from": "code@3.0.2",
-      "resolved": "https://registry.npmjs.org/code/-/code-3.0.2.tgz",
+      "version": "4.0.0",
+      "from": "code@>=4.0.0 <5.0.0",
+      "resolved": "https://registry.npmjs.org/code/-/code-4.0.0.tgz",
       "dev": true
     },
     "code-point-at": {
@@ -2021,21 +2021,9 @@
       "dev": true
     },
     "inert": {
-      "version": "4.0.1",
-      "from": "inert@4.0.1",
-      "resolved": "https://registry.npmjs.org/inert/-/inert-4.0.1.tgz",
-      "dependencies": {
-        "boom": {
-          "version": "3.2.2",
-          "from": "boom@>=3.0.0 <4.0.0",
-          "resolved": "https://registry.npmjs.org/boom/-/boom-3.2.2.tgz"
-        },
-        "joi": {
-          "version": "8.4.2",
-          "from": "joi@>=8.0.0 <9.0.0",
-          "resolved": "https://registry.npmjs.org/joi/-/joi-8.4.2.tgz"
-        }
-      }
+      "version": "4.0.3",
+      "from": "inert@4.0.3",
+      "resolved": "https://registry.npmjs.org/inert/-/inert-4.0.3.tgz"
     },
     "infinity-agent": {
       "version": "2.0.3",
@@ -4298,40 +4286,9 @@
       "resolved": "https://registry.npmjs.org/vise/-/vise-2.0.2.tgz"
     },
     "vision": {
-      "version": "4.1.0",
-      "from": "vision@4.1.0",
-      "resolved": "https://registry.npmjs.org/vision/-/vision-4.1.0.tgz",
-      "dependencies": {
-        "boom": {
-          "version": "3.2.2",
-          "from": "boom@>=3.0.0 <4.0.0",
-          "resolved": "https://registry.npmjs.org/boom/-/boom-3.2.2.tgz",
-          "dependencies": {
-            "hoek": {
-              "version": "4.1.0",
-              "from": "hoek@4.x.x",
-              "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.1.0.tgz"
-            }
-          }
-        },
-        "hoek": {
-          "version": "3.0.4",
-          "from": "hoek@>=3.0.0 <4.0.0",
-          "resolved": "https://registry.npmjs.org/hoek/-/hoek-3.0.4.tgz"
-        },
-        "joi": {
-          "version": "8.4.2",
-          "from": "joi@>=8.0.0 <9.0.0",
-          "resolved": "https://registry.npmjs.org/joi/-/joi-8.4.2.tgz",
-          "dependencies": {
-            "hoek": {
-              "version": "4.1.0",
-              "from": "hoek@4.x.x",
-              "resolved": "https://registry.npmjs.org/hoek/-/hoek-4.1.0.tgz"
-            }
-          }
-        }
-      }
+      "version": "4.1.1",
+      "from": "vision@4.1.1",
+      "resolved": "https://registry.npmjs.org/vision/-/vision-4.1.1.tgz"
     },
     "visionary": {
       "version": "6.0.1",
@@ -4454,9 +4411,16 @@
       "resolved": "https://registry.npmjs.org/yallist/-/yallist-2.0.0.tgz"
     },
     "yar": {
-      "version": "8.1.0",
-      "from": "yar@8.1.0",
-      "resolved": "https://registry.npmjs.org/yar/-/yar-8.1.0.tgz"
+      "version": "8.1.1",
+      "from": "yar@8.1.1",
+      "resolved": "https://registry.npmjs.org/yar/-/yar-8.1.1.tgz",
+      "dependencies": {
+        "uuid": {
+          "version": "3.0.1",
+          "from": "uuid@>=3.0.0 <4.0.0",
+          "resolved": "https://registry.npmjs.org/uuid/-/uuid-3.0.1.tgz"
+        }
+      }
     },
     "yargs": {
       "version": "3.10.0",
