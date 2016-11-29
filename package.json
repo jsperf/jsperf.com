@@ -43,7 +43,7 @@
     "hapi-qs": "1.1.1",
     "highlight.js": "^9.8.0",
     "hoek": "4.1.0",
-    "inert": "4.0.1",
+    "inert": "^4.0.3",
     "joi": "^10.0.1",
     "jsesc": "2.2.0",
     "lodash.assign": "4.2.0",
@@ -52,9 +52,9 @@
     "mysql": "^2.12.0",
     "scooter": "4.0.0",
     "umzug": "1.11.0",
-    "vision": "4.1.0",
+    "vision": "^4.1.1",
     "visionary": "6.0.1",
-    "yar": "8.1.0"
+    "yar": "^8.1.1"
   },
   "devDependencies": {
     "benchmark": "2.1.2",
