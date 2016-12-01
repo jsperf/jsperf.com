@@ -38,7 +38,7 @@
     "good-loggly": "3.1.0",
     "good-squeeze": "^5.0.1",
     "handlebars": "^4.0.6",
-    "hapi": "15.2.0",
+    "hapi": "16.0.1",
     "hapi-auth-cookie": "6.1.1",
     "hapi-qs": "1.1.1",
     "highlight.js": "^9.8.0",
