@@ -45,7 +45,7 @@
     "hoek": "4.1.0",
     "inert": "^4.0.3",
     "joi": "^10.0.1",
-    "jsesc": "2.2.0",
+    "jsesc": "^2.3.0",
     "lodash.assign": "4.2.0",
     "lodash.omit": "4.5.0",
     "marked": "0.3.6",

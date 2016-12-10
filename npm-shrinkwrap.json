@@ -2322,9 +2322,9 @@
       "optional": true
     },
     "jsesc": {
-      "version": "2.2.0",
-      "from": "jsesc@2.2.0",
-      "resolved": "https://registry.npmjs.org/jsesc/-/jsesc-2.2.0.tgz"
+      "version": "2.3.0",
+      "from": "jsesc@2.3.0",
+      "resolved": "https://registry.npmjs.org/jsesc/-/jsesc-2.3.0.tgz"
     },
     "json-schema": {
       "version": "0.2.3",
