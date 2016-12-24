@@ -337,12 +337,12 @@ footer {
 
 footer ul {
 	list-style: none;
-  padding: 0;
+	padding: 0;
   margin: 0;
 }
 
 footer > ul > li {
-  float: left;
+	float: left;
 	width: 15%;
 }
 
