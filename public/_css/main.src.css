@@ -33,13 +33,24 @@ body {
 	min-height: 100%;
 }
 
-a {
+a, .btn-link {
 	color: #357ab0;
 	padding: .2em;
 }
 
-a:hover, a:focus {
+a:hover, a:focus,
+.btn-link:hover, .btn-link:focus {
 	text-decoration: none;
+}
+
+.btn-link {
+	background-color: transparent;
+	border: 0;
+	text-decoration: underline;
+}
+
+.btn-link:hover, .btn-link:focus {
+	cursor: pointer;
 }
 
 blockquote {
@@ -53,7 +64,7 @@ table {
 	border-collapse: collapse;
 }
 
-thead th, button:hover, button:focus, .submit:hover, .submit:focus, a:hover, a:focus, #comments .meta a:hover, #comments .meta a:focus, li.current a:hover, li.current a:focus, form h3, #comments .owner .meta {
+thead th, button:hover, button:focus, .submit:hover, .submit:focus, a:hover, a:focus, .btn-link:hover, .btn-link:focus, #comments .meta a:hover, #comments .meta a:focus, li.current a:hover, li.current a:focus, form h3, #comments .owner .meta {
 	background: #1a6ab9;
 	background-image: -moz-linear-gradient(top, #6ca5dd, #1a6ab9);
 	background-image: -o-linear-gradient(top, #6ca5dd, #1a6ab9);
@@ -317,27 +328,34 @@ li.current a {
 	background: #90ee85;
 }
 
-#donate {
-	display: block;
-	background: #ffffdc;
-	border: 1px solid #faa700;
-	padding: 1em;
-}
-
-#donate h1 {
-	padding-top: 0;
-	font-size: 16px;
-}
-
-#paypal {
-	text-align: center;
-}
-
 footer {
 	display: block;
 	margin-top: 2em;
-	padding: .5em 0 1.5em;
 	border-top: 2px solid #c4c4c4;
+	font-size: 0.9em;
+}
+
+footer ul {
+	list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+footer > ul > li {
+  float: left;
+	width: 15%;
+}
+
+footer > ul > li:first-child {
+	width: 55%;
+}
+
+footer ul ul li {
+    margin-bottom: 0.1em;
+}
+
+footer h4 {
+    margin-bottom: 0.2em;
 }
 
 #add-test {

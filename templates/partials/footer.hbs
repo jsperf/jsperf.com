@@ -1,31 +1,72 @@
   </article>
 
   <footer>
-    <a href="/">Add test</a> &middot;
+    <ul>
+      <li>
+        <h4>Sponsors</h4>
+        <p>Hosting generously provided by <a href="https://m.do.co/c/b426e15331e8" target="_blank">DigitalOcean</a> and <a href="https://zeit.co/" target="_blank">Zeit</a></p>
 
-    {{!-- TODO: this is never added to the context, but set on session after test added
-    https://github.com/mtharrison/hapi-context-credentials/blob/master/index.js
-    --}}
-    {{#if authorSlug}}
-      <a href="/browse/{{authorSlug}}">My tests</a> &middot;
-    {{/if}}
+        <p><a href="/sponsor">Learn how to become a sponsor</a></p>
+      </li>
 
-    <a href="/browse">Latest</a> &middot;
+      <li>
+        <h4>Tests</h4>
+        <ul>
+          <li>
+            <a href="/">Add</a>
+          </li>
 
-    <a href="/popular">Popular</a> &middot;
+            {{!-- TODO: this is never added to the context, but set on session after test added
+            https://github.com/mtharrison/hapi-context-credentials/blob/master/index.js
+            --}}
+            {{#if authorSlug}}
+              <li>
+                <a href="/browse/{{authorSlug}}">My tests</a> &middot;
+              </li>
+            {{/if}}
 
-    <a href="/faq">FAQ</a> &middot;
+          <li>
+            <a href="/browse">Latest</a>
+          </li>
+          <li>
+            <a href="/popular">Popular</a>
+          </li>
+        </ul>
+      </li>
 
-    <a href="/faq#donate">Donate</a> &middot;
+      <li>
+        <h4>Info</h4>
+        <ul>
+          <li>
+            <a href="/faq">FAQ</a>
+          </li>
+          <li>
+            <a href="/testimonials">Testimonials</a>
+          </li>
+          <li>
+            <a href="/contributors">Contributors</a>
+          </li>
+          <li>
+            <a href="https://benchmarkjs.com/">Benchmark.js</a>
+          </li>
+        </ul>
+      </li>
 
-    <a href="https://twitter.com/jsperf" rel="nofollow">twitter: @jsperf</a> &middot;
-
-    <a href="https://github.com/jsperf/jsperf.com">source on GitHub</a> &middot;
-
-    <a href="https://benchmarkjs.com/">Benchmark.js</a> &middot;
-
-    by <a href="https://mathiasbynens.be/">@mathias</a> and <a href="/contributors">contributors</a>
-
+      <li>
+        <h4>Contact</h4>
+        <ul>
+          <li>
+            <a href="https://twitter.com/jsperf" target="_blank">Twitter</a>
+          </li>
+          <li>
+            <a href="https://github.com/jsperf/jsperf.com" target="_blank">GitHub</a>
+          </li>
+          <li>
+            <a href="https://webchat.freenode.net/?channels=jsperf" target="_blank">IRC</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
   </footer>
 
   {{#if benchmark}}

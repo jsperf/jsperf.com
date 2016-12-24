@@ -10,6 +10,8 @@ const insert = require('gulp-insert');
 const remoteSrc = require('gulp-remote-src');
 const replace = require('gulp-replace');
 // const uglify = require('gulp-uglify');
+const cleanCSS = require('gulp-clean-css');
+const rename = require('gulp-rename');
 
 const BENCHMARKJS_VERSION = require('./package.json').devDependencies.benchmark;
 
@@ -84,4 +86,13 @@ gulp.task('js', function () {
   .pipe(gulp.dest('./public/_js/'));
 });
 
-gulp.task('default', ['js']);
+gulp.task('css', function () {
+  return gulp.src('public/_css/main.src.css')
+    .pipe(cleanCSS({
+      rebase: false
+    }))
+    .pipe(rename('main.css'))
+    .pipe(gulp.dest('public/_css/'));
+});
+
+gulp.task('default', ['js', 'css']);
