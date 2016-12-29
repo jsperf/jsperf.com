@@ -26,7 +26,7 @@ exports.register = function (server, options, next) {
       redirect: '/removechildren/3'
     }, {
       path: '/donate',
-      redirect: '/faq#donate'
+      redirect: '/sponsor'
     }
   ];
 

@@ -165,7 +165,9 @@ var manifest = {
     { plugin: './server/web/redirects' },
     { plugin: './server/web/search' },
     { plugin: './server/web/sitemap/xml' },
+    { plugin: './server/web/sponsor' },
     { plugin: './server/web/test' },
+    { plugin: './server/web/testimonials' },
     { plugin: './server/web/edit' },
     { plugin: './server/web/delete' }
   ]

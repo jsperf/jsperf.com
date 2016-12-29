@@ -39,7 +39,7 @@ lab.experiment('redirects', function () {
 
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(301);
-      Code.expect(response.headers.location).to.equal('/faq#donate');
+      Code.expect(response.headers.location).to.equal('/sponsor');
 
       done();
     });
