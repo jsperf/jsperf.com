@@ -34,7 +34,9 @@ exports.register = function (server, options, next) {
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
       .then(function (testKey) {
         var page = _omit(payload, 'test');
-        page.browserscopeID = testKey;
+        if (testKey) {
+          page.browserscopeID = testKey;
+        }
         page.published = new Date();
 
         return pagesRepo.create(page);
@@ -49,7 +51,9 @@ exports.register = function (server, options, next) {
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, newRev)
       .then(testKey => {
         let page = _omit(payload, 'test');
-        page.browserscopeID = testKey;
+        if (testKey) {
+          page.browserscopeID = testKey;
+        }
         if (isOwn) {
           return pagesRepo.updateById(page, pageId);
         } else {
@@ -109,13 +113,15 @@ exports.register = function (server, options, next) {
 
           browserscopeRepo.addTest(page.title, page.info, s)
             .then(function (testKey) {
-              page.browserscopeID = testKey;
-              return pagesRepo.update({ browserscopeID: testKey }, { id: page.id });
-            })
-            .then(function () {
-              resolve();
-            })
-            .catch(reject);
+              if (testKey) {
+                page.browserscopeID = testKey;
+                pagesRepo.update({ browserscopeID: testKey }, { id: page.id })
+                .then(resolve)
+                .catch(reject);
+              } else {
+                resolve();
+              }
+            });
         });
       })
       .then(function () {

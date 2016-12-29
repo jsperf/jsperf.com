@@ -22,10 +22,14 @@ exports.register = function (server, options, next) {
           try {
             resolve(JSON.parse(str).test_key);
           } catch (e) {
-            reject(new Error('Unexpected response from browserscope.org'));
+            server.log('error', e);
+            resolve();
           }
         });
-      }).on('error', reject);
+      }).on('error', function (e) {
+        server.log('error', e);
+        resolve();
+      });
     });
   });
 
