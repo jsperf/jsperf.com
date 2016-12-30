@@ -18669,9 +18669,9 @@
      */
     var cloneDeep = _.partial(_.cloneDeepWith, _, function(value) {
       // Only clone primitives, arrays, and plain objects.
-      if (!_.isArray(value) && !_.isPlainObject(value)) {
-        return value;
-      }
+      return (_.isObject(value) && !_.isArray(value) && !_.isPlainObject(value))
+        ? value
+        : undefined;
     });
 
     /**
@@ -19266,7 +19266,7 @@
       // Copy own properties.
       _.forOwn(suite, function(value, key) {
         if (!_.has(result, key)) {
-          result[key] = _.isFunction(_.get(value, 'clone'))
+          result[key] = value && _.isFunction(value.clone)
             ? value.clone()
             : cloneDeep(value);
         }
@@ -19643,28 +19643,26 @@
               destination = data.destination,
               currValue = destination[key];
 
-          // Skip pseudo private properties and event listeners.
-          if (/^_|^events$|^on[A-Z]/.test(key)) {
+          // Skip pseudo private properties like `_timerId` which could be a
+          // Java object in environments like RingoJS.
+          if (key.charAt(0) == '_') {
             return;
           }
-          if (_.isObjectLike(value)) {
+          if (value && typeof value == 'object') {
             if (_.isArray(value)) {
               // Check if an array value has changed to a non-array value.
               if (!_.isArray(currValue)) {
-                changed = true;
-                currValue = [];
+                changed = currValue = [];
               }
               // Check if an array has changed its length.
               if (currValue.length != value.length) {
-                changed = true;
-                currValue = currValue.slice(0, value.length);
+                changed = currValue = currValue.slice(0, value.length);
                 currValue.length = value.length;
               }
             }
             // Check if an object has changed to a non-object value.
-            else if (!_.isObjectLike(currValue)) {
-              changed = true;
-              currValue = {};
+            else if (!currValue || typeof currValue != 'object') {
+              changed = currValue = {};
             }
             // Register a changed object.
             if (changed) {
@@ -19673,7 +19671,7 @@
             queue.push({ 'destination': currValue, 'source': value });
           }
           // Register a changed primitive.
-          else if (!_.eq(currValue, value) && value !== undefined) {
+          else if (value !== currValue && !(value == null || _.isFunction(value))) {
             changes.push({ 'destination': destination, 'key': key, 'value': value });
           }
         });
@@ -19681,8 +19679,7 @@
       while ((data = queue[index++]));
 
       // If changed emit the `reset` event and if it isn't cancelled reset the benchmark.
-      if (changes.length &&
-          (bench.emit(event = Event('reset')), !event.cancelled)) {
+      if (changes.length && (bench.emit(event = Event('reset')), !event.cancelled)) {
         _.each(changes, function(data) {
           data.destination[data.key] = data.value;
         });
@@ -20469,7 +20466,7 @@
        * @memberOf Benchmark
        * @type string
        */
-      'version': '2.1.3'
+      'version': '2.1.2'
     });
 
     _.assign(Benchmark, {

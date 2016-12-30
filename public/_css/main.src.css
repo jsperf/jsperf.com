@@ -333,6 +333,7 @@ footer {
 	margin-top: 2em;
 	border-top: 2px solid #c4c4c4;
 	font-size: 0.9em;
+	overflow: hidden;
 }
 
 footer ul {

@@ -227,20 +227,14 @@ lab.experiment('Pages Service', function () {
       done();
     });
 
-    lab.test('returns error if browserscope fails to add test', function (done) {
-      var testErrMsg = 'testing';
-      var testErr = new Error(testErrMsg);
-
-      bsRepoStub.addTest.returns(Promise.reject(testErr));
+    lab.test('keeps rolling if browserscope fails to add test', function (done) {
+      bsRepoStub.addTest.returns(Promise.resolve());
+      pagesRepoStub.create.returns(Promise.resolve());
+      testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.create(payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
-        Code.expect(pagesRepoStub.create.called).to.be.false();
-
-        done();
-      });
+      .then(done)
+      .catch(done);
     });
 
     lab.test('returns error if page fails to create', function (done) {
@@ -266,9 +260,7 @@ lab.experiment('Pages Service', function () {
       var testErr = new Error(testErrMsg);
 
       bsRepoStub.addTest.returns(Promise.resolve());
-
       pagesRepoStub.create.returns(Promise.resolve());
-
       testsRepoStub.bulkCreate.returns(Promise.reject(testErr));
 
       pages.create(payload)
@@ -281,10 +273,8 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('adds browserscope test, page, and tests', function (done) {
-      bsRepoStub.addTest.returns(Promise.resolve());
-
+      bsRepoStub.addTest.returns(Promise.resolve('abc123'));
       pagesRepoStub.create.returns(Promise.resolve());
-
       testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.create(payload)
@@ -301,20 +291,14 @@ lab.experiment('Pages Service', function () {
       done();
     });
 
-    lab.test('returns error if browserscope fails to add test', function (done) {
-      var testErrMsg = 'testing';
-      var testErr = new Error(testErrMsg);
-
-      bsRepoStub.addTest.returns(Promise.reject(testErr));
+    lab.test('keeps rolling if browserscope fails to add test', function (done) {
+      bsRepoStub.addTest.returns(Promise.resolve());
+      pagesRepoStub.create.returns(Promise.resolve());
+      testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.edit(payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
-        Code.expect(pagesRepoStub.create.called).to.be.false();
-
-        done();
-      });
+      .then(done)
+      .catch(done);
     });
 
     lab.test('returns error if page fails to create', function (done) {
@@ -322,7 +306,6 @@ lab.experiment('Pages Service', function () {
       var testErr = new Error(testErrMsg);
 
       bsRepoStub.addTest.returns(Promise.resolve());
-
       pagesRepoStub.create.returns(Promise.reject(testErr));
 
       pages.edit(payload)
@@ -340,7 +323,6 @@ lab.experiment('Pages Service', function () {
       var testErr = new Error(testErrMsg);
 
       bsRepoStub.addTest.returns(Promise.resolve());
-
       pagesRepoStub.updateById.returns(Promise.reject(testErr));
 
       pages.edit(payload, true)
@@ -358,9 +340,7 @@ lab.experiment('Pages Service', function () {
       var testErr = new Error(testErrMsg);
 
       bsRepoStub.addTest.returns(Promise.resolve());
-
       pagesRepoStub.create.returns(Promise.resolve());
-
       testsRepoStub.bulkUpdate.returns(Promise.reject(testErr));
 
       pages.edit(payload)
@@ -373,10 +353,8 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('adds browserscope test, page, and tests', function (done) {
-      bsRepoStub.addTest.returns(Promise.resolve());
-
+      bsRepoStub.addTest.returns(Promise.resolve('abc123'));
       pagesRepoStub.create.returns(Promise.resolve());
-
       testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.edit(payload)
@@ -384,10 +362,8 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('edits browserscope test, page, and tests', function (done) {
-      bsRepoStub.addTest.returns(Promise.resolve());
-
+      bsRepoStub.addTest.returns(Promise.resolve('abc123'));
       pagesRepoStub.updateById.returns(Promise.resolve());
-
       testsRepoStub.bulkUpdate.returns(Promise.resolve());
 
       pages.edit(payload, true)
@@ -395,10 +371,8 @@ lab.experiment('Pages Service', function () {
     });
 
     lab.test('edits page by calling pageRepo.updateById', function (done) {
-      bsRepoStub.addTest.returns(Promise.resolve());
-
+      bsRepoStub.addTest.returns(Promise.resolve('abc123'));
       pagesRepoStub.updateById.returns(Promise.resolve());
-
       testsRepoStub.bulkUpdate.returns(Promise.resolve());
 
       pages.edit({id: 222}, true, 1, 123)
@@ -509,19 +483,19 @@ lab.experiment('Pages Service', function () {
       });
     });
 
-    lab.test('rejects with error from adding browserscope test', function (done) {
-      var testErrMsg = 'testing';
-      var testErr = new Error(testErrMsg);
+    lab.test('keeps rolling without browserscopeID', function (done) {
       pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1 }]));
-      bsRepoStub.addTest.returns(Promise.reject(testErr));
+      bsRepoStub.addTest.returns(Promise.resolve());
+      testsRepoStub.findByPageID.returns(Promise.resolve([]));
+      pagesRepoStub.findBySlug.returns(Promise.resolve([]));
+      commentsRepoStub.findByPageID.returns(Promise.resolve([]));
 
       pages.getBySlug(slug, rev)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
-
+      .then(function (values) {
+        Code.expect(values).to.be.array();
         done();
-      });
+      })
+      .catch(done);
     });
 
     lab.test('rejects with error from updating browserscopeID of page', function (done) {

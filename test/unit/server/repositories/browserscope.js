@@ -48,8 +48,8 @@ lab.experiment('Browserscope Repository', function () {
     });
 
     lab.test('returns a test key', function (done) {
-      var testKey = 123;
-      var testResp = JSON.stringify({ 'test_key': testKey });
+      const testKey = 123;
+      const testResp = JSON.stringify({ 'test_key': testKey });
 
       browserscope.addTest('My Test', 'is great', 'great-test')
       .then(function (key) {
@@ -63,29 +63,26 @@ lab.experiment('Browserscope Repository', function () {
       Code.expect(emitter.emit('end')).to.be.true();
     });
 
-    lab.test('returns an error when response is wrong', function (done) {
+    lab.test('resolves when response is wrong', function (done) {
+      const testResp = 'Unexpected response';
+
+      // error from unexpected response will be logged
       browserscope.addTest('My Test', 'is great', 'great-test')
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.include('Unexpected response');
+      .then(done)
+      .catch(done);
 
-        done();
-      });
-
-      emitter.emit('end');
+      // verify event has listener
+      Code.expect(emitter.emit('data', testResp)).to.be.true();
+      Code.expect(emitter.emit('end')).to.be.true();
     });
 
-    lab.test('returns an error when anything else goes wrong', function (done) {
+    lab.test('resolves when anything else goes wrong', function (done) {
       var testErrMsg = 'testing';
       var testErr = new Error(testErrMsg);
 
+      // error will be logged
       browserscope.addTest('My Test', 'is great', 'great-test')
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
-
-        done();
-      });
+      .then(done);
 
       // verify event has listener
       Code.expect(emitter.emit('error', testErr)).to.be.true();
