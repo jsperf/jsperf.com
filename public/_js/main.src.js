@@ -62,7 +62,6 @@ $(function() {
 	    testHTML = '<h4>Code snippet 1</h4><div><label for="test[1][title]">Title <em title="This field is required">*</em> </label><input type="text" name="test[1][title]" id="test[1][title]"></div><div><label for="test[1][defer]">Async </label><label class="inline"><input type="checkbox" value="y" name="test[1][defer]" id="test[1][defer]"> (check if this is an <a href="/faq#async">asynchronous test</a>)</label></div><div><label for="test[1][code]">Code <em title="This field is required">*</em> </label><textarea name="test[1][code]" class="code-js" id="test[1][code]" maxlength="16777215"></textarea></div></fieldset>',
 	    testCount = $('fieldset', $tests).length,
 	    $addTest = $('<button id="add-test" title="Add another code snippet to the test case">Add code snippet</button>').insertBefore('.submit'),
-	    $beautify = $('<button id="beautify" title="Beautify all code fields (HTML and JavaScript)">Beautify code</button>').insertBefore($addTest),
 	    $addjQuery = $('<button id="add-jquery" title="jQuery v1.x">jQuery</button>').addScript('jquery/1/jquery.min'),
 	    $addMooTools = $('<button id="add-mootools" title="MooTools v.1.3.x">MooTools</button>').addScript('mootools/1.3/mootools-yui-compressed'),
 	    $addYUI = $('<button id="add-yui" title="YUI v2.9.0">YUI</button>').addScript('yui/2.9.0/build/yuiloader/yuiloader-min'),
@@ -77,15 +76,6 @@ $(function() {
 	// http://jsperf.com/slugs
 	function sluggify(str) {
 		return str.toLowerCase().match(/[a-z0-9]+/ig).join('-');
-	}
-
-	function beautify(lang) {
-		var el = this,
-		    fn = lang == 'html' ? style_html : js_beautify;
-		el.value = fn(el.value, {
-			'indent_size': 2,
-			'indent_char': ' '
-		});
 	}
 
 	if (storage) {
@@ -142,13 +132,6 @@ $(function() {
 			$slug.data('x', x);
 		});
 	}
-
-	// Beautify
-	$beautify.click(function(event) {
-		$jsFields.add('.code-js').each(beautify);
-		beautify.call($initHTML[0], 'html');
-		event.preventDefault();
-	});
 });
 
 // http://mathiasbynens.be/notes/async-analytics-snippet
