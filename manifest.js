@@ -8,7 +8,7 @@ var criteria = {
 
 var visionaryContextDefault = {
   cssFile: 'main.css',
-  hljsCssVer: require('./package.json').dependencies['highlight.js'],
+  hljsCssVer: require('highlight.js/package.json').version,
   scheme: config.get('/scheme'),
   domain: config.get('/domain')
 };
