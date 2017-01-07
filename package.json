@@ -33,7 +33,7 @@
     "blipp": "2.3.0",
     "boom": "4.2.0",
     "confidence": "3.0.2",
-    "dotenv": "2.0.0",
+    "dotenv": "3.0.0",
     "glue": "4.1.0",
     "good": "^7.1.0",
     "good-console": "6.3.1",
