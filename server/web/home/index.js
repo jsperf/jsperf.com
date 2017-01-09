@@ -16,14 +16,15 @@ exports.register = function (server, options, next) {
       }
     },
     handler: function (request, reply) {
-      var authorized = false;
-
-      if (request.auth.isAuthenticated) {
-        authorized = true;
-      }
       reply.view('home/index', _assign({}, defaults.testPageContext, {
+        home: true,
+        showAtom: {
+          slug: 'browse'
+        },
+        jsClass: true,
+        mainJS: true,
         test: [defaults.test, defaults.test],
-        authorized: authorized
+        authorized: request.auth.isAuthenticated
       }));
     }
   });
@@ -39,7 +40,15 @@ exports.register = function (server, options, next) {
         if (errObj.message) {
           errObj.genError = errObj.message;
         }
-        reply.view('home/index', _assign({}, defaults.testPageContext, request.payload, {authorized: true}, errObj)).code(400);
+        reply.view('home/index', _assign({}, defaults.testPageContext, request.payload, {
+          home: true,
+          showAtom: {
+            slug: 'browse'
+          },
+          jsClass: true,
+          mainJS: true,
+          authorized: request.auth.isAuthenticated
+        }, errObj)).code(400);
       };
 
       Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {

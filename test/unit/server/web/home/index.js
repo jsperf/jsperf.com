@@ -104,6 +104,7 @@ lab.experiment('home', function () {
 
       server.inject(request, function (response) {
         Code.expect(response.result).to.include('Save test case');
+        Code.expect(response.payload).to.include('<script src="/public/_js/main.');
 
         done();
       });
