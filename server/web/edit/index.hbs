@@ -117,7 +117,7 @@ This edit will create a new revision.
       <h3>Code snippets to compare</h3>
       {{#each page.test}}
       <fieldset>
-        <h4>Test {{@index}}</h4>
+        <h4>Code snippet {{inc @index}}</h4>
         <div>
           <label for="test[{{@index}}][title]">Title </label>
           <input type="text" name="test[{{@index}}][title]" id="test[{{@index}}][title]" value="{{title}}">

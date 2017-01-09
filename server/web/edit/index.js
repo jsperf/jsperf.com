@@ -29,6 +29,7 @@ exports.register = function (server, options, next) {
           reply.view('edit/index', {
             headTitle: page.title,
             benchmark: false,
+            mainJS: true,
             showAtom: {
               slug: request.path.slice(1) // remove slash
             },
@@ -66,8 +67,14 @@ exports.register = function (server, options, next) {
         Hoek.merge(page, errObj);
         reply.view('edit/index', {
           headTitle: page.title,
+          benchmark: false,
+          mainJS: true,
+          showAtom: {
+            slug: request.path.slice(1) // remove slash
+          },
+          jsClass: true,
           page: page,
-          authorized: true
+          authorized: request.auth.isAuthenticated
         }).code(400);
       };
 

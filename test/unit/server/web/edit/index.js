@@ -127,6 +127,7 @@ lab.experiment('GET', function () {
     server.inject(request, function (response) {
       Code.expect(response.statusCode).to.equal(200);
       Code.expect(response.payload).to.include('<title>Oh Yea · jsPerf</title>');
+      Code.expect(response.payload).to.include('<script src="/public/_js/main.');
 
       done();
     });

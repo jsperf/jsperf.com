@@ -29,12 +29,6 @@ exports.test = {
 };
 
 exports.testPageContext = {
-  home: true,
-  showAtom: {
-    slug: 'browse'
-  },
-  jsClass: true,
-  mainJS: true,
   mediumTextLength: MEDIUM_TEXT_LENGTH,
   titleError: null,
   slugError: null,
