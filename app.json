@@ -1,0 +1,14 @@
+{
+  "name": "jsPerf",
+  "env": {
+
+  },
+  "addons": [
+    "jawsdb-maria:kitefin"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
