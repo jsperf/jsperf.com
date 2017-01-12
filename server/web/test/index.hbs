@@ -188,7 +188,7 @@
         </div>
         <div>
           <label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label>
-          <textarea name="message" id="message" maxlength="16777215" required>{{#if message}}{{message}}{{/if}}</textarea>
+          <textarea name="message" id="message" maxlength="{{mediumTextLength}}" required>{{#if message}}{{message}}{{/if}}</textarea>
           {{#if messageError}} {{messageError}}{{/if}}
         </div>
         <div class="buttons">

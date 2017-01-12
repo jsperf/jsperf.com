@@ -74,7 +74,7 @@ This edit will create a new revision.
         <span>(in case you feel further explanation is needed)</span>
         <span>(Markdown syntax is allowed)</span>
       </label>
-      <textarea name="info" id="info" maxlength="16777215">{{page.info}}</textarea>
+      <textarea name="info" id="info" maxlength="{{mediumTextLength}}">{{page.info}}</textarea>
     </div>
     <fieldset>
       <h3>Preparation code</h3>
@@ -101,7 +101,7 @@ This edit will create a new revision.
           <span>(<a href="/faq#setup-teardown">see FAQ</a>)
           </span>
         </label>
-        <textarea name="setup" id="setup" maxlength="16777215">{{page.setup}}</textarea>
+        <textarea name="setup" id="setup" maxlength="{{mediumTextLength}}">{{page.setup}}</textarea>
       </div>
       <div>
         <label for="teardown">Define <code>teardown</code> for all tests
@@ -110,7 +110,7 @@ This edit will create a new revision.
           <span>(<a href="/faq#setup-teardown">see FAQ</a>)
           </span>
         </label>
-        <textarea name="teardown" id="teardown" maxlength="16777215">{{page.teardown}}</textarea>
+        <textarea name="teardown" id="teardown" maxlength="{{mediumTextLength}}">{{page.teardown}}</textarea>
       </div>
     </fieldset>
     <fieldset id="tests">
@@ -132,7 +132,7 @@ This edit will create a new revision.
         <div>
           <label for="test[{{@index}}][code]">Code
           </label>
-          <textarea name="test[{{@index}}][code]" id="test[{{@index}}][code]" class="code-js" maxlength="16777215">{{code}}</textarea>
+          <textarea name="test[{{@index}}][code]" id="test[{{@index}}][code]" class="code-js" maxlength="{{mediumTextLength}}">{{code}}</textarea>
           <input type="hidden" name="test[{{@index}}][id]" value="{{testID}}">
           {{error codeError tag="p"}}
         </div>

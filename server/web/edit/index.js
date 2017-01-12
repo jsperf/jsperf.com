@@ -37,7 +37,8 @@ exports.register = function (server, options, next) {
             isOwn: isOwn,
             isAdmin: isAdmin,
             page: page,
-            authorized: request.auth.isAuthenticated
+            authorized: request.auth.isAuthenticated,
+            mediumTextLength: defaults.mediumTextLength
           });
         })
         .catch(function (err) {
@@ -74,7 +75,8 @@ exports.register = function (server, options, next) {
           },
           jsClass: true,
           page: page,
-          authorized: request.auth.isAuthenticated
+          authorized: request.auth.isAuthenticated,
+          mediumTextLength: defaults.mediumTextLength
         }).code(400);
       };
 
