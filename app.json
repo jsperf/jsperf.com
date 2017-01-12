@@ -1,0 +1,43 @@
+{
+  "name": "jsPerf",
+  "env": {
+    "NODE_ENV": {
+      "value": "development"
+    },
+    "MYSQL_USER": {
+      "required": true
+    },
+    "MYSQL_PASSWORD": {
+      "required": true
+    },
+    "MYSQL_DATABASE": {
+      "required": true
+    },
+    "BROWSERSCOPE": {
+      "required": true
+    },
+    "GITHUB_CLIENT_ID": {
+      "required": true
+    },
+    "GITHUB_CLIENT_SECRET": {
+      "required": true
+    },
+    "GITHUB_CALLBACK": {
+      "required": true
+    },
+    "BELL_COOKIE_PASS": {
+      "generator": "secret"
+    },
+    "COOKIE_PASS": {
+      "generator": "secret"
+    }
+  },
+  "addons": [
+    "jawsdb-maria:kitefin"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
