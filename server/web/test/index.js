@@ -101,6 +101,7 @@ exports.register = function (server, options, next) {
       getTestPage(request)
         .then((model) => {
           model.userAgent = request.plugins.scooter.toString();
+          model.mediumTextLength = defaults.mediumTextLength;
           reply.view('test/index', model);
         })
         .catch(reply);
@@ -135,12 +136,14 @@ exports.register = function (server, options, next) {
               }
             });
 
+            model.mediumTextLength = defaults.mediumTextLength;
             reply.view('test/index', Object.assign(model, errObj, request.payload));
           } else {
             const ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
             return commentsService.create(model.page.id, ip, result.value)
             .then((comment) => {
               model.page.comments.push(comment);
+              model.mediumTextLength = defaults.mediumTextLength;
               reply.view('test/index', model);
             });
           }
