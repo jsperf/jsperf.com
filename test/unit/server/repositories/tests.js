@@ -170,8 +170,8 @@ lab.experiment('Tests Repository', function () {
     lab.test('updates test if it is an existing test', function (done) {
       genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
       let tClone = Hoek.clone(t);
-      tClone[0].id = 123;
-      tClone[1].id = 321;
+      tClone[0].testID = 123;
+      tClone[1].testID = 321;
       tests.bulkUpdate(pageID, tClone, false)
         .then(results => {
           let call1 = genericQueryStub.getCall(0).args;
@@ -188,8 +188,8 @@ lab.experiment('Tests Repository', function () {
     lab.test('deletes existing test if no title and no code', function (done) {
       genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
       let tClone = Hoek.clone(t);
-      tClone[0].id = 123;
-      tClone[1].id = 321;
+      tClone[0].testID = 123;
+      tClone[1].testID = 321;
       delete tClone[0].code;
       delete tClone[0].title;
       delete tClone[1].code;
@@ -230,8 +230,8 @@ lab.experiment('Tests Repository', function () {
     lab.test('does nothing if no title and no code with no ownership', function (done) {
       genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
       let tClone = Hoek.clone(t);
-      tClone[0].id = 123;
-      tClone[1].id = 321;
+      tClone[0].testID = 123;
+      tClone[1].testID = 321;
       delete tClone[0].code;
       delete tClone[0].title;
       delete tClone[1].code;

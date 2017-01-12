@@ -24,7 +24,7 @@ exports.testPage = Joi.object().keys({
     title: Joi.string().required().trim().min(1).max(255),
     defer: Joi.string().default('n').valid('y', 'n'),
     code: Joi.string().required().trim().min(1).max(defaults.mediumTextLength),
-    id: Joi.number().integer() // optional. only present when editing
+    testID: Joi.number().integer() // optional. only present when editing
   }))
 });
 

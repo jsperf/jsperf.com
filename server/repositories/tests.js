@@ -30,13 +30,13 @@ exports.register = function (server, options, next) {
     tests.forEach(test => {
       // FIXME
       if (!test.title && !test.code) {
-        if (update && test.id) {
-          queries.push(db.genericQuery(`DELETE FROM tests WHERE pageID = ${pageID} AND testID = ${test.id}`));
+        if (update && test.testID) {
+          queries.push(db.genericQuery(`DELETE FROM tests WHERE pageID = ${pageID} AND testID = ${test.testID}`));
         }
       } else {
         // Update test
-        if (test.id) {
-          queries.push(db.genericQuery(`UPDATE tests SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.id}`));
+        if (test.testID) {
+          queries.push(db.genericQuery(`UPDATE tests SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.testID}`));
         } else {
           queries.push(db.genericQuery(`INSERT INTO ?? (??) VALUES (${pageID}, ${db.escape(test.title)}, ${db.escape(test.defer)}, ${db.escape(test.code)})`, [table, columns]));
         }
