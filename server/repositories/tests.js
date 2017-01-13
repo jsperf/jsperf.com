@@ -33,9 +33,10 @@ exports.register = function (server, options, next) {
         if (update && test.testID) {
           queries.push(db.genericQuery(`DELETE FROM tests WHERE pageID = ${pageID} AND testID = ${test.testID}`));
         }
+        // otherwise just skip the test
       } else {
         // Update test
-        if (test.testID) {
+        if (test.testID && test.pageID === pageID) {
           queries.push(db.genericQuery(`UPDATE tests SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.testID}`));
         } else {
           queries.push(db.genericQuery(`INSERT INTO ?? (??) VALUES (${pageID}, ${db.escape(test.title)}, ${db.escape(test.defer)}, ${db.escape(test.code)})`, [table, columns]));
