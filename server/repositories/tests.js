@@ -37,7 +37,7 @@ exports.register = function (server, options, next) {
       } else {
         // Update test
         if (test.testID && test.pageID === pageID) {
-          queries.push(db.genericQuery(`UPDATE tests SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.testID}`));
+          queries.push(db.genericQuery(`UPDATE tests SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${db.escape(test.testID)}`));
         } else {
           queries.push(db.genericQuery(`INSERT INTO ?? (??) VALUES (${pageID}, ${db.escape(test.title)}, ${db.escape(test.defer)}, ${db.escape(test.code)})`, [table, columns]));
         }
