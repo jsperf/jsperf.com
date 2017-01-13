@@ -149,8 +149,11 @@ lab.experiment('Tests Repository', function () {
         .then(results => {
           let call1 = genericQueryStub.getCall(0).args;
           call1 = Hoek.flatten(call1).join(',');
+          let call2 = genericQueryStub.getCall(1).args;
+          call2 = Hoek.flatten(call2).join(',');
 
           Code.expect(call1).to.equal('INSERT INTO ?? (??) VALUES (1, `t1`, `n`, `a = 1`),tests,pageID,title,defer,code');
+          Code.expect(call2).to.equal('INSERT INTO ?? (??) VALUES (1, `t2`, `n`, `a = 2`),tests,pageID,title,defer,code');
           done();
         });
     });
@@ -171,7 +174,9 @@ lab.experiment('Tests Repository', function () {
       genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
       let tClone = Hoek.clone(t);
       tClone[0].testID = 123;
+      tClone[0].pageID = 1;
       tClone[1].testID = 321;
+      tClone[1].pageID = 1;
       tests.bulkUpdate(pageID, tClone, false)
         .then(results => {
           let call1 = genericQueryStub.getCall(0).args;
@@ -179,8 +184,8 @@ lab.experiment('Tests Repository', function () {
           let call2 = genericQueryStub.getCall(1).args;
           call2 = Hoek.flatten(call2).join(',');
 
-          Code.expect(call2).to.equal('UPDATE tests SET title = `t2`, defer =  `n` , code =  `a = 2` WHERE pageID = 1 AND testID = 321');
           Code.expect(call1).to.equal('UPDATE tests SET title = `t1`, defer =  `n` , code =  `a = 1` WHERE pageID = 1 AND testID = 123');
+          Code.expect(call2).to.equal('UPDATE tests SET title = `t2`, defer =  `n` , code =  `a = 2` WHERE pageID = 1 AND testID = 321');
           done();
         });
     });
@@ -189,7 +194,9 @@ lab.experiment('Tests Repository', function () {
       genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
       let tClone = Hoek.clone(t);
       tClone[0].testID = 123;
+      tClone[0].pageID = 1;
       tClone[1].testID = 321;
+      tClone[1].pageID = 2;
       delete tClone[0].code;
       delete tClone[0].title;
       delete tClone[1].code;
