@@ -16,6 +16,7 @@ script:
   - npm test
   - npm start &
   - sleep 3
+  - curl -v http://localhost:3000/health
   - npm run test-e2e
 
 after_script:

@@ -7,8 +7,10 @@ const lab = exports.lab = Lab.script();
 lab.experiment('FAQ page', () => {
   let driver;
   let sessionID;
+  let passed;
 
   lab.beforeEach(() => {
+    passed = false;
     driver = Helper.build();
 
     return driver.getSession()
@@ -23,7 +25,7 @@ lab.experiment('FAQ page', () => {
 
     Helper.saucelabs.updateJob(sessionID, {
       name: lab._current.experiments[0].tests[0].title,
-      passed: true
+      passed
     }, done);
   });
 
@@ -32,6 +34,7 @@ lab.experiment('FAQ page', () => {
 
     return driver.getTitle().then(function (title) {
       Code.expect(title).to.include('Frequent');
+      passed = true;
     });
   });
 });
