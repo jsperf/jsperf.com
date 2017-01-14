@@ -57,6 +57,8 @@ COOKIE_PASS=password-should-be-32-characters
 npm start
 ```
 
+Hopefully everything smoothly started up and you're ready to start [contributing](CONTRIBUTING.md).
+
 ## Sponsorship
 
 Development of [jsperf.com](https://jsperf.com) is generously supported by contributions from individuals and corporations. If you are benefiting from jsPerf and would like to help keep the project financially sustainable, please visit [https://jsperf.com/sponsor](https://jsperf.com/sponsor).
