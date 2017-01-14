@@ -1,6 +1,14 @@
 language: node_js
-before_install:
-  - npm i -g npm@3.10.7
+
+addons:
+  sauce_connect: true
+
+script:
+  - npm test
+  # - npm start &
+  # - sleep 3
+  - npm test-e2e
+
 after_script:
   - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < lcov.info || echo "Could not upload code coverage to CodeClimate"

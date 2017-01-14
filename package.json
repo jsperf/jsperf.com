@@ -10,6 +10,7 @@
     "lint": "lab -d -L",
     "start": "node server.js",
     "test": "lab -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
+    "test-e2e": "lab -L -m 60000 -M 60000 test/e2e",
     "snyk-protect": "snyk protect",
     "deploy": "now --public -e NODE_ENV=production -e SCHEME=https -e DOMAIN=jsperf.com -e GITHUB_CALLBACK=https://jsperf.com -e MYSQL_USER=@jsperf-db-user -e MYSQL_PASSWORD=@jsperf-db-pass -e MYSQL_DATABASE=@jsperf-db-db -e MYSQL_HOST=@jsperf-db-host -e MYSQL_PORT=@jsperf-db-port -e LOGGLY_TOKEN=@jsperf-loggly-token -e LOGGLY_SUBDOMAIN=@jsperf-loggly-subdomain -e GITHUB_CLIENT_ID=@jsperf-github-id -e GITHUB_CLIENT_SECRET=@jsperf-github-secret -e BROWSERSCOPE=@jsperf-browserscope -e BELL_COOKIE_PASS=@jsperf-bell-pass -e COOKIE_PASS=@jsperf-cookie-pass",
     "watch": "nodemon -e js,hbs server.js"
@@ -82,6 +83,8 @@
     "platform": "^1.3.2",
     "prompt": "^1.0.0",
     "proxyquire": "1.4.0",
+    "saucelabs": "^1.3.0",
+    "selenium-webdriver": "^3.0.1",
     "sinon": "^1.17.7",
     "sinon-as-promised": "4.0.2",
     "snyk": "^1.20.0"
