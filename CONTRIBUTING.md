@@ -2,6 +2,12 @@
 
 Submit a pull request to `master` with passing tests (`npm test`) and properly [styled](https://github.com/Flet/semistandard) code. [Rebase](https://git-scm.com/docs/git-rebase) as needed.
 
+During development it may be helpful to automatically restart the server when you make changes.
+
+```
+npm run watch
+```
+
 ## Building the client
 
 If you make any changes inside [`client/`](https://github.com/jsperf/jsperf.com/tree/master/client), then you'll need to manually re-build the final asset.
