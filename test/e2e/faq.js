@@ -19,19 +19,16 @@ lab.experiment('FAQ page', () => {
   });
 
   lab.afterEach((done) => {
+    driver.quit();
+
     Helper.saucelabs.updateJob(sessionID, {
       name: lab._current.experiments[0].tests[0].title,
       passed: true
-    }, (err, res) => {
-      driver.quit();
-
-      done(err);
-    });
+    }, done);
   });
 
   lab.test('loads', () => {
-    // driver.get('http://localhost:3000/faq');
-    driver.get('http://jsperf.com/faq');
+    driver.get('http://localhost:3000/faq');
 
     return driver.getTitle().then(function (title) {
       Code.expect(title).to.include('Frequent');
