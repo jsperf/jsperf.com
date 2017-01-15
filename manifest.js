@@ -94,7 +94,6 @@ var manifest = {
         register: 'yar',
         options: {
           cookieOptions: {
-            // name: 'jsPerf', FIXME
             password: config.get('/auth/session/pass'),
             isSecure: config.get('/auth/session/secure'),
             isHttpOnly: true
@@ -132,7 +131,7 @@ var manifest = {
           user: config.get('/mysql/user'),
           pass: config.get('/mysql/pass'),
           db: config.get('/mysql/db'),
-          debug: config.get('/debug')
+          debug: criteria.env !== 'production'
         }
       }
     },

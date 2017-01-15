@@ -3,3 +3,4 @@ node_modules
 coverage.html
 lcov.info
 *.log
+test/e2e/screenshots/

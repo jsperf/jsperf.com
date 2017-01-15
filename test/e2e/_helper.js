@@ -1,5 +1,10 @@
+const fs = require('fs');
+const path = require('path');
 const Webdriver = require('selenium-webdriver');
 
+/*
+saucelabs - report status for jobs from CI
+*/
 let saucelabs;
 const username = process.env.SAUCE_USERNAME;
 const accessKey = process.env.SAUCE_ACCESS_KEY;
@@ -20,8 +25,14 @@ if (process.env.SELENIUM_SERVER) {
 
 exports.saucelabs = saucelabs;
 
+/*
+JSPERF_HOST - standardized host for all tests to use in `get`
+*/
 exports.JSPERF_HOST = process.env.JSPERF_HOST || 'http://localhost:3000';
 
+/*
+build - returns new web driver
+*/
 exports.build = function () {
   return new Webdriver.Builder()
     .withCapabilities({
@@ -33,4 +44,18 @@ exports.build = function () {
     })
     .usingServer(process.env.SELENIUM_SERVER)
     .build();
+};
+
+/*
+screenshot - takes and stores to `test/e2e/screenshots`
+*/
+exports.screenshot = function (driver, pathname) {
+  return driver.takeScreenshot()
+  .then((data) => {
+    fs.writeFileSync(
+      path.resolve(__dirname, 'screenshots', Date.now() + '-' + pathname + '.png'),
+      data,
+      { encoding: 'base64' }
+    );
+  });
 };

@@ -101,16 +101,16 @@ exports.register = function (server, options, next) {
     //   LIMIT 0, 50
     // )
     // y LEFT JOIN (
-    //   SELECT t.pageid, COUNT(t.pageid) AS testCount
+    //   SELECT t.pageID, COUNT(t.pageID) AS testCount
     //   FROM tests t
-    //   GROUP BY t.pageid
+    //   GROUP BY t.pageID
     // )
-    // z ON z.pageid = y.pID';
+    // z ON z.pageID = y.pID';
 
     var q = '%' + searchTerms + '%';
 
     return db.genericQuery(
-      'SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageid, COUNT(t.pageid) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = y.pID;',
+      'SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageID, COUNT(t.pageID) AS testCount FROM tests t GROUP BY t.pageID) z ON z.pageID = y.pID;',
       [q, q]
     );
   });
