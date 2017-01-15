@@ -10,7 +10,7 @@ before_install:
   - mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"
 
 env:
-  - NODE_ENV=test PORT=3000 MYSQL_USER=jsuser MYSQL_PASSWORD=jspass MYSQL_DATABASE=jsperf BROWSERSCOPE=encrypt_me_later GITHUB_CLIENT_ID=encrypt_me_later GITHUB_CLIENT_SECRET=encrypt_me_later GITHUB_CALLBACK=http://localhost:3000 BELL_COOKIE_PASS=password-should-be-32-characters COOKIE_PASS=password-should-be-32-characters
+  - NODE_ENV=test PORT=3000 MYSQL_USER=jsuser MYSQL_PASSWORD=jspass MYSQL_DATABASE=jsperf GITHUB_CALLBACK=http://localhost:3000 BELL_COOKIE_PASS=password-should-be-32-characters COOKIE_PASS=password-should-be-32-characters
 
 script:
   - npm test
