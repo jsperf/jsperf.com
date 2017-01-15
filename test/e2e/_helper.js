@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const Webdriver = require('selenium-webdriver');
 
+/*
+saucelabs - report status for jobs from CI
+*/
 let saucelabs;
 const username = process.env.SAUCE_USERNAME;
 const accessKey = process.env.SAUCE_ACCESS_KEY;
@@ -46,7 +49,6 @@ exports.build = function () {
 /*
 screenshot - takes and stores to `test/e2e/screenshots`
 */
-
 exports.screenshot = function (driver, pathname) {
   return driver.takeScreenshot()
   .then((data) => {
