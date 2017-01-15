@@ -32,7 +32,7 @@ _If you are missing code coverage, open `coverage.html` in the root of the proje
 
 End-to-end testing is done by [Selenium Webdriver](https://www.npmjs.com/package/selenium-webdriver). [SauceLabs](https://saucelabs.com) provides Selenium infrastructure for CI. To run tests locally, you'll need [Chrome](https://www.google.com/chrome) and [webdriver-manager](https://www.npmjs.com/package/webdriver-manager).
 
-```bash
+```
 npm i -g webdriver-manager
 
 webdriver-manager update
@@ -40,8 +40,8 @@ webdriver-manager update
 
 In one terminal, have jsPerf running (`npm start`). In another, have webdriver-manager running (`webdriver-manager start`). And in yet another, run the tests:
 
-```bash
-npm run test-e2e
+```
+SELENIUM_SERVER=http://127.0.0.1:4444/wd/hub npm run test-e2e
 ```
 
 ## Adding new dependencies
