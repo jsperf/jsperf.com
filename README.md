@@ -13,7 +13,7 @@
   1. Install
     1. macOS: `brew install mysql`
   2. Initialize: `mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"`
-3. Get a [Browserscope.org](http://www.browserscope.org/) API key by signing in and going to [the settings page](http://www.browserscope.org/user/settings).
+3. Get a [Browserscope.org](https://www.browserscope.org/) API key by signing in and going to [the settings page](https://www.browserscope.org/user/settings).
 4. Register a [new OAuth GitHub application](https://github.com/settings/applications/new). Leave the callback URL blank. Copy the "Client ID" and "Client Secret".
 
 ### Setup
