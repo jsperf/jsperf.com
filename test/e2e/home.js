@@ -133,4 +133,26 @@ lab.experiment('Home page', () => {
       passed = true;
     });
   });
+
+  lab.test('browse', () => {
+    let slug;
+    return driver.get(Helper.JSPERF_HOST)
+    .then(() => driver.findElement({ linkText: 'Latest' }).then((el) => el.click()))
+    .then(() => driver.getTitle().then((title) => {
+      Code.expect(title).to.include('Browse');
+
+      return driver.findElement({ css: 'article ul li a' })
+        .then((el) => {
+          el.getAttribute('href').then((href) => {
+            slug = href;
+          });
+          return el.click();
+        });
+    }))
+    .then(() => driver.getCurrentUrl())
+    .then((newUrl) => {
+      Code.expect(newUrl).to.include(slug);
+      passed = true;
+    });
+  });
 });
