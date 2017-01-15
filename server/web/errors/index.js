@@ -5,9 +5,13 @@ exports.register = function (server, options, next) {
     }
 
     const statusCode = request.response.output.statusCode;
-    const handledCodes = [404, 403, 400]; // This can eventually be cached glob call (redis backed?)
+    const handledCodes = {
+      404: 'Not found',
+      403: 'Forbidden',
+      400: 'Bad Request'
+    };
 
-    if (handledCodes.some((handledCode) => handledCode === statusCode)) {
+    if (handledCodes[statusCode]) {
       return reply.view('errors/' + statusCode).code(statusCode);
     }
 

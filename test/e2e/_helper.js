@@ -1,39 +1,36 @@
 const Webdriver = require('selenium-webdriver');
-const Firefox = require('selenium-webdriver/firefox');
-const SauceLabs = require('saucelabs');
 
+let saucelabs;
 const username = process.env.SAUCE_USERNAME;
 const accessKey = process.env.SAUCE_ACCESS_KEY;
 
-const saucelabs = new SauceLabs({
-  username: username,
-  password: accessKey
-});
+if (process.env.SELENIUM_SERVER) {
+  // when using a custom selenium server, mock out saucelabs
+  saucelabs = { updateJob: function (a, b, cb) { cb(); } };
+} else {
+  const SauceLabs = require('saucelabs');
+
+  saucelabs = new SauceLabs({
+    username: username,
+    password: accessKey
+  });
+
+  process.env.SELENIUM_SERVER = `http://${username}:${accessKey}@ondemand.saucelabs.com/wd/hub`;
+}
 
 exports.saucelabs = saucelabs;
 
-process.on('unhandledRejection', (reason, p) => {
-  console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
-});
-
-const ffProfile = new Firefox.Profile();
-// prevent hosts being turned into www.hosts.com
-ffProfile.setPreference('browser.fixup.alternate.enabled', false);
-
-const ffOptions = new Firefox.Options().setProfile(ffProfile);
+exports.JSPERF_HOST = process.env.JSPERF_HOST || 'http://localhost:3000';
 
 exports.build = function () {
   return new Webdriver.Builder()
-    .setFirefoxOptions(ffOptions)
     .withCapabilities({
-      browserName: 'firefox',
-      platform: 'macOS 10.12',
-      version: '50.0',
+      browserName: 'chrome',
       username,
       accessKey,
       'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
       build: process.env.TRAVIS_BUILD_NUMBER
     })
-    .usingServer(`http://${username}:${accessKey}@ondemand.saucelabs.com/wd/hub`)
+    .usingServer(process.env.SELENIUM_SERVER)
     .build();
 };

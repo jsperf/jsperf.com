@@ -4,7 +4,7 @@ const Helper = require('./_helper');
 
 const lab = exports.lab = Lab.script();
 
-lab.experiment('FAQ page', () => {
+lab.experiment('Error pages', () => {
   let driver;
   let sessionID;
   let passed;
@@ -29,11 +29,13 @@ lab.experiment('FAQ page', () => {
     }, done);
   });
 
-  lab.test('loads', () => {
-    driver.get(Helper.JSPERF_HOST + '/faq');
+  lab.test('404', () => {
+    driver.get(Helper.JSPERF_HOST + '/404');
 
-    return driver.getTitle().then(function (title) {
-      Code.expect(title).to.include('Frequent');
+    return driver.findElement({ tagName: 'h1' })
+    .then((el) => el.getText())
+    .then((str) => {
+      Code.expect(str).to.include('Not Found');
       passed = true;
     });
   });

@@ -4,7 +4,7 @@ const Helper = require('./_helper');
 
 const lab = exports.lab = Lab.script();
 
-lab.experiment('FAQ page', () => {
+lab.experiment('Contributors page', () => {
   let driver;
   let sessionID;
   let passed;
@@ -30,10 +30,10 @@ lab.experiment('FAQ page', () => {
   });
 
   lab.test('loads', () => {
-    driver.get(Helper.JSPERF_HOST + '/faq');
+    driver.get(Helper.JSPERF_HOST + '/contributors');
 
     return driver.getTitle().then(function (title) {
-      Code.expect(title).to.include('Frequent');
+      Code.expect(title).to.include('Contributors');
       passed = true;
     });
   });

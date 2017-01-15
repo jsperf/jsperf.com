@@ -1,4 +1,4 @@
-# Contributing to JSPerf
+# Contributing to jsPerf
 
 Submit a pull request to `master` with passing tests (`npm test`) and properly [styled](https://github.com/Flet/semistandard) code. [Rebase](https://git-scm.com/docs/git-rebase) as needed.
 
@@ -27,6 +27,22 @@ npm test
 _If you want to only lint and save a little time, use `npm run lint` which skips the tests._
 
 _If you are missing code coverage, open `coverage.html` in the root of the project for a detailed visual report._
+
+### End-to-end (e2e)
+
+End-to-end testing is done by [Selenium Webdriver](https://www.npmjs.com/package/selenium-webdriver). [SauceLabs](https://saucelabs.com) provides Selenium infrastructure for CI. To run tests locally, you'll need [Chrome](https://www.google.com/chrome) and [webdriver-manager](https://www.npmjs.com/package/webdriver-manager).
+
+```bash
+npm i -g webdriver-manager
+
+webdriver-manager update
+```
+
+In one terminal, have jsPerf running (`npm start`). In another, have webdriver-manager running (`webdriver-manager start`). And in yet another, run the tests:
+
+```bash
+npm run test-e2e
+```
 
 ## Adding new dependencies
 
