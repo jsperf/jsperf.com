@@ -9,9 +9,6 @@
   /** Cache of error messages */
   var errors = [];
 
-  /** Google Analytics account id */
-  var gaId = '';
-
   /** Cache of event handlers */
   var handlers = {};
 
@@ -700,17 +697,4 @@
   }
 
   /* ------------------------------------------------------------------------ */
-
-  // optimized asynchronous Google Analytics snippet based on
-  // https://mathiasbynens.be/notes/async-analytics-snippet
-  if (gaId) {
-    (function () {
-      var script = createElement('script');
-      var sibling = document.getElementsByTagName('script')[0];
-
-      window._gaq = [['_setAccount', gaId], ['_trackPageview']];
-      script.src = 'https://www.google-analytics.com/ga.js';
-      sibling.parentNode.insertBefore(script, sibling);
-    }());
-  }
 }(this, document));

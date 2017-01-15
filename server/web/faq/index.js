@@ -5,7 +5,6 @@ exports.register = function (server, options, next) {
     handler: function (request, reply) {
       reply.view('faq/index', {
         headTitle: 'Frequently asked questions',
-        ga: true,
         faq: [
           {
             slug: 'what',

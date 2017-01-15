@@ -8,7 +8,6 @@ exports.register = function (server, options, next) {
       .then(function (popular) {
         reply.view('popular/index', {
           headTitle: 'Popular test cases',
-          ga: true,
           admin: false,
           recent: popular.recent,
           allTime: popular.allTime

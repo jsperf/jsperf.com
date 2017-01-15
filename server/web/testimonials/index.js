@@ -4,8 +4,7 @@ exports.register = function (server, options, next) {
     path: '/testimonials',
     handler: function (request, reply) {
       reply.view('testimonials/index', {
-        headTitle: 'Testimonials',
-        ga: true
+        headTitle: 'Testimonials'
       });
     }
   });

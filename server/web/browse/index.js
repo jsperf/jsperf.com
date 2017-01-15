@@ -23,8 +23,7 @@ exports.register = function (server, options, next) {
         headTitle: 'Browse test cases',
         showAtom: {
           slug: 'browse'
-        },
-        ga: true
+        }
       };
 
       pagesRepo.getLatestVisible(250)
@@ -77,7 +76,6 @@ exports.register = function (server, options, next) {
             showAtom: {
               slug: 'browse/' + request.params.authorSlug
             },
-            ga: true,
             author: request.params.authorSlug,
             pages: rows
           });

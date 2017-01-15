@@ -13,7 +13,6 @@ exports.register = function (server, options, next) {
 
       var defaultContext = {
         headTitle: 'Search',
-        ga: true,
         admin: false
       };
 

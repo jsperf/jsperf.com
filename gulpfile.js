@@ -42,10 +42,6 @@ gulp.task('js', function () {
   .pipe(addSrc.prepend(require.resolve('lodash')))
 
   .pipe(concat('test.js'))
-
-  // Set the Google Analytics ID.
-  .pipe(replace(`gaId = ''`, `gaId = 'UA-6065217-40'`))
-
   // jsPerf is browser-only. Ensure we’re detected as a browser environment,
   // even if this is an AMD test, for example.
   .pipe(replace(/freeDefine = (?:[^;]+)/, 'freeDefine = false'))

@@ -4,8 +4,7 @@ exports.register = function (server, options, next) {
     path: '/contributors',
     handler: function (request, reply) {
       reply.view('contributors/index', {
-        headTitle: 'Contributors',
-        ga: true
+        headTitle: 'Contributors'
       });
     }
   });

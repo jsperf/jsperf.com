@@ -4,8 +4,7 @@ exports.register = function (server, options, next) {
     path: '/sponsor',
     handler: function (request, reply) {
       reply.view('sponsor/index', {
-        headTitle: 'Sponsor',
-        ga: true
+        headTitle: 'Sponsor'
       });
     }
   });
