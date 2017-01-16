@@ -104,14 +104,11 @@
       {{else}}
         <script src="/public/_js/main.js"></script>
       {{/if}}
-
-    {{else}}
-      {{#if ga}}
-      <script>
-        window._gaq=[['_setAccount','UA-6065217-40'],['_trackPageview']];
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='https://ssl.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))
-      </script>
-      {{/if}}
     {{/if}}
   {{/if}}
+
+  <script>
+    window._gaq=[['_setAccount','UA-6065217-40'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.src='https://ssl.google-analytics.com/ga.js';s.parentNode.insertBefore(g,s)}(document,'script'))
+  </script>
 </body>

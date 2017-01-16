@@ -13,8 +13,7 @@ exports.register = function (server, options, next) {
     handler: function (request, reply) {
       var defaultContext = {
         message: '',
-        headTitle: 'Delete',
-        ga: false
+        headTitle: 'Delete'
       };
 
       if (!request.yar.get('admin')) {
