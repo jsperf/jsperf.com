@@ -36,7 +36,9 @@ build - returns new web driver
 exports.build = function () {
   return new Webdriver.Builder()
     .withCapabilities({
+      platform: 'MAC',
       browserName: 'chrome',
+      version: '54.0',
       username,
       accessKey,
       'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
