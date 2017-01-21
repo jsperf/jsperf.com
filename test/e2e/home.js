@@ -39,6 +39,9 @@ lab.experiment('Home page', () => {
   });
 
   lab.test('create page', () => {
+    Code.expect(process.env.E2E_GITHUB_USER, 'process.env.E2E_GITHUB_USER').to.not.be.undefined();
+    Code.expect(process.env.E2E_GITHUB_PASS, 'process.env.E2E_GITHUB_PASS').to.not.be.undefined();
+
     function login () {
       function clickLoginBtn () {
         return driver.findElement({ css: 'a.login' }).then((el) => el.click());
