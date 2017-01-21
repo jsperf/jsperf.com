@@ -88,13 +88,17 @@ exports.register = function (server, options, next) {
           var payload = pageWithTests;
 
           pagesService.checkIfSlugAvailable(server, payload.slug)
-          .then(function (isAvail) {
+          .then(isAvail => {
             if (!isAvail) {
               errResp({
                 slugError: defaults.errors.slugDupe
               });
             } else {
-              return pagesService.create(payload).then(function () {
+              return pagesService.create(payload)
+              .then(resultPageId => {
+                const own = request.yar.get('own') || {};
+                own[resultPageId] = true;
+                request.yar.set('own', own);
                 request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
                 reply.redirect('/' + payload.slug);
               });

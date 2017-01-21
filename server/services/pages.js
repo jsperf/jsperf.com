@@ -31,6 +31,8 @@ exports.register = function (server, options, next) {
   });
 
   server.expose('create', function (payload) {
+    let resultPageId;
+
     return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
       .then(function (testKey) {
         var page = _omit(payload, 'test');
@@ -42,8 +44,10 @@ exports.register = function (server, options, next) {
         return pagesRepo.create(page);
       })
       .then(function (pageID) {
+        resultPageId = pageID;
         return testsRepo.bulkCreate(pageID, payload.test);
-      });
+      })
+      .then(() => resultPageId);
   });
 
   server.expose('edit', function (payload, isOwn, maxRev, pageId) {
