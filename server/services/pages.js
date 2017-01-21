@@ -115,7 +115,7 @@ exports.register = function (server, options, next) {
             .then(function (testKey) {
               if (testKey) {
                 page.browserscopeID = testKey;
-                pagesRepo.update({ browserscopeID: testKey }, { id: page.id })
+                pagesRepo.updateById({ browserscopeID: testKey }, page.id)
                 .then(resolve)
                 .catch(reject);
               } else {

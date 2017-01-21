@@ -448,24 +448,6 @@ lab.experiment('Pages Repository', function () {
     });
   });
 
-  lab.experiment('update', function () {
-    lab.test('generic update query', function (done) {
-      var modify = { browserscopeID: 'abc123' };
-      var where = { id: 1 };
-      genericQueryStub.returns(Promise.resolve());
-
-      pages.update(modify, where)
-      .then(function () {
-        Code.expect(genericQueryStub.calledWithExactly(
-          'UPDATE ?? SET ? WHERE ?',
-          [table, modify, where]
-        )).to.be.true();
-
-        done();
-      });
-    });
-  });
-
   lab.experiment('updateById', function () {
     lab.test('generic update query', function (done) {
       var modify = { browserscopeID: 'abc123' };

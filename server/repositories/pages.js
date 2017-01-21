@@ -171,10 +171,6 @@ exports.register = function (server, options, next) {
     return db.genericQuery('UPDATE ?? SET hits = hits + 1 WHERE id = ?', [table, pageID]);
   });
 
-  server.expose('update', function (modify, where) {
-    return db.genericQuery('UPDATE ?? SET ? WHERE ?', [table, modify, where]);
-  });
-
   server.expose('updateById', function (modify, pageID) {
     return db.genericQuery('UPDATE ?? SET ? WHERE id = ?', [table, modify, pageID])
       .then(function (result) {
