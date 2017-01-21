@@ -16,14 +16,11 @@
             <a href="/">Add</a>
           </li>
 
-            {{!-- TODO: this is never added to the context, but set on session after test added
-            https://github.com/mtharrison/hapi-context-credentials/blob/master/index.js
-            --}}
-            {{#if authorSlug}}
-              <li>
-                <a href="/browse/{{authorSlug}}">My tests</a> &middot;
-              </li>
-            {{/if}}
+          {{#if authorSlug}}
+            <li>
+              <a href="/browse/{{authorSlug}}">My tests</a>
+            </li>
+          {{/if}}
 
           <li>
             <a href="/browse">Latest</a>

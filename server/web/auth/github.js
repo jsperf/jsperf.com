@@ -12,6 +12,17 @@ exports.register = function (server, options, next) {
     }
   });
 
+  // attach authorSlug to view context to construct "My Tests" link in footer
+  // in the future may use GitHub profile
+  server.ext('onPreResponse', function (request, reply) {
+    const response = request.response;
+    if (response.variety && response.variety === 'view') {
+      response.source.context = response.source.context || {};
+      response.source.context.authorSlug = request.yar.get('authorSlug');
+    }
+    return reply.continue();
+  });
+
   return next();
 };
 
