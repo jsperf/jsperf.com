@@ -77,7 +77,8 @@ lab.beforeEach(function (done) {
       layout: true,
       helpersPath: 'templates/helpers',
       partialsPath: 'templates/partials',
-      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..'),
+      context: (request) => ({ credentials: request.auth.credentials })
     });
     server.register([
       YarPlugin,
@@ -165,7 +166,7 @@ lab.experiment('GET', function () {
     );
 
     server.inject(request, function (response) {
-      Code.expect(response.payload.indexOf('uncheck if you want to fiddle around before making the page public')).to.be.at.least(0);
+      Code.expect(response.payload).to.contain('uncheck if you want to fiddle around before making the page public');
 
       done();
     });
@@ -384,7 +385,7 @@ lab.experiment('POST', function () {
         authorEmail: 'kool-aid@kraft.com',
         authorURL: 'http://kool-aid.com',
         title: 'oh',
-        slug: 'oh-yea',
+        slug: 'wee',
         info: '',
         initHTML: '',
         setup: '',
@@ -507,11 +508,12 @@ lab.experiment('POST', function () {
     });
 
     lab.test('redirects to new url after revision insertion', function (done) {
-      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
+      const rev = 45;
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(rev));
 
       server.inject(request, response => {
         Code.expect(response.statusCode).to.equal(302);
-        Code.expect(response.headers.location).to.equal(`/${request.payload.slug}/45`);
+        Code.expect(response.headers.location).to.equal(`/${request.payload.slug}/${rev}`);
 
         done();
       });
@@ -558,8 +560,8 @@ lab.experiment('POST', function () {
     });
 
     lab.test('redirects to original url after update', function (done) {
-      let stubPage = Hoek.applyToDefaults(request.payload, {revision: 1});
-      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(stubPage));
+      const rev = 1;
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(rev));
 
       server.inject('/setsession', function (res) {
         var header = res.headers['set-cookie'];

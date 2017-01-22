@@ -16,7 +16,7 @@ exports.register = function (server, options, next) {
   // attach authorSlug to view context to construct "My Tests" link in footer
   server.ext('onPreResponse', function (request, reply) {
     const response = request.response;
-    if (response.variety && response.variety === 'view') {
+    if (response.variety === 'view') {
       response.source.context = response.source.context || {};
       response.source.context.credentials = request.auth.isAuthenticated ? request.auth.credentials : null;
       response.source.context.authorSlug = request.yar.get('authorSlug');

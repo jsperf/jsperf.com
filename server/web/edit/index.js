@@ -120,7 +120,9 @@ exports.register = function (server, options, next) {
           .then(resultingRevision => {
             request.yar.set('authorSlug', pageWithTests.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
 
-            reply.redirect(`/${request.params.testSlug}/${resultingRevision}`);
+            const r = resultingRevision > 1 ? `/${resultingRevision}` : '';
+
+            reply.redirect(`/${request.params.testSlug}${r}`);
           }).catch(errResp);
         }
       });
