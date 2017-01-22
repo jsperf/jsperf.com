@@ -1,4 +1,4 @@
-{{#if authorized}}
+{{#if credentials}}
 <h1>Editing <a href="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}">{{addCode page.title}}</a></h1>
 <p>
 {{#if isOwn}}
@@ -18,6 +18,8 @@ This edit will create a new revision.
           value="{{page.author}}"
         {{else if isOwn}}
           value="{{page.author}}"
+        {{else}}
+          value="{{credentials.displayName}}"
         {{/if}}
         >
     </div>
@@ -29,6 +31,8 @@ This edit will create a new revision.
             value="{{page.authorEmail}}"
           {{else if isOwn}}
             value="{{page.authorEmail}}"
+          {{else}}
+            value="{{credentials.email}}"
           {{/if}}
         > (won’t be displayed; might be used for Gravatar)
       </label>
@@ -40,6 +44,12 @@ This edit will create a new revision.
         value="{{page.authorURL}}"
       {{else if isOwn}}
         value="{{page.authorURL}}"
+      {{else}}
+        {{#if credentials.raw.blog}}
+          value="{{credentials.raw.blog}}"
+        {{else}}
+          value="{{credentials.raw.html_url}}"
+        {{/if}}
       {{/if}}
       >
     </div>

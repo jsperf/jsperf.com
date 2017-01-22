@@ -166,24 +166,46 @@
     {{/each}}
   </div>
 
-  {{#if authorized}}
+  {{#if credentials}}
     <form action="/{{page.slug}}{{#compare 1 page.revision}}/{{page.revision}}{{/compare}}#comment-form" method="post" id="comment-form">
       <fieldset>
         <h2>Add a comment</h2>
         <div>
           <label for="author">Name <em title="This field is required">*</em> </label>
-          <input type="text" name="author" id="author" {{#if author}}value={{author}}{{/if}} required>
+          <input type="text" name="author" id="author" required
+            {{#if author}}
+              value="{{author}}"
+            {{else}}
+              value="{{credentials.displayName}}"
+            {{/if}}
+          >
           {{#if authorError}} {{authorError}}{{/if}}
         </div>
         <div>
           <label for="authorEmail">Email <em title="This field is required">*</em> </label>
           {{#unless mailError}}<label class="inline">{{/unless}}
-            <input type="email" name="authorEmail" id="authorEmail" {{#if authorEmail}}value={{authorEmail}}{{/if}} required>
+            <input type="email" name="authorEmail" id="authorEmail" required
+              {{#if authorEmail}}
+                value="{{authorEmail}}"
+              {{else}}
+                value="{{credentials.email}}"
+              {{/if}}
+            >
             {{#if authorEmailError}} {{authorEmailError}}{{else}}(only used for Gravatar)</label>{{/if}}
         </div>
         <div>
           <label for="authorURL">URL </label>
-          <input type="url" name="authorURL" id="authorURL" {{#if authorURL}}value={{authorURL}}{{/if}}>
+          <input type="url" name="authorURL" id="authorURL"
+            {{#if authorURL}}
+              value="{{authorURL}}"
+            {{else}}
+              {{#if credentials.raw.blog}}
+                value="{{credentials.raw.blog}}"
+              {{else}}
+                value="{{credentials.raw.html_url}}"
+              {{/if}}
+            {{/if}}
+          >
           {{#if authorURLError}} {{authorURLError}}{{/if}}
         </div>
         <div>

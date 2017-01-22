@@ -37,5 +37,9 @@
 </head>
 
 <body>
-
   <article>
+  {{#if credentials}}
+    <header>
+      <em class="buttons">Logged in as <a href={{credentials.raw.html_url}}>@{{credentials.username}}</a></em>
+    </header>
+  {{/if}}

@@ -8,6 +8,7 @@ lab.experiment('Home page', () => {
   let driver;
   let sessionID;
   let passed;
+  let t = 0;
 
   lab.beforeEach(() => {
     passed = false;
@@ -24,7 +25,7 @@ lab.experiment('Home page', () => {
     driver.quit();
 
     Helper.saucelabs.updateJob(sessionID, {
-      name: lab._current.experiments[0].tests[0].title,
+      name: lab._current.experiments[0].tests[t++].title,
       passed
     }, done);
   });
@@ -158,4 +159,13 @@ lab.experiment('Home page', () => {
       passed = true;
     });
   });
+
+  /*
+    TODO: test additional flows
+
+    - edit page, add new test, save, verify page has 3 tests
+    - edit page, blank test title, blank test code, save, verify page has 2 tests
+    - edit page, blank test title, save, verify did not save and validation message exists on title
+    - edit page, blank test code, save, verify did not save and validation message exists on code
+  */
 });
