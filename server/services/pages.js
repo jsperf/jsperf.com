@@ -32,8 +32,8 @@ exports.register = function (server, options, next) {
 
   server.expose('create', function (payload) {
     let resultPageId;
-
-    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
+    const defaultRevision = 1;
+    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, defaultRevision)
       .then(function (testKey) {
         var page = _omit(payload, 'test');
         if (testKey) {
@@ -51,24 +51,31 @@ exports.register = function (server, options, next) {
   });
 
   server.expose('edit', function (payload, isOwn, maxRev, pageId) {
-    let newRev = ++maxRev;
-    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, newRev)
-      .then(testKey => {
-        let page = _omit(payload, 'test');
-        if (testKey) {
-          page.browserscopeID = testKey;
-        }
-        if (isOwn) {
-          return pagesRepo.updateById(page, pageId);
-        } else {
-          page.published = new Date();
-          page.revision = newRev;
-          return pagesRepo.create(page);
-        }
-      })
-      .then(function (pageID) {
-        return testsRepo.bulkUpdate(pageID, payload.test, isOwn);
-      });
+    const page = _omit(payload, 'test');
+
+    let resultingRevision = maxRev;
+    if (!isOwn) {
+      resultingRevision = maxRev + 1;
+    }
+
+    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, resultingRevision)
+    .then(testKey => {
+      if (testKey) {
+        page.browserscopeID = testKey;
+      }
+
+      if (isOwn) {
+        return pagesRepo.updateById(page, pageId);
+      }
+
+      // someone is effectively forking your page so create a new one
+      page.published = new Date();
+      // FIXME: if slug has changed from original page, revision needs to be set to 1 or else can't fetch page by slug root
+      page.revision = resultingRevision;
+      return pagesRepo.create(page);
+    })
+    .then((currentPageID) => testsRepo.bulkUpdate(currentPageID, payload.test, isOwn))
+    .then(() => resultingRevision);
   });
 
   server.expose('getPopular', function () {
