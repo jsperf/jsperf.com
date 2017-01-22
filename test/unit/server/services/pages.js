@@ -15,7 +15,6 @@ const MockPagesRepo = {
     server.expose('find', function () {});
     server.expose('updateHits', function () {});
     server.expose('getBySlug', function () {});
-    server.expose('update', function () {});
     server.expose('findBySlug', function () {});
     server.expose('getVisibleBySlug', function () {});
     server.expose('findVisibleBySlug', function () {});
@@ -97,7 +96,6 @@ lab.experiment('Pages Service', function () {
         find: s.stub(server.plugins['repositories/pages'], 'find'),
         updateHits: s.stub(server.plugins['repositories/pages'], 'updateHits'),
         getBySlug: s.stub(server.plugins['repositories/pages'], 'getBySlug'),
-        update: s.stub(server.plugins['repositories/pages'], 'update'),
         findBySlug: s.stub(server.plugins['repositories/pages'], 'findBySlug'),
         getVisibleBySlug: s.stub(server.plugins['repositories/pages'], 'getVisibleBySlug'),
         findVisibleBySlug: s.stub(server.plugins['repositories/pages'], 'findVisibleBySlug'),
@@ -503,7 +501,7 @@ lab.experiment('Pages Service', function () {
       var testErr = new Error(testErrMsg);
       pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1 }]));
       bsRepoStub.addTest.returns(Promise.resolve('abc123'));
-      pagesRepoStub.update.returns(Promise.reject(testErr));
+      pagesRepoStub.updateById.returns(Promise.reject(testErr));
 
       pages.getBySlug(slug, rev)
       .catch(function (err) {
@@ -586,7 +584,7 @@ lab.experiment('Pages Service', function () {
       const newBsKey = 'abc123';
       pagesRepoStub.getBySlug.returns(Promise.resolve([{ id: 1, revision: 2 }]));
       bsRepoStub.addTest.returns(Promise.resolve(newBsKey));
-      pagesRepoStub.update.returns(Promise.resolve());
+      pagesRepoStub.updateById.returns(Promise.resolve());
       testsRepoStub.findByPageID.returns(Promise.resolve([]));
       pagesRepoStub.findBySlug.returns(Promise.resolve([]));
       commentsRepoStub.findByPageID.returns(Promise.resolve([]));

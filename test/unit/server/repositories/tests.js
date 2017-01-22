@@ -174,13 +174,13 @@ lab.experiment('Tests Repository', function () {
       tClone[1].testID = 321;
       tests.bulkUpdate(pageID, tClone, false)
         .then(results => {
-          let call1 = genericQueryStub.getCall(0).args;
-          call1 = Hoek.flatten(call1).join(',');
-          let call2 = genericQueryStub.getCall(1).args;
-          call2 = Hoek.flatten(call2).join(',');
+          const call1 = genericQueryStub.getCall(0).args;
+          const call2 = genericQueryStub.getCall(1).args;
 
-          Code.expect(call2).to.equal('UPDATE tests SET title = `t2`, defer =  `n` , code =  `a = 2` WHERE pageID = 1 AND testID = 321');
-          Code.expect(call1).to.equal('UPDATE tests SET title = `t1`, defer =  `n` , code =  `a = 1` WHERE pageID = 1 AND testID = 123');
+          Code.expect(call2[0]).to.equal('UPDATE ?? SET title = `t2`, defer =  `n` , code =  `a = 2` WHERE pageID = 1 AND testID = 321');
+          Code.expect(call2[1]).to.equal(['tests']);
+          Code.expect(call1[0]).to.equal('UPDATE ?? SET title = `t1`, defer =  `n` , code =  `a = 1` WHERE pageID = 1 AND testID = 123');
+          Code.expect(call1[1]).to.equal(['tests']);
           done();
         });
     });
@@ -198,12 +198,12 @@ lab.experiment('Tests Repository', function () {
       tests.bulkUpdate(pageID, tClone, true)
         .then(results => {
           let call1 = genericQueryStub.getCall(0).args;
-          call1 = Hoek.flatten(call1).join(',');
           let call2 = genericQueryStub.getCall(1).args;
-          call2 = Hoek.flatten(call2).join(',');
 
-          Code.expect(call1).to.equal('DELETE FROM tests WHERE pageID = 1 AND testID = 123');
-          Code.expect(call2).to.equal('DELETE FROM tests WHERE pageID = 1 AND testID = 321');
+          Code.expect(call1[0]).to.equal('DELETE FROM ?? WHERE pageID = 1 AND testID = 123');
+          Code.expect(call1[1]).to.equal(['tests']);
+          Code.expect(call2[0]).to.equal('DELETE FROM ?? WHERE pageID = 1 AND testID = 321');
+          Code.expect(call2[1]).to.equal(['tests']);
 
           done();
         });

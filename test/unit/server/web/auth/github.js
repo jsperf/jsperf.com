@@ -27,6 +27,11 @@ MockAuthGitHub.register.attributes = {
   name: 'github'
 };
 
+const YarPlugin = {
+  register: require('yar'),
+  options: { cookieOptions: { password: 'password-should-be-32-characters' } }
+};
+
 lab.experiment('auth/GitHub', function () {
   lab.beforeEach(function (done) {
     server = new Hapi.Server();
@@ -36,7 +41,8 @@ lab.experiment('auth/GitHub', function () {
     server.register([
       require('hapi-auth-cookie'),
       MockAuthGitHub,
-      GitHubPlugin
+      GitHubPlugin,
+      YarPlugin
     ], done);
   });
 
@@ -56,6 +62,72 @@ lab.experiment('auth/GitHub', function () {
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(302);
 
+        done();
+      });
+    });
+  });
+
+  lab.experiment('onPreResponse', () => {
+    lab.beforeEach((done) => {
+      server.register(require('vision'), (err) => {
+        Code.expect(err).to.not.exist();
+
+        server.views({
+          engines: {
+            hbs: require('handlebars')
+          },
+          path: __dirname,
+          isCached: false
+        });
+
+        done();
+      });
+    });
+
+    lab.test('does not populate credentials if not authenticated', (done) => {
+      server.route({
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+          return reply.view('test');
+        }
+      });
+
+      server.inject({ method: 'GET', url: '/' }, function (res) {
+        Code.expect(res.result.trim()).to.equal('Hello');
+        done();
+      });
+    });
+
+    lab.test('populates credentials if authenticated', (done) => {
+      const displayName = 'John';
+      server.route({
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+          request.auth.isAuthenticated = true;
+          request.auth.credentials = { displayName };
+          return reply.view('test');
+        }
+      });
+
+      server.inject({ method: 'GET', url: '/' }, function (res) {
+        Code.expect(res.result.trim()).to.equal('Hello ' + displayName);
+        done();
+      });
+    });
+
+    lab.test('uses existing context', (done) => {
+      server.route({
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+          return reply.view('test', { a: 1 });
+        }
+      });
+
+      server.inject({ method: 'GET', url: '/' }, function (res) {
+        Code.expect(res.result.trim()).to.equal('Hello 1');
         done();
       });
     });

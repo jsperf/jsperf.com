@@ -54,7 +54,8 @@ lab.beforeEach(function (done) {
       layout: true,
       helpersPath: 'templates/helpers',
       partialsPath: 'templates/partials',
-      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..')
+      relativeTo: path.join(__dirname, '..', '..', '..', '..', '..'),
+      context: (request) => ({ credentials: request.auth.credentials })
     });
     server.register([
       YarPlugin,
@@ -273,6 +274,37 @@ lab.experiment('home', function () {
           Code.expect(response.headers.location).to.include(request.payload.slug);
 
           done();
+        });
+      });
+
+      lab.test('sets own in session', (done) => {
+        sinon.stub(server.plugins['services/pages'], 'create').returns(Promise.resolve(true));
+
+        server.route({
+          method: 'GET',
+          path: '/setsession',
+          config: {
+            handler: function (req, reply) {
+              req.yar.set('own', { 2: true });
+              return reply('session set');
+            }
+          }
+        });
+
+        server.inject('/setsession', function (res) {
+          var header = res.headers['set-cookie'];
+          var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
+          request.headers = {};
+          request.headers.cookie = 'session=' + cookie[1];
+
+          server.inject(request, function (response) {
+            Code.expect(response.statusCode).to.equal(302);
+            Code.expect(response.headers.location).to.include(request.payload.slug);
+
+            // could inspect cookie to see `own` was expanded
+
+            done();
+          });
         });
       });
     });

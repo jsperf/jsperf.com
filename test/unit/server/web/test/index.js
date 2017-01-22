@@ -78,10 +78,11 @@ lab.beforeEach(function (done) {
       layout: true,
       helpersPath: 'templates/helpers',
       partialsPath: 'templates/partials',
-      context: {
+      context: (request) => ({
+        credentials: request.auth.credentials,
         scheme: 'http',
         domain: 'jsperf.test'
-      }
+      })
     });
     server.register([
       YarPlugin,
