@@ -21,10 +21,14 @@ exports.testPage = Joi.object().keys({
   setup: mediumText,
   teardown: mediumText,
   test: Joi.array().required().min(2).items(Joi.object().required().keys({
-    title: Joi.string().required().trim().min(1).max(255),
+    title: Joi.string().trim().allow('').empty('').max(255).when('code', {
+      is: '',
+      then: Joi.string().length(0), // must be blank too so can delete
+      otherwise: Joi.string().min(1).required()
+    }),
+    code: Joi.string().trim().allow('').max(defaults.mediumTextLength),
     defer: Joi.string().default('n').valid('y', 'n'),
-    code: Joi.string().required().trim().min(1).max(defaults.mediumTextLength),
-    testID: Joi.number().integer() // optional. only present when editing
+    testID: Joi.number().integer().optional() // only present when editing
   }))
 });
 
