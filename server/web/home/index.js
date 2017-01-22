@@ -23,8 +23,7 @@ exports.register = function (server, options, next) {
         },
         jsClass: true,
         mainJS: true,
-        test: [defaults.test, defaults.test],
-        authorized: request.auth.isAuthenticated
+        test: [defaults.test, defaults.test]
       }));
     }
   });
@@ -46,8 +45,7 @@ exports.register = function (server, options, next) {
             slug: 'browse'
           },
           jsClass: true,
-          mainJS: true,
-          authorized: request.auth.isAuthenticated
+          mainJS: true
         }, errObj)).code(400);
       };
 

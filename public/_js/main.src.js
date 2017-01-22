@@ -70,23 +70,11 @@ $(function() {
 	    $addExt = $('<button id="add-ext" title="Ext Core v3.x">Ext Core</button>').addScript('ext-core/3/ext-core'),
 	    $addMyLib = $('<button id="add-mylib" title="My Library v0.99">My Library</button>').addScript('mylib099-min', true),
 	    $addDiv = $('<div id="add-buttons" />'),
-	    storage = (function() { try { var storage = window.localStorage; return storage.getItem && storage; } catch(e) {} }()),
 	    $authorFields;
 
 	// http://jsperf.com/slugs
 	function sluggify(str) {
 		return str.toLowerCase().match(/[a-z0-9]+/ig).join('-');
-	}
-
-	if (storage) {
-		$authorFields = $('#author, #authorEmail, #authorURL');
-		if ($authorFields.length == $authorFields.filter(function() { return !this.value; }).length) {
-			$authorFields.each(function() {
-				this.value = storage[this.id] || '';
-			}).input(function() {
-				storage[this.id] = this.value;
-			});
-		}
 	}
 
 	$addTest.click(function(event) {

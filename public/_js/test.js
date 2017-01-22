@@ -21222,17 +21222,6 @@
         setHTML('run', texts.run.ready);
         setStatus(texts.status.ready);
 
-        // prefill author details (only for pages with a comment form)
-        var $author = $('author');
-        if ($author && has.localStorage) {
-          _.each([$author, $('authorEmail'), $('authorURL')], function (element) {
-            element.value = localStorage[element.id] || '';
-            element.oninput = element.onkeydown = function (event) {
-              event && event.type < 'k' && (element.onkeydown = null);
-              localStorage[element.id] = element.value;
-            };
-          });
-        }
         // show warning when Firebug is enabled (avoids showing for Firebug Lite)
         try {
           // Firebug 1.9 no longer has `console.firebug`

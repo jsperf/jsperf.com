@@ -75,8 +75,7 @@ exports.register = function (server, options, next) {
           hasPrep: hasPrep,
           hasSetupOrTeardown: hasSetupOrTeardown,
           stripped: stripped,
-          page: page,
-          authorized: request.auth.isAuthenticated
+          page: page
         };
       })
       .catch((err) => {
