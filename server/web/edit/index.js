@@ -106,23 +106,21 @@ exports.register = function (server, options, next) {
           }
           errResp(errObj);
         } else {
-          let payload = pageWithTests;
-          let isOwn, page;
+          let isOwn = false;
 
-          pagesService.getBySlug(request.params.testSlug, request.params.rev).then(values => {
-            page = values[0];
+          pagesService.getBySlug(request.params.testSlug, request.params.rev)
+          .then(values => {
+            const prevPage = values[0];
             const own = request.yar.get('own') || {};
-            isOwn = own[page.id];
+            isOwn = own[prevPage.id];
             const isAdmin = request.yar.get('admin');
             let update = !!(isAdmin || isOwn);
-            return pagesService.edit(payload, update, page.maxRev, page.id);
-          }).then(updateResult => {
-            request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
-            if (isOwn) {
-              reply.redirect(`/${page.slug}`);
-            } else {
-              reply.redirect(`/${page.slug}/${(page.maxRev + 1)}`);
-            }
+            return pagesService.edit(pageWithTests, update, prevPage.maxRev, prevPage.id);
+          })
+          .then(resultingRevision => {
+            request.yar.set('authorSlug', pageWithTests.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+
+            reply.redirect(`/${request.params.testSlug}/${resultingRevision}`);
           }).catch(errResp);
         }
       });

@@ -3,10 +3,9 @@ const table = 'tests';
 
 exports.register = function (server, options, next) {
   const db = server.plugins.db;
+  const columns = ['pageID', 'title', 'defer', 'code'];
 
   server.expose('bulkCreate', function (pageID, tests) {
-    var columns = ['pageID', 'title', 'defer', 'code'];
-
     var values = [];
     for (var i = 0, tl = tests.length; i < tl; i++) {
       var test = tests[i];
@@ -23,25 +22,26 @@ exports.register = function (server, options, next) {
       });
   });
 
-  server.expose('bulkUpdate', function (pageID, tests, update) {
-    const columns = ['pageID', 'title', 'defer', 'code'];
+  server.expose('bulkUpdate', function (pageID, tests, isOwn) {
     let queries = [];
 
     tests.forEach(test => {
-      // FIXME
+      // setting existing test title and code to blank indicates it should be deleted ...
       if (!test.title && !test.code) {
-        if (update && test.testID) {
-          queries.push(db.genericQuery(`DELETE FROM tests WHERE pageID = ${pageID} AND testID = ${test.testID}`));
+        // ... if it's theirs to delete ...
+        if (isOwn && test.testID) {
+          queries.push(db.genericQuery(`DELETE FROM ?? WHERE pageID = ${pageID} AND testID = ${test.testID}`, [table]));
         }
+        // ... otherwise skip over the test
       } else {
-        // Update test
         if (test.testID) {
-          queries.push(db.genericQuery(`UPDATE tests SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.testID}`));
+          queries.push(db.genericQuery(`UPDATE ?? SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.testID}`, [table]));
         } else {
           queries.push(db.genericQuery(`INSERT INTO ?? (??) VALUES (${pageID}, ${db.escape(test.title)}, ${db.escape(test.defer)}, ${db.escape(test.code)})`, [table, columns]));
         }
       }
     });
+
     return Promise.all(queries).then((results) => {
       server.log(['debug'], `${name}::bulkUpdate results - ${JSON.stringify(results)}`);
       results.forEach((result) => {
