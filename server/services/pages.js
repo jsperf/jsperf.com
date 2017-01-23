@@ -32,8 +32,7 @@ exports.register = function (server, options, next) {
 
   server.expose('create', function (payload) {
     let resultPageId;
-    const defaultRevision = 1;
-    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, defaultRevision)
+    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
       .then(function (testKey) {
         var page = _omit(payload, 'test');
         if (testKey) {
@@ -58,7 +57,8 @@ exports.register = function (server, options, next) {
       resultingRevision = maxRev + 1;
     }
 
-    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug, resultingRevision)
+    const slug = resultingRevision > 1 ? `${payload.slug}/${resultingRevision}` : payload.slug;
+    return browserscopeRepo.addTest(payload.title, payload.info, slug)
     .then(testKey => {
       if (testKey) {
         page.browserscopeID = testKey;
@@ -120,9 +120,8 @@ exports.register = function (server, options, next) {
             return resolve();
           }
 
-          const s = page.revision > 1 ? page.slug + '/' + page.revision : page.slug;
-
-          browserscopeRepo.addTest(page.title, page.info, s)
+          const slug = page.revision > 1 ? `${page.slug}/${page.revision}` : page.slug;
+          browserscopeRepo.addTest(page.title, page.info, slug)
             .then(function (testKey) {
               if (testKey) {
                 page.browserscopeID = testKey;
