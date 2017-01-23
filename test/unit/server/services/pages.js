@@ -294,8 +294,11 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.create.returns(Promise.resolve());
       testsRepoStub.bulkCreate.returns(Promise.resolve());
 
-      pages.edit(payload)
-      .then(done)
+      pages.edit(payload, false, 1)
+      .then((resultingRevision) => {
+        Code.expect(resultingRevision).to.equal(2);
+        done();
+      })
       .catch(done);
     });
 
