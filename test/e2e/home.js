@@ -112,9 +112,6 @@ lab.experiment('Home page', () => {
       const now = Date.now();
 
       return Promise.all([
-        fillOut('author', 'Max Tester'),
-        fillOut('authorEmail', 'test@jsperf.test'),
-        fillOut('authorURL', 'http://jsperf.test'),
         fillOut('title', 'Test ' + now),
         check('visible'),
         fillOut('info', 'This is my test at ' + now),
