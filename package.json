@@ -91,6 +91,8 @@
   },
   "snyk": true,
   "now": {
-    "alias": "jsperf.com"
+    "alias": [
+      "jsperf.com"
+    ]
   }
 }
