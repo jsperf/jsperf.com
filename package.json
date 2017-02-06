@@ -70,7 +70,7 @@
     "eslint-plugin-standard": "2.0.1",
     "gulp": "3.9.1",
     "gulp-add-src": "0.2.0",
-    "gulp-clean-css": "^2.3.2",
+    "gulp-clean-css": "^2.4.0",
     "gulp-concat": "^2.6.1",
     "gulp-insert": "0.5.0",
     "gulp-remote-src": "0.4.1",
