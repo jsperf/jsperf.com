@@ -4,6 +4,7 @@
     <ul>
       <li>
         <h4>Sponsors</h4>
+        <p>Supported by <a href="https://opbeat.com/">Opbeat</a></p>
         <p>Hosting generously provided by <a href="https://m.do.co/c/b426e15331e8">DigitalOcean</a> and <a href="https://zeit.co/">Zeit</a></p>
 
         <p><a href="/sponsor">Learn how to become a sponsor</a></p>
@@ -87,7 +88,7 @@
         Benchmark.prototype.setup = {{{ cleanJsString page.setup }}}
       {{/if}}
       {{#if page.teardown}}
-        Benchmark.prototype.teardown = {{{ cleanJsString page.setup }}}
+        Benchmark.prototype.teardown = {{{ cleanJsString page.teardown }}}
       {{/if}}
     </script>
 
