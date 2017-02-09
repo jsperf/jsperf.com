@@ -1,23 +1,23 @@
 language: node_js
 
-addons:
-  sauce_connect: true
-
-services:
-  - mysql
-
-before_install:
-  - mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"
-
-env:
-  - NODE_ENV=test PORT=3000 MYSQL_USER=jsuser MYSQL_PASSWORD=jspass MYSQL_DATABASE=jsperf GITHUB_CALLBACK=http://localhost:3000 BELL_COOKIE_PASS=password-should-be-32-characters COOKIE_PASS=password-should-be-32-characters
+# addons:
+#   sauce_connect: true
+#
+# services:
+#   - mysql
+#
+# before_install:
+#   - mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"
+#
+# env:
+#   - NODE_ENV=test PORT=3000 MYSQL_USER=jsuser MYSQL_PASSWORD=jspass MYSQL_DATABASE=jsperf GITHUB_CALLBACK=http://localhost:3000 BELL_COOKIE_PASS=password-should-be-32-characters COOKIE_PASS=password-should-be-32-characters
 
 script:
   - npm test
-  - npm start &
-  - sleep 3
-  - curl -v http://localhost:3000/health
-  - npm run test-e2e
+  # - npm start &
+  # - sleep 3
+  # - curl -v http://localhost:3000/health
+  # - npm run test-e2e
 
 after_script:
   - npm install -g codeclimate-test-reporter
