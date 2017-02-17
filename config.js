@@ -47,6 +47,7 @@ var config = {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
   domain: process.env.DOMAIN,
+  scheme: process.env.SCHEME,
   auth: {
     oauth: {
       secure: {
