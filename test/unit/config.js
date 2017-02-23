@@ -2,7 +2,26 @@ const Lab = require('lab');
 const Code = require('code');
 const Proxyquire = require('proxyquire').noPreserveCache();
 
-const Config = require('../../config');
+const Config = Proxyquire('../../config', {
+  'dotenv': {
+    config: () => {
+      // set environment variables that should be in .env file
+      [
+        'GITHUB_CLIENT_SECRET',
+        'GITHUB_CLIENT_ID',
+        'GITHUB_CALLBACK',
+        'BELL_COOKIE_PASS',
+        'COOKIE_PASS',
+        'BROWSERSCOPE',
+        'MYSQL_USER',
+        'MYSQL_PASSWORD',
+        'MYSQL_DATABASE'
+      ].map((k) => {
+        process.env[k] = k;
+      });
+    }
+  }
+});
 
 const lab = exports.lab = Lab.script();
 
