@@ -39,14 +39,15 @@ var Confidence = require('confidence');
 var _assign = require('lodash.assign');
 
 var criteria = {
-  scheme: process.env.SCHEME
+  scheme: result.value.SCHEME
 };
 
 var config = {
   $meta: 'jsPerf.com',
-  env: process.env.NODE_ENV,
-  port: process.env.PORT,
-  domain: process.env.DOMAIN,
+  env: result.value.NODE_ENV,
+  port: result.value.PORT,
+  domain: result.value.DOMAIN,
+  scheme: result.value.SCHEME,
   auth: {
     oauth: {
       secure: {
@@ -55,14 +56,14 @@ var config = {
         $default: false
       },
       github: {
-        secret: process.env.GITHUB_CLIENT_SECRET,
-        id: process.env.GITHUB_CLIENT_ID,
-        callback: process.env.GITHUB_CALLBACK
+        secret: result.value.GITHUB_CLIENT_SECRET,
+        id: result.value.GITHUB_CLIENT_ID,
+        callback: result.value.GITHUB_CALLBACK
       },
-      cookiePass: process.env.BELL_COOKIE_PASS
+      cookiePass: result.value.BELL_COOKIE_PASS
     },
     session: {
-      pass: process.env.COOKIE_PASS,
+      pass: result.value.COOKIE_PASS,
       name: 'sid-jsperf',
       secure: {
         $filter: 'scheme',
@@ -71,17 +72,17 @@ var config = {
       }
     }
   },
-  browserscope: process.env.BROWSERSCOPE,
+  browserscope: result.value.BROWSERSCOPE,
   mysql: {
-    host: process.env.MYSQL_HOST,
-    port: process.env.MYSQL_PORT,
-    user: process.env.MYSQL_USER,
-    pass: process.env.MYSQL_PASSWORD,
-    db: process.env.MYSQL_DATABASE
+    host: result.value.MYSQL_HOST,
+    port: result.value.MYSQL_PORT,
+    user: result.value.MYSQL_USER,
+    pass: result.value.MYSQL_PASSWORD,
+    db: result.value.MYSQL_DATABASE
   },
   loggly: {
-    token: process.env.LOGGLY_TOKEN,
-    subdomain: process.env.LOGGLY_SUBDOMAIN
+    token: result.value.LOGGLY_TOKEN,
+    subdomain: result.value.LOGGLY_SUBDOMAIN
   }
 };
 
