@@ -2,11 +2,7 @@ const Lab = require('lab');
 const Code = require('code');
 const Proxyquire = require('proxyquire').noPreserveCache();
 
-const Config = Proxyquire('../../config', {
-  'joi': {
-    validate: () => ({})
-  }
-});
+const Config = require('../../config');
 
 const lab = exports.lab = Lab.script();
 
@@ -19,6 +15,33 @@ lab.experiment('Config', function () {
   lab.test('it gets config meta data', function (done) {
     Code.expect(Config.meta('/')).to.match(/jsPerf/i);
     done();
+  });
+
+  lab.experiment('defaults', () => {
+    lab.test('it gets scheme', (done) => {
+      Code.expect(Config.get('/scheme')).to.equal('http');
+      done();
+    });
+
+    lab.test('it gets port', (done) => {
+      Code.expect(Config.get('/port')).to.equal(3000);
+      done();
+    });
+
+    lab.test('it gets domain', (done) => {
+      Code.expect(Config.get('/domain')).to.equal('localhost');
+      done();
+    });
+
+    lab.test('it gets mysql host', (done) => {
+      Code.expect(Config.get('/mysql/host')).to.equal('localhost');
+      done();
+    });
+
+    lab.test('it gets mysql port', (done) => {
+      Code.expect(Config.get('/mysql/port')).to.equal(3306);
+      done();
+    });
   });
 
   lab.experiment('Cookies', function () {
