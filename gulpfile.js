@@ -71,11 +71,6 @@ gulp.task('js', function () {
   .pipe(replace(`var _ = context && context._ || req('lodash') || root._;`, ''))
   .pipe(replace(`'platform': context.platform`, `'platform': platform`))
 
-  // Ugly hack to avoid “`ui` is not defined” (#212) most of the time. 😒😫
-  // TODO: Figure out what’s happening and fix this properly.
-  .pipe(replace(`loadScript('https://www.google.com/jsapi?autoload='`, `setTimeout(function() { loadScript('https://www.google.com/jsapi?autoload='`))
-  .pipe(replace(`'}'), idoc);`, `'}'), idoc); }, 2000);`))
-
   // Minify the result.
   // .pipe(uglify())
 
