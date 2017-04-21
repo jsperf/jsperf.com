@@ -33,7 +33,7 @@
   "dependencies": {
     "bell": "^8.4.0",
     "blipp": "2.3.0",
-    "boom": "4.2.0",
+    "boom": "4.3.0",
     "confidence": "3.0.2",
     "dotenv": "^4.0.0",
     "glue": "4.1.0",
