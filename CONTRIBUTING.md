@@ -46,23 +46,4 @@ SELENIUM_SERVER=http://127.0.0.1:4444/wd/hub npm run test-e2e
 
 ## Adding new dependencies
 
-1. Install using `npm` and either `--save` or `--save-dev`. **Do not edit `package.json` manually.**
-2. Run `npm shrinkwrap --dev` to update `npm-shrinkwrap.json`
-
-If you get an error while shrinkwrapping, try pruning your `node_modules` directory by running `npm prune`. If that doesn't work, try removing what you have installed currently, reinstalling based on `package.json` instead of `npm-shrinkwrap.json`, and then shrinkwrap again.
-
-```
-rm -r node_modules/ && npm install --no-shrinkwrap && npm shrinkwrap --dev
-```
-
-### Greenkeeper
-
-Greenkeeper [is working on updating `npm-shrinkwrap.json`](https://github.com/greenkeeperio/greenkeeper/issues/96). In the meantime, here is how [**@maxbeatty**](https://github.com/maxbeatty) has been shrinkwrapping the updates:
-
-1. Get remote branch `git pull origin`
-2. Checkout branch locally `git co greenkeeper-<package>-0.0.0`
-3. Install updated dependency defined in `package.json` instead of `npm-shrinkwrap.json` `npm i --no-shrinkwrap`
-4. Remove anything you no longer need `npm prune`
-5. Shrinkwrap the updated dependency `npm shrinkwrap --dev`
-6. Commit `git commit -am 'shrinkwrap updated dependency'`
-7. Push so updated dependency is tested and Pull Request can be merged `git push origin greenkeeper-<package>-0.0.0`
+Install using `npm` and either `--save` or `--save-dev`. **Do not edit `package.json` manually.**
