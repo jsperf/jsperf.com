@@ -43,7 +43,7 @@
     "good-squeeze": "^5.0.1",
     "handlebars": "^4.0.6",
     "hapi": "^16.0.1",
-    "hapi-auth-cookie": "6.1.1",
+    "hapi-auth-cookie": "7.0.0",
     "hapi-qs": "^1.1.2",
     "highlight.js": "^9.8.0",
     "hoek": "4.1.0",
