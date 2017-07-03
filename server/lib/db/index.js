@@ -61,15 +61,15 @@ exports.register = function (server, options, next) {
   });
 
   migrator.up()
-  .then(function (migrations) {
-    server.log(['info', 'db'], 'executed ' + migrations.length + ' migrations');
+    .then(function (migrations) {
+      server.log(['info', 'db'], 'executed ' + migrations.length + ' migrations');
 
-    next();
-  })
-  .catch(function (err) {
-    server.log(['error', 'db', 'migrations'], err);
-    next(err);
-  });
+      next();
+    })
+    .catch(function (err) {
+      server.log(['error', 'db', 'migrations'], err);
+      next(err);
+    });
 };
 
 exports.register.attributes = {

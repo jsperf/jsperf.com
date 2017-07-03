@@ -5,15 +5,15 @@ exports.register = function (server, options, next) {
     path: '/popular',
     handler: function (request, reply) {
       pagesService.getPopular()
-      .then(function (popular) {
-        reply.view('popular/index', {
-          headTitle: 'Popular test cases',
-          admin: false,
-          recent: popular.recent,
-          allTime: popular.allTime
-        });
-      })
-      .catch(reply);
+        .then(function (popular) {
+          reply.view('popular/index', {
+            headTitle: 'Popular test cases',
+            admin: false,
+            recent: popular.recent,
+            allTime: popular.allTime
+          });
+        })
+        .catch(reply);
     }
   });
 

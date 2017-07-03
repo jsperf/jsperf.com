@@ -59,23 +59,23 @@ exports.register = function (server, options, next) {
 
     const slug = resultingRevision > 1 ? `${payload.slug}/${resultingRevision}` : payload.slug;
     return browserscopeRepo.addTest(payload.title, payload.info, slug)
-    .then(testKey => {
-      if (testKey) {
-        page.browserscopeID = testKey;
-      }
+      .then(testKey => {
+        if (testKey) {
+          page.browserscopeID = testKey;
+        }
 
-      if (isOwn) {
-        return pagesRepo.updateById(page, pageId);
-      }
+        if (isOwn) {
+          return pagesRepo.updateById(page, pageId);
+        }
 
-      // someone is effectively forking your page so create a new one
-      page.published = new Date();
-      // FIXME: if slug has changed from original page, revision needs to be set to 1 or else can't fetch page by slug root
-      page.revision = resultingRevision;
-      return pagesRepo.create(page);
-    })
-    .then((currentPageID) => testsRepo.bulkUpdate(currentPageID, payload.test, isOwn))
-    .then(() => resultingRevision);
+        // someone is effectively forking your page so create a new one
+        page.published = new Date();
+        // FIXME: if slug has changed from original page, revision needs to be set to 1 or else can't fetch page by slug root
+        page.revision = resultingRevision;
+        return pagesRepo.create(page);
+      })
+      .then((currentPageID) => testsRepo.bulkUpdate(currentPageID, payload.test, isOwn))
+      .then(() => resultingRevision);
   });
 
   server.expose('getPopular', function () {
@@ -126,8 +126,8 @@ exports.register = function (server, options, next) {
               if (testKey) {
                 page.browserscopeID = testKey;
                 pagesRepo.updateById({ browserscopeID: testKey }, page.id)
-                .then(resolve)
-                .catch(reject);
+                  .then(resolve)
+                  .catch(reject);
               } else {
                 resolve();
               }

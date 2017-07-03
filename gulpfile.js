@@ -36,45 +36,45 @@ gulp.task('js', function () {
 
   // list in reverse order since prepending
   // use `require.resolve` so you get file path and not file contents
-  .pipe(addSrc.prepend('client/ui.js'))
-  .pipe(addSrc.prepend(require.resolve('benchmark')))
-  .pipe(addSrc.prepend(require.resolve('platform')))
-  .pipe(addSrc.prepend(require.resolve('lodash')))
+    .pipe(addSrc.prepend('client/ui.js'))
+    .pipe(addSrc.prepend(require.resolve('benchmark')))
+    .pipe(addSrc.prepend(require.resolve('platform')))
+    .pipe(addSrc.prepend(require.resolve('lodash')))
 
-  .pipe(concat('test.js'))
+    .pipe(concat('test.js'))
   // jsPerf is browser-only. Ensure we’re detected as a browser environment,
   // even if this is an AMD test, for example.
-  .pipe(replace(/freeDefine = (?:[^;]+)/, 'freeDefine = false'))
-  .pipe(replace(/freeExports = (?:[^;]+)/, 'freeExports = false'))
-  .pipe(replace(/freeModule = (?:[^;]+)/, 'freeModule = false'))
-  .pipe(replace(/freeRequire = (?:[^;]+)/, 'freeRequire = false'))
-  .pipe(replace(/(if\s*\()(typeof define|freeDefine)\b/, '$1false'))
+    .pipe(replace(/freeDefine = (?:[^;]+)/, 'freeDefine = false'))
+    .pipe(replace(/freeExports = (?:[^;]+)/, 'freeExports = false'))
+    .pipe(replace(/freeModule = (?:[^;]+)/, 'freeModule = false'))
+    .pipe(replace(/freeRequire = (?:[^;]+)/, 'freeRequire = false'))
+    .pipe(replace(/(if\s*\()(typeof define|freeDefine)\b/, '$1false'))
 
   // Specify the correct path to our CSS file.
-  .pipe(replace(`href = 'main.css'`, `href = '/public/_css/main.src.css'`))
+    .pipe(replace(`href = 'main.css'`, `href = '/public/_css/main.src.css'`))
 
   // Set the CSS selector for the Browserscope results.
-  .pipe(replace(`'selector': ''`, `'selector': '#bs-results'`))
+    .pipe(replace(`'selector': ''`, `'selector': '#bs-results'`))
 
   // Avoid exposing `_` and `platform` as global variables.
-  .pipe(insert.wrap(
-    '(function(){var _,platform;',
-    '}.call(this))'
-  ))
-  .pipe(replace('root.platform = parse()', 'platform = parse()'))
-  .pipe(replace('var _ = runInContext()', '_ = runInContext()'))
-  .pipe(replace(`var _ = context && context._ || require('lodash') || root._;`, ''))
-  .pipe(replace('(freeWindow || freeSelf || {})._ = _', ''))
-  .pipe(replace('root._ = _', ''))
+    .pipe(insert.wrap(
+      '(function(){var _,platform;',
+      '}.call(this))'
+    ))
+    .pipe(replace('root.platform = parse()', 'platform = parse()'))
+    .pipe(replace('var _ = runInContext()', '_ = runInContext()'))
+    .pipe(replace(`var _ = context && context._ || require('lodash') || root._;`, ''))
+    .pipe(replace('(freeWindow || freeSelf || {})._ = _', ''))
+    .pipe(replace('root._ = _', ''))
 
   // Ensure that Benchmark.js uses the local copies of lodash and Platform.js.
-  .pipe(replace(`var _ = context && context._ || req('lodash') || root._;`, ''))
-  .pipe(replace(`'platform': context.platform`, `'platform': platform`))
+    .pipe(replace(`var _ = context && context._ || req('lodash') || root._;`, ''))
+    .pipe(replace(`'platform': context.platform`, `'platform': platform`))
 
   // Minify the result.
   // .pipe(uglify())
 
-  .pipe(gulp.dest('./public/_js/'));
+    .pipe(gulp.dest('./public/_js/'));
 });
 
 gulp.task('css', function () {

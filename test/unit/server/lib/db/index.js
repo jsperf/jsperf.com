@@ -135,19 +135,19 @@ lab.experiment('Database Plugin', () => {
     lab.test('values param is optional', function (done) {
       queryStub.callsArgWith(2, null);
       server.plugins.db.genericQuery('SELECT 1;')
-      .then(function () {
-        Code.expect(queryStub.args[0]).to.have.length(3);
-        done();
-      });
+        .then(function () {
+          Code.expect(queryStub.args[0]).to.have.length(3);
+          done();
+        });
     });
 
     lab.test('logs error from ending connection', (done) => {
       queryStub.callsArgWith(2, null);
       endStub.callsArgWith(0, new Error('testend'));
       server.plugins.db.genericQuery('SELECT 1;')
-      .then(function () {
-        done();
-      });
+        .then(function () {
+          done();
+        });
     });
   });
 });

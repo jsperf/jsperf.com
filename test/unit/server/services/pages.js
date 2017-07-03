@@ -170,12 +170,12 @@ lab.experiment('Pages Service', function () {
       };
 
       pages.checkIfSlugAvailable(serverMock, testSlug)
-      .then(function (isAvail) {
-        Code.expect(isAvail).to.be.false();
-        Code.expect(pagesRepoStub.get.called).to.be.false();
+        .then(function (isAvail) {
+          Code.expect(isAvail).to.be.false();
+          Code.expect(pagesRepoStub.get.called).to.be.false();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns error if getting page fails', function (done) {
@@ -185,34 +185,34 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.get.returns(Promise.reject(testErr));
 
       pages.checkIfSlugAvailable(serverMock, testSlug)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns false if page with slug exists', function (done) {
       pagesRepoStub.get.returns(Promise.resolve({}));
 
       pages.checkIfSlugAvailable(serverMock, testSlug)
-      .then(function (isAvail) {
-        Code.expect(isAvail).to.be.false();
+        .then(function (isAvail) {
+          Code.expect(isAvail).to.be.false();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns true if no app route or page exists for given slug', function (done) {
       pagesRepoStub.get.returns(Promise.resolve(undefined));
 
       pages.checkIfSlugAvailable(serverMock, testSlug)
-      .then(function (isAvail) {
-        Code.expect(isAvail).to.be.true();
+        .then(function (isAvail) {
+          Code.expect(isAvail).to.be.true();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -231,8 +231,8 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.create(payload)
-      .then(done)
-      .catch(done);
+        .then(done)
+        .catch(done);
     });
 
     lab.test('returns error if page fails to create', function (done) {
@@ -244,13 +244,13 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.create.returns(Promise.reject(testErr));
 
       pages.create(payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
-        Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
+          Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns error if tests fail to create', function (done) {
@@ -262,12 +262,12 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkCreate.returns(Promise.reject(testErr));
 
       pages.create(payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('adds browserscope test, page, and tests', function (done) {
@@ -276,7 +276,7 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.create(payload)
-      .then(done);
+        .then(done);
     });
   });
 
@@ -295,11 +295,11 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.edit(payload, false, 1)
-      .then((resultingRevision) => {
-        Code.expect(resultingRevision).to.equal(2);
-        done();
-      })
-      .catch(done);
+        .then((resultingRevision) => {
+          Code.expect(resultingRevision).to.equal(2);
+          done();
+        })
+        .catch(done);
     });
 
     lab.test('returns error if page fails to create', function (done) {
@@ -310,13 +310,13 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.create.returns(Promise.reject(testErr));
 
       pages.edit(payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
-        Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
+          Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns error if page fails to update', function (done) {
@@ -327,13 +327,13 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.updateById.returns(Promise.reject(testErr));
 
       pages.edit(payload, true)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
-        Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
+          Code.expect(testsRepoStub.bulkCreate.called).to.be.false();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns error if tests fail to update', function (done) {
@@ -345,12 +345,12 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkUpdate.returns(Promise.reject(testErr));
 
       pages.edit(payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('adds browserscope test, page, and tests', function (done) {
@@ -359,7 +359,7 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkCreate.returns(Promise.resolve());
 
       pages.edit(payload)
-      .then(done);
+        .then(done);
     });
 
     lab.test('edits browserscope test, page, and tests', function (done) {
@@ -368,7 +368,7 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkUpdate.returns(Promise.resolve());
 
       pages.edit(payload, true)
-      .then(done);
+        .then(done);
     });
 
     lab.test('edits page by calling pageRepo.updateById', function (done) {
@@ -377,12 +377,12 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.bulkUpdate.returns(Promise.resolve());
 
       pages.edit({id: 222}, true, 1, 123)
-      .then(() => {
-        let call1 = pagesRepoStub.updateById.getCall(0).args;
-        Code.expect(call1[0].id).to.equal(222);
-        Code.expect(call1[1]).to.equal(123);
-        done();
-      });
+        .then(() => {
+          let call1 = pagesRepoStub.updateById.getCall(0).args;
+          Code.expect(call1[0].id).to.equal(222);
+          Code.expect(call1[1]).to.equal(123);
+          done();
+        });
     });
   });
 
@@ -392,11 +392,11 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.getPopularAllTime.returns(Promise.resolve());
 
       pages.getPopular().then(done)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns error if getting all-time fails', function (done) {
@@ -404,11 +404,11 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.getPopularAllTime.returns(Promise.reject(new Error()));
 
       pages.getPopular()
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns object of recent and all-time pages', function (done) {
@@ -416,13 +416,13 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.getPopularAllTime.returns(Promise.resolve([]));
 
       pages.getPopular()
-      .then(function (results) {
-        Code.expect(results).to.be.object();
-        Code.expect(results.recent).to.be.array();
-        Code.expect(results.allTime).to.be.array();
+        .then(function (results) {
+          Code.expect(results).to.be.object();
+          Code.expect(results.recent).to.be.array();
+          Code.expect(results.allTime).to.be.array();
 
-        done();
-      }).catch(done);
+          done();
+        }).catch(done);
     });
   });
 
@@ -432,11 +432,11 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.find.returns(Promise.resolve(testRes));
 
       pages.find('query')
-      .then(function (results) {
-        Code.expect(results).to.equal(testRes);
+        .then(function (results) {
+          Code.expect(results).to.equal(testRes);
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -446,11 +446,11 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.updateHits.returns(Promise.resolve());
 
       pages.updateHits(pageID)
-      .then(function () {
-        Code.expect(pagesRepoStub.updateHits.calledWith(pageID)).to.be.true();
+        .then(function () {
+          Code.expect(pagesRepoStub.updateHits.calledWith(pageID)).to.be.true();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -464,24 +464,24 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.getBySlug.returns(Promise.reject(testErr));
 
       pages.getBySlug(slug, rev)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('rejects with error if page not found', function (done) {
       pagesRepoStub.getBySlug.returns(Promise.resolve([]));
 
       pages.getBySlug(slug, rev)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal('Not found');
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal('Not found');
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('keeps rolling without browserscopeID', function (done) {
@@ -492,11 +492,11 @@ lab.experiment('Pages Service', function () {
       commentsRepoStub.findByPageID.returns(Promise.resolve([]));
 
       pages.getBySlug(slug, rev)
-      .then(function (values) {
-        Code.expect(values).to.be.array();
-        done();
-      })
-      .catch(done);
+        .then(function (values) {
+          Code.expect(values).to.be.array();
+          done();
+        })
+        .catch(done);
     });
 
     lab.test('rejects with error from updating browserscopeID of page', function (done) {
@@ -507,12 +507,12 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.updateById.returns(Promise.reject(testErr));
 
       pages.getBySlug(slug, rev)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('rejects with error from finding tests', function (done) {
@@ -522,12 +522,12 @@ lab.experiment('Pages Service', function () {
       testsRepoStub.findByPageID.returns(Promise.reject(testErr));
 
       pages.getBySlug(slug, rev)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('rejects with error from finding other pages', function (done) {
@@ -538,12 +538,12 @@ lab.experiment('Pages Service', function () {
       pagesRepoStub.findBySlug.returns(Promise.reject(testErr));
 
       pages.getBySlug(slug, rev)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('rejects with error from finding comments', function (done) {
@@ -555,12 +555,12 @@ lab.experiment('Pages Service', function () {
       commentsRepoStub.findByPageID.returns(Promise.reject(testErr));
 
       pages.getBySlug(slug, rev)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('resolves with page, tests, revisions, and comments', function (done) {
@@ -573,14 +573,14 @@ lab.experiment('Pages Service', function () {
       commentsRepoStub.findByPageID.returns(Promise.resolve(mockComments));
 
       pages.getBySlug(slug, rev)
-      .then(function (values) {
-        Code.expect(values[0].id).to.equal(1);
-        Code.expect(values[1]).to.equal(mockTests);
-        Code.expect(values[2]).to.equal(mockPages);
-        Code.expect(values[3]).to.equal(mockComments);
+        .then(function (values) {
+          Code.expect(values[0].id).to.equal(1);
+          Code.expect(values[1]).to.equal(mockTests);
+          Code.expect(values[2]).to.equal(mockPages);
+          Code.expect(values[3]).to.equal(mockComments);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('resolves with updated page after adding browserscopeID', function (done) {
@@ -593,11 +593,11 @@ lab.experiment('Pages Service', function () {
       commentsRepoStub.findByPageID.returns(Promise.resolve([]));
 
       pages.getBySlug(slug, rev)
-      .then(function (values) {
-        Code.expect(values[0].browserscopeID).to.equal(newBsKey);
+        .then(function (values) {
+          Code.expect(values[0].browserscopeID).to.equal(newBsKey);
 
-        done();
-      });
+          done();
+        });
     });
   });
 

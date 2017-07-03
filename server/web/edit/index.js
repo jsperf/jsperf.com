@@ -109,21 +109,21 @@ exports.register = function (server, options, next) {
           let isOwn = false;
 
           pagesService.getBySlug(request.params.testSlug, request.params.rev)
-          .then(values => {
-            const prevPage = values[0];
-            const own = request.yar.get('own') || {};
-            isOwn = own[prevPage.id];
-            const isAdmin = request.yar.get('admin');
-            let update = !!(isAdmin || isOwn);
-            return pagesService.edit(pageWithTests, update, prevPage.maxRev, prevPage.id);
-          })
-          .then(resultingRevision => {
-            request.yar.set('authorSlug', pageWithTests.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+            .then(values => {
+              const prevPage = values[0];
+              const own = request.yar.get('own') || {};
+              isOwn = own[prevPage.id];
+              const isAdmin = request.yar.get('admin');
+              let update = !!(isAdmin || isOwn);
+              return pagesService.edit(pageWithTests, update, prevPage.maxRev, prevPage.id);
+            })
+            .then(resultingRevision => {
+              request.yar.set('authorSlug', pageWithTests.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
 
-            const r = resultingRevision > 1 ? `/${resultingRevision}` : '';
+              const r = resultingRevision > 1 ? `/${resultingRevision}` : '';
 
-            reply.redirect(`/${request.params.testSlug}${r}`);
-          }).catch(errResp);
+              reply.redirect(`/${request.params.testSlug}${r}`);
+            }).catch(errResp);
         }
       });
     }

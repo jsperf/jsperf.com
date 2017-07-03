@@ -55,16 +55,16 @@ lab.experiment('Comments Repository', () => {
       genericQueryStub.returns(Promise.resolve([]));
 
       comments.findByPageID(pageID)
-      .then(() => {
-        Code.expect(
-          genericQueryStub.calledWithExactly(
-            'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
-            ['comments', pageID]
-          )
-        ).to.be.true();
+        .then(() => {
+          Code.expect(
+            genericQueryStub.calledWithExactly(
+              'SELECT * FROM ?? WHERE pageID = ? ORDER BY published ASC',
+              ['comments', pageID]
+            )
+          ).to.be.true();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -130,7 +130,7 @@ lab.experiment('Comments Repository', () => {
 
         done();
       })
-      .catch(done);
+        .catch(done);
     });
   });
 });

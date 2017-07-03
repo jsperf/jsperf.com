@@ -58,8 +58,8 @@ exports.register = function (server, options, next) {
             revisions: results[2].map(mapRevision),
             comments: results[3].map(mapComment)
           })
-          .type('application/json')
-          .code(200);
+            .type('application/json')
+            .code(200);
         })
         .catch(function (error) {
           reply(error);

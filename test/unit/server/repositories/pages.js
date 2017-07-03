@@ -69,20 +69,20 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve({ insertId }));
 
       pages.create(payload)
-      .then(function (newId) {
-        Code.expect(
-          genericQueryStub.calledWithExactly(
-            'INSERT INTO ?? SET ?',
-            [
-              'pages',
-              payload
-            ]
-          )
-        ).to.be.true();
-        Code.expect(newId).to.equal(insertId);
+        .then(function (newId) {
+          Code.expect(
+            genericQueryStub.calledWithExactly(
+              'INSERT INTO ?? SET ?',
+              [
+                'pages',
+                payload
+              ]
+            )
+          ).to.be.true();
+          Code.expect(newId).to.equal(insertId);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns an error when query fails', function (done) {
@@ -92,12 +92,12 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.reject(testErr));
 
       pages.create(payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -118,22 +118,22 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve([{ id: id }]));
 
       pages.get(testFields, testWhere)
-      .then(function (row) {
-        Code.expect(
-          genericQueryStub.calledWithExactly(
-            'SELECT ?? FROM ?? WHERE ? LIMIT 1',
-            [
-              testFields,
-              'pages',
-              testWhere
-            ]
-          )
-        ).to.be.true();
-        Code.expect(row).to.be.object();
-        Code.expect(row.id).to.equal(id);
+        .then(function (row) {
+          Code.expect(
+            genericQueryStub.calledWithExactly(
+              'SELECT ?? FROM ?? WHERE ? LIMIT 1',
+              [
+                testFields,
+                'pages',
+                testWhere
+              ]
+            )
+          ).to.be.true();
+          Code.expect(row).to.be.object();
+          Code.expect(row.id).to.equal(id);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns an error when query fails', function (done) {
@@ -143,12 +143,12 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.reject(testErr));
 
       pages.get(testFields, testWhere)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -157,11 +157,11 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve([]));
 
       pages.getLatestVisible(250)
-      .then(function (rows) {
-        Code.expect(rows).to.be.array();
+        .then(function (rows) {
+          Code.expect(rows).to.be.array();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns an error when query fails', function (done) {
@@ -171,12 +171,12 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getLatestVisible(250)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -185,11 +185,11 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve([]));
 
       pages.getLatestVisibleForAuthor('test-author')
-      .then(function (rows) {
-        Code.expect(rows).to.be.array();
+        .then(function (rows) {
+          Code.expect(rows).to.be.array();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns an error when query fails', function (done) {
@@ -199,12 +199,12 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getLatestVisibleForAuthor('test-author')
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -215,15 +215,15 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve({}));
 
       pages.getBySlug(slug, rev)
-      .then(function (page) {
-        Code.expect(page).to.be.object();
-        Code.expect(genericQueryStub.calledWithExactly(
-          'SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ?',
-          [table, slug, table, slug, rev]
-        )).to.be.true();
+        .then(function (page) {
+          Code.expect(page).to.be.object();
+          Code.expect(genericQueryStub.calledWithExactly(
+            'SELECT *, (SELECT MAX(revision) FROM ?? WHERE slug = ? ) AS maxRev FROM ?? WHERE slug = ? AND revision = ?',
+            [table, slug, table, slug, rev]
+          )).to.be.true();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -253,15 +253,15 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve([]));
 
       pages.find(searchTerms)
-      .then(function (page) {
-        Code.expect(page).to.be.array();
-        Code.expect(genericQueryStub.calledWithExactly(
-          'SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageID, COUNT(t.pageID) AS testCount FROM tests t GROUP BY t.pageID) z ON z.pageID = y.pID;',
-          [wc, wc]
-        )).to.be.true();
+        .then(function (page) {
+          Code.expect(page).to.be.array();
+          Code.expect(genericQueryStub.calledWithExactly(
+            'SELECT * FROM (SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, COUNT(x.slug) AS revisionCount FROM pages x WHERE x.title LIKE ? OR x.info LIKE ? GROUP BY x.slug ORDER BY updated DESC LIMIT 0, 50) y LEFT JOIN (SELECT t.pageID, COUNT(t.pageID) AS testCount FROM tests t GROUP BY t.pageID) z ON z.pageID = y.pID;',
+            [wc, wc]
+          )).to.be.true();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -271,16 +271,16 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve([]));
 
       pages.findBySlug(slug)
-      .then(function (p) {
-        Code.expect(p).to.be.array();
-        Code.expect(genericQueryStub.calledWithExactly(
-          'SELECT published, updated, author, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
-          [slug]
-        )).to.be.true();
+        .then(function (p) {
+          Code.expect(p).to.be.array();
+          Code.expect(genericQueryStub.calledWithExactly(
+            'SELECT published, updated, author, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
+            [slug]
+          )).to.be.true();
 
-        done();
-      })
-      .catch(done);
+          done();
+        })
+        .catch(done);
     });
   });
 
@@ -355,23 +355,23 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getSitemap()
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns tests to use for sitemap', function (done) {
       genericQueryStub.returns(Promise.resolve([]));
 
       pages.getSitemap()
-      .then(function (results) {
-        Code.expect(results).to.be.array();
+        .then(function (results) {
+          Code.expect(results).to.be.array();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -383,23 +383,23 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getPopularRecent()
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns at most 30 recent popular tests', function (done) {
       genericQueryStub.returns(Promise.resolve(new Array(30)));
 
       pages.getPopularRecent()
-      .then(function (results) {
-        Code.expect(results).to.be.array();
+        .then(function (results) {
+          Code.expect(results).to.be.array();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -411,23 +411,23 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.reject(testErr));
 
       pages.getPopularAllTime()
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns at most 30 recent popular tests', function (done) {
       genericQueryStub.returns(Promise.resolve(new Array(30)));
 
       pages.getPopularAllTime()
-      .then(function (results) {
-        Code.expect(results).to.be.array();
+        .then(function (results) {
+          Code.expect(results).to.be.array();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -437,14 +437,14 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve());
 
       pages.updateHits(pageID)
-      .then(function () {
-        Code.expect(genericQueryStub.calledWithExactly(
-          'UPDATE ?? SET hits = hits + 1 WHERE id = ?',
-          [table, pageID]
-        )).to.be.true();
+        .then(function () {
+          Code.expect(genericQueryStub.calledWithExactly(
+            'UPDATE ?? SET hits = hits + 1 WHERE id = ?',
+            [table, pageID]
+          )).to.be.true();
 
-        done();
-      });
+          done();
+        });
     });
   });
 
@@ -455,14 +455,14 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve());
 
       pages.updateById(modify, pageID)
-      .then(function () {
-        Code.expect(genericQueryStub.calledWithExactly(
-          'UPDATE ?? SET ? WHERE id = ?',
-          [table, modify, pageID]
-        )).to.be.true();
+        .then(function () {
+          Code.expect(genericQueryStub.calledWithExactly(
+            'UPDATE ?? SET ? WHERE id = ?',
+            [table, modify, pageID]
+          )).to.be.true();
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('returns updated pageId', function (done) {
@@ -471,11 +471,11 @@ lab.experiment('Pages Repository', function () {
       genericQueryStub.returns(Promise.resolve());
 
       pages.updateById(modify, pageID)
-      .then(newId => {
-        Code.expect(newId).to.equal(pageID);
+        .then(newId => {
+          Code.expect(newId).to.equal(pageID);
 
-        done();
-      });
+          done();
+        });
     });
   });
 });

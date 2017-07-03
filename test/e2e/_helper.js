@@ -53,11 +53,11 @@ screenshot - takes and stores to `test/e2e/screenshots`
 */
 exports.screenshot = function (driver, pathname) {
   return driver.takeScreenshot()
-  .then((data) => {
-    fs.writeFileSync(
-      path.resolve(__dirname, 'screenshots', Date.now() + '-' + pathname + '.png'),
-      data,
-      { encoding: 'base64' }
-    );
-  });
+    .then((data) => {
+      fs.writeFileSync(
+        path.resolve(__dirname, 'screenshots', Date.now() + '-' + pathname + '.png'),
+        data,
+        { encoding: 'base64' }
+      );
+    });
 };

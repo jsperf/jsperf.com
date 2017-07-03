@@ -40,7 +40,7 @@ lab.beforeEach(function (done) {
     ], (err) => {
       if (err) return done(err);
 
-      sinon.stub(server.plugins['services/pages'], 'find', () => pagesServiceStub);
+      sinon.stub(server.plugins['services/pages'], 'find').callsFake(() => pagesServiceStub);
 
       done();
     });
