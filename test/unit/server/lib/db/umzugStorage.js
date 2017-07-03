@@ -9,7 +9,7 @@ const lab = exports.lab = Lab.script();
 lab.experiment('Custom Umzug Storage', () => {
   lab.test('constructs', (done) => {
     Code.expect(new CustomStorage({
-      storageOptions: { genericQuery: () => {} }
+      genericQuery: () => {}
     })).to.be.instanceof(CustomStorage);
 
     done();
@@ -17,7 +17,7 @@ lab.experiment('Custom Umzug Storage', () => {
 
   lab.test('logMigration', (done) => {
     const c = new CustomStorage({
-      storageOptions: { genericQuery: sinon.stub().returns(Promise.resolve()) }
+      genericQuery: sinon.stub().returns(Promise.resolve())
     });
 
     c.logMigration('1-test.js').then(done);
@@ -25,7 +25,7 @@ lab.experiment('Custom Umzug Storage', () => {
 
   lab.test('unlogMigration', (done) => {
     const c = new CustomStorage({
-      storageOptions: { genericQuery: sinon.stub().returns(Promise.resolve()) }
+      genericQuery: sinon.stub().returns(Promise.resolve())
     });
 
     c.unlogMigration('1-test.js').then(done);
@@ -34,7 +34,7 @@ lab.experiment('Custom Umzug Storage', () => {
   lab.experiment('executed', (done) => {
     lab.test('returns array of completed migrations', (done) => {
       const c = new CustomStorage({
-        storageOptions: { genericQuery: sinon.stub().returns(Promise.resolve([{ name: '1-test.js' }])) }
+        genericQuery: sinon.stub().returns(Promise.resolve([{ name: '1-test.js' }]))
       });
 
       c.executed().then((names) => {
@@ -48,7 +48,7 @@ lab.experiment('Custom Umzug Storage', () => {
       err.code = 'ER_NO_SUCH_TABLE';
 
       const c = new CustomStorage({
-        storageOptions: { genericQuery: sinon.stub().returns(Promise.reject(err)) }
+        genericQuery: sinon.stub().returns(Promise.reject(err))
       });
 
       c.executed().then((names) => {
@@ -60,7 +60,7 @@ lab.experiment('Custom Umzug Storage', () => {
     lab.test('passes along unknown errors', (done) => {
       const testMsg = 'testingunknown';
       const c = new CustomStorage({
-        storageOptions: { genericQuery: sinon.stub().returns(Promise.reject(new Error(testMsg))) }
+        genericQuery: sinon.stub().returns(Promise.reject(new Error(testMsg)))
       });
 
       c.executed().catch((err) => {
