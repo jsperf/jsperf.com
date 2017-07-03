@@ -30,18 +30,19 @@ exports.register = function (server, options, next) {
 
           // highlight the JS inside HTML while highlighting the HTML
           page.initHTMLHighlighted = hljs.highlight('html',
-            page.initHTML.replace(reScripts, function (match, open, contents, close) {
-              // highlight JS inside script tags
-              var highlightedContents = hljs.highlight('js', contents, true).value;
-              // store to put back in place later
-              swappedScripts.unshift(highlightedContents.replace(/&nbsp;$/, ''));
-              // insert marker to replace shortly
-              return open + '@jsPerfTagToken' + close;
-            }), true).value.replace(/@jsPerfTagToken/, function () {
-            // put highlighted JS into highlighted HTML
-            return swappedScripts.pop();
-          }
-          );
+            page.initHTML.replace(
+              reScripts,
+              function (match, open, contents, close) {
+                // highlight JS inside script tags
+                var highlightedContents = hljs.highlight('js', contents, true).value;
+                // store to put back in place later
+                swappedScripts.unshift(highlightedContents.replace(/&nbsp;$/, ''));
+                // insert marker to replace shortly
+                return open + '@jsPerfTagToken' + close;
+              }
+            ),
+            true
+          ).value.replace(/@jsPerfTagToken/, () => swappedScripts.pop());
         }
 
         // update hits once per page per session
