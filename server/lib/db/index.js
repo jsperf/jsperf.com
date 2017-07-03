@@ -1,6 +1,7 @@
 const path = require('path');
 const mysql = require('mysql');
 const Umzug = require('umzug');
+const Storage = require('./umzugStorage');
 
 exports.register = function (server, options, next) {
   const connectionOptions = {
@@ -46,10 +47,9 @@ exports.register = function (server, options, next) {
   server.expose('genericQuery', genericQuery);
 
   const migrator = new Umzug({
-    storage: require.resolve('./umzugStorage'),
-    storageOptions: {
+    storage: new Storage({
       genericQuery
-    },
+    }),
     logger,
     upName: 'up',
     downName: 'down',

@@ -2,7 +2,7 @@ const table = 'migrations';
 
 class CustomStorage {
   constructor (options) {
-    this.genericQuery = options.storageOptions.genericQuery;
+    this.genericQuery = options.genericQuery;
   }
 
   logMigration (migrationName) {
