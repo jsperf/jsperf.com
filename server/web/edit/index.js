@@ -80,6 +80,7 @@ exports.register = function (server, options, next) {
 
       Joi.validate(request.payload, schema.testPage, function (err, pageWithTests) {
         if (err) {
+          server.log(['error'], err);
           let errObj = {};
           try {
             const valErr = err.details[0];
@@ -115,6 +116,7 @@ exports.register = function (server, options, next) {
               isOwn = own[prevPage.id];
               const isAdmin = request.yar.get('admin');
               let update = !!(isAdmin || isOwn);
+              server.log('debug', `isAdmin: ${isAdmin} isOwn: ${isOwn} update: ${update}`);
               return pagesService.edit(pageWithTests, update, prevPage.maxRev, prevPage.id);
             })
             .then(resultingRevision => {

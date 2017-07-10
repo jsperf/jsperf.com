@@ -30,6 +30,7 @@ exports.register = function (server, options, next) {
       if (!test.title && !test.code) {
         // ... if it's theirs to delete ...
         if (isOwn && test.testID) {
+          server.log('info', `deleting test ${test.testID} from page ${pageID}`);
           queries.push(db.genericQuery(`DELETE FROM ?? WHERE pageID = ${pageID} AND testID = ${test.testID}`, [table]));
         }
         // ... otherwise skip over the test
