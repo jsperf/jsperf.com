@@ -2,7 +2,7 @@ const table = 'migrations';
 
 class CustomStorage {
   constructor (options) {
-    this.genericQuery = options.storageOptions.genericQuery;
+    this.genericQuery = options.genericQuery;
   }
 
   logMigration (migrationName) {
@@ -24,15 +24,15 @@ class CustomStorage {
     // pending migrations. The result has to be an
     // array with the names of the migration files.
     return this.genericQuery('SELECT name FROM ?? ORDER BY id ASC;', [ table ])
-    .then((rows) => rows.map((r) => r.name))
-    .catch((err) => {
-      if (err.code === 'ER_NO_SUCH_TABLE') {
+      .then((rows) => rows.map((r) => r.name))
+      .catch((err) => {
+        if (err.code === 'ER_NO_SUCH_TABLE') {
         // first run
-        return [];
-      }
+          return [];
+        }
 
-      throw err;
-    });
+        throw err;
+      });
   }
 }
 

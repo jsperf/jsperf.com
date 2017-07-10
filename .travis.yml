@@ -12,6 +12,12 @@ language: node_js
 # env:
 #   - NODE_ENV=test PORT=3000 MYSQL_USER=jsuser MYSQL_PASSWORD=jspass MYSQL_DATABASE=jsperf GITHUB_CALLBACK=http://localhost:3000 BELL_COOKIE_PASS=password-should-be-32-characters COOKIE_PASS=password-should-be-32-characters
 
+before_install:
+  - npm install -g greenkeeper-lockfile@1
+
+before_script:
+  - greenkeeper-lockfile-update
+
 script:
   - npm test
   # - npm start &
@@ -20,5 +26,6 @@ script:
   # - npm run test-e2e
 
 after_script:
+  - greenkeeper-lockfile-upload
   - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < lcov.info || echo "Could not upload code coverage to CodeClimate"

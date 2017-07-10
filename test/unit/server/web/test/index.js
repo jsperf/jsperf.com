@@ -1,7 +1,6 @@
 const path = require('path');
 const Lab = require('lab');
 const sinon = require('sinon');
-require('sinon-as-promised');
 const Code = require('code');
 const Hapi = require('hapi');
 const cheerio = require('cheerio');

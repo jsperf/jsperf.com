@@ -147,7 +147,7 @@
       while (target && !(id = target.id)) {
         target = target.parentNode;
       }
-      index = id && --id.split('-')[1] || 0;
+      index = (id && --id.split('-')[1]) || 0;
       ui.push(ui.benchmarks[index].reset());
       ui.running ? ui.render(index) : ui.run(runOptions);
     },
@@ -514,51 +514,51 @@
       ui.render(index);
     }
   })
-  .on('start cycle', function () {
-    ui.render();
-    setHTML('run', texts.run.running);
-  })
-  .on('complete', function () {
-    var benches = filter(ui.benchmarks, 'successful');
-    var fastest = filter(benches, 'fastest');
-    var slowest = filter(benches, 'slowest');
+    .on('start cycle', function () {
+      ui.render();
+      setHTML('run', texts.run.running);
+    })
+    .on('complete', function () {
+      var benches = filter(ui.benchmarks, 'successful');
+      var fastest = filter(benches, 'fastest');
+      var slowest = filter(benches, 'slowest');
 
-    ui.render();
-    setHTML('run', texts.run.again);
-    setStatus(texts.status.again);
+      ui.render();
+      setHTML('run', texts.run.again);
+      setStatus(texts.status.again);
 
-    // highlight result cells
-    _.each(benches, function (bench) {
-      var cell = $(prefix + (_.indexOf(ui.benchmarks, bench) + 1));
-      var fastestHz = getHz(fastest[0]);
-      var hz = getHz(bench);
-      var percent = (1 - (hz / fastestHz)) * 100;
-      var span = cell.getElementsByTagName('span')[0];
-      var text = 'fastest';
+      // highlight result cells
+      _.each(benches, function (bench) {
+        var cell = $(prefix + (_.indexOf(ui.benchmarks, bench) + 1));
+        var fastestHz = getHz(fastest[0]);
+        var hz = getHz(bench);
+        var percent = (1 - (hz / fastestHz)) * 100;
+        var span = cell.getElementsByTagName('span')[0];
+        var text = 'fastest';
 
-      if (_.indexOf(fastest, bench) > -1) {
+        if (_.indexOf(fastest, bench) > -1) {
         // mark fastest
-        addClass(cell, text);
-      } else {
-        text = isFinite(hz)
-          ? formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) + '% slower'
-          : '';
+          addClass(cell, text);
+        } else {
+          text = isFinite(hz)
+            ? formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) + '% slower'
+            : '';
 
-        // mark slowest
-        if (_.indexOf(slowest, bench) > -1) {
-          addClass(cell, 'slowest');
+          // mark slowest
+          if (_.indexOf(slowest, bench) > -1) {
+            addClass(cell, 'slowest');
+          }
         }
-      }
-      // write ranking
-      if (span) {
-        setHTML(span, text);
-      } else {
-        appendHTML(cell, '<span>' + text + '</span>');
-      }
-    });
+        // write ranking
+        if (span) {
+          setHTML(span, text);
+        } else {
+          appendHTML(cell, '<span>' + text + '</span>');
+        }
+      });
 
-    ui.browserscope.post();
-  });
+      ui.browserscope.post();
+    });
 
   /* ------------------------------------------------------------------------ */
 

@@ -66,12 +66,12 @@ lab.experiment('Comments Service', function () {
       createStub.returns(Promise.reject(testErr));
 
       comments.create(null, null, payload)
-      .catch(function (err) {
-        Code.expect(err).to.be.instanceof(Error);
-        Code.expect(err.message).to.equal(testErrMsg);
+        .catch(function (err) {
+          Code.expect(err).to.be.instanceof(Error);
+          Code.expect(err.message).to.equal(testErrMsg);
 
-        done();
-      });
+          done();
+        });
     });
 
     lab.test('assigns new id to comment before returning', (done) => {
@@ -79,11 +79,11 @@ lab.experiment('Comments Service', function () {
       createStub.returns(Promise.resolve(id));
 
       comments.create(null, null, payload)
-      .then((comment) => {
-        Code.expect(comment).to.include({ id });
-        done();
-      })
-      .catch(done);
+        .then((comment) => {
+          Code.expect(comment).to.include({ id });
+          done();
+        })
+        .catch(done);
     });
   });
 

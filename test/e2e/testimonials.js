@@ -14,10 +14,10 @@ lab.experiment('Testimonials page', () => {
     driver = Helper.build();
 
     return driver.getSession()
-    .then((session) => session.getId())
-    .then((id) => {
-      sessionID = id;
-    });
+      .then((session) => session.getId())
+      .then((id) => {
+        sessionID = id;
+      });
   });
 
   lab.afterEach((done) => {

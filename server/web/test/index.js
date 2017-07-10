@@ -30,31 +30,32 @@ exports.register = function (server, options, next) {
 
           // highlight the JS inside HTML while highlighting the HTML
           page.initHTMLHighlighted = hljs.highlight('html',
-            page.initHTML.replace(reScripts, function (match, open, contents, close) {
-              // highlight JS inside script tags
-              var highlightedContents = hljs.highlight('js', contents, true).value;
-              // store to put back in place later
-              swappedScripts.unshift(highlightedContents.replace(/&nbsp;$/, ''));
-              // insert marker to replace shortly
-              return open + '@jsPerfTagToken' + close;
-            }), true).value.replace(/@jsPerfTagToken/, function () {
-              // put highlighted JS into highlighted HTML
-              return swappedScripts.pop();
-            }
-          );
+            page.initHTML.replace(
+              reScripts,
+              function (match, open, contents, close) {
+                // highlight JS inside script tags
+                var highlightedContents = hljs.highlight('js', contents, true).value;
+                // store to put back in place later
+                swappedScripts.unshift(highlightedContents.replace(/&nbsp;$/, ''));
+                // insert marker to replace shortly
+                return open + '@jsPerfTagToken' + close;
+              }
+            ),
+            true
+          ).value.replace(/@jsPerfTagToken/, () => swappedScripts.pop());
         }
 
         // update hits once per page per session
         var hits = request.yar.get('hits') || {};
         if (!hits[page.id]) {
           pagesService.updateHits(page.id)
-          .then(function () {
-            hits[page.id] = true;
-            request.yar.set('hits', hits);
-          })
-          .catch((err) => {
-            server.log(['error'], err);
-          });
+            .then(function () {
+              hits[page.id] = true;
+              request.yar.set('hits', hits);
+            })
+            .catch((err) => {
+              server.log(['error'], err);
+            });
         }
 
         var own = request.yar.get('own') || {};
@@ -140,11 +141,11 @@ exports.register = function (server, options, next) {
           } else {
             const ip = request.headers['x-forwarded-for'] || request.info.remoteAddress;
             return commentsService.create(model.page.id, ip, result.value)
-            .then((comment) => {
-              model.page.comments.push(comment);
-              model.mediumTextLength = defaults.mediumTextLength;
-              reply.view('test/index', model);
-            });
+              .then((comment) => {
+                model.page.comments.push(comment);
+                model.mediumTextLength = defaults.mediumTextLength;
+                reply.view('test/index', model);
+              });
           }
         })
         .catch(reply);
@@ -157,30 +158,30 @@ exports.register = function (server, options, next) {
     path: '/{testSlug}/{rev}/publish',
     handler: function (request, reply) {
       pagesService.getBySlug(request.params.testSlug, request.params.rev)
-      .then(function (values) {
-        const page = values[0];
-        const own = request.yar.get('own') || {};
-        const isOwn = own[page.id];
-        const isAdmin = request.yar.get('admin');
+        .then(function (values) {
+          const page = values[0];
+          const own = request.yar.get('own') || {};
+          const isOwn = own[page.id];
+          const isAdmin = request.yar.get('admin');
 
-        if (isOwn || isAdmin) {
-          return pagesService.publish(page.id);
-        }
+          if (isOwn || isAdmin) {
+            return pagesService.publish(page.id);
+          }
 
-        // whoever is requesting this doesn't own it so don't let them know it exists
-        throw new Error('Not found');
-      })
-      .then(function () {
-        server.log(['debug'], 'publish finished: ' + JSON.stringify(arguments));
-        reply.redirect(`/${request.params.testSlug}/${request.params.rev}`);
-      })
-      .catch(function (err) {
-        if (err.message === 'Not found') {
-          reply(Boom.notFound('The page was not found'));
-        } else {
-          reply(err);
-        }
-      });
+          // whoever is requesting this doesn't own it so don't let them know it exists
+          throw new Error('Not found');
+        })
+        .then(function () {
+          server.log(['debug'], 'publish finished: ' + JSON.stringify(arguments));
+          reply.redirect(`/${request.params.testSlug}/${request.params.rev}`);
+        })
+        .catch(function (err) {
+          if (err.message === 'Not found') {
+            reply(Boom.notFound('The page was not found'));
+          } else {
+            reply(err);
+          }
+        });
     }
   });
 

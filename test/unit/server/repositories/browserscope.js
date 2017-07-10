@@ -52,11 +52,11 @@ lab.experiment('Browserscope Repository', function () {
       const testResp = JSON.stringify({ 'test_key': testKey });
 
       browserscope.addTest('My Test', 'is great', 'great-test')
-      .then(function (key) {
-        Code.expect(key).to.equal(testKey);
+        .then(function (key) {
+          Code.expect(key).to.equal(testKey);
 
-        done();
-      });
+          done();
+        });
 
       // verify these events have listeners
       Code.expect(emitter.emit('data', testResp)).to.be.true();
@@ -68,8 +68,8 @@ lab.experiment('Browserscope Repository', function () {
 
       // error from unexpected response will be logged
       browserscope.addTest('My Test', 'is great', 'great-test')
-      .then(done)
-      .catch(done);
+        .then(done)
+        .catch(done);
 
       // verify event has listener
       Code.expect(emitter.emit('data', testResp)).to.be.true();
@@ -82,7 +82,7 @@ lab.experiment('Browserscope Repository', function () {
 
       // error will be logged
       browserscope.addTest('My Test', 'is great', 'great-test')
-      .then(done);
+        .then(done);
 
       // verify event has listener
       Code.expect(emitter.emit('error', testErr)).to.be.true();

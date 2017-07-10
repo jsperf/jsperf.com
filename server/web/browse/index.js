@@ -27,14 +27,14 @@ exports.register = function (server, options, next) {
       };
 
       pagesRepo.getLatestVisible(250)
-      .then(function (rows) {
-        context.pages = rows;
-        reply.view('browse/index', context);
-      })
-      .catch(function () {
-        context.genError = 'Sorry. Could not find tests to browse.';
-        reply.view('browse/index', context);
-      });
+        .then(function (rows) {
+          context.pages = rows;
+          reply.view('browse/index', context);
+        })
+        .catch(function () {
+          context.genError = 'Sorry. Could not find tests to browse.';
+          reply.view('browse/index', context);
+        });
     }
   });
 
@@ -43,22 +43,22 @@ exports.register = function (server, options, next) {
     path: '/browse.atom',
     handler: function (request, reply) {
       pagesRepo.getLatestVisible(20)
-      .then(function (rows) {
-        var updated = getUpdatedDate(rows);
+        .then(function (rows) {
+          var updated = getUpdatedDate(rows);
 
-        reply
-          .view('browse/index-atom', {
-            updated: updated.toISOString(),
-            pages: rows
-          }, {
-            layout: false
-          })
-          .header('Content-Type', 'application/atom+xml;charset=UTF-8')
-          .header('Last-Modified', updated.toString());
-      })
-      .catch(function (err) {
-        reply(err);
-      });
+          reply
+            .view('browse/index-atom', {
+              updated: updated.toISOString(),
+              pages: rows
+            }, {
+              layout: false
+            })
+            .header('Content-Type', 'application/atom+xml;charset=UTF-8')
+            .header('Last-Modified', updated.toString());
+        })
+        .catch(function (err) {
+          reply(err);
+        });
     }
   });
 
@@ -67,23 +67,23 @@ exports.register = function (server, options, next) {
     path: '/browse/{authorSlug}',
     handler: function (request, reply) {
       pagesRepo.getLatestVisibleForAuthor(request.params.authorSlug)
-      .then(function (rows) {
-        if (rows.length === 0) {
-          reply(Boom.notFound('The author was not found'));
-        } else {
-          reply.view('browse/author', {
-            headTitle: 'Test cases by ' + request.params.authorSlug,
-            showAtom: {
-              slug: 'browse/' + request.params.authorSlug
-            },
-            author: request.params.authorSlug,
-            pages: rows
-          });
-        }
-      })
-      .catch(function (err) {
-        reply(err);
-      });
+        .then(function (rows) {
+          if (rows.length === 0) {
+            reply(Boom.notFound('The author was not found'));
+          } else {
+            reply.view('browse/author', {
+              headTitle: 'Test cases by ' + request.params.authorSlug,
+              showAtom: {
+                slug: 'browse/' + request.params.authorSlug
+              },
+              author: request.params.authorSlug,
+              pages: rows
+            });
+          }
+        })
+        .catch(function (err) {
+          reply(err);
+        });
     }
   });
 
@@ -92,22 +92,22 @@ exports.register = function (server, options, next) {
     path: '/browse/{authorSlug}.atom',
     handler: function (request, reply) {
       pagesRepo.getLatestVisibleForAuthor(request.params.authorSlug)
-      .then(function (rows) {
-        var updated = getUpdatedDate(rows);
+        .then(function (rows) {
+          var updated = getUpdatedDate(rows);
 
-        reply.view('browse/author-atom', {
-          author: request.params.authorSlug,
-          update: updated.toISOString,
-          pages: rows
-        }, {
-          layout: false
+          reply.view('browse/author-atom', {
+            author: request.params.authorSlug,
+            update: updated.toISOString,
+            pages: rows
+          }, {
+            layout: false
+          })
+            .header('Content-Type', 'application/atom+xml;charset=UTF-8')
+            .header('Last-Modified', updated.toString());
         })
-          .header('Content-Type', 'application/atom+xml;charset=UTF-8')
-          .header('Last-Modified', updated.toString());
-      })
-      .catch(function (err) {
-        reply(err);
-      });
+        .catch(function (err) {
+          reply(err);
+        });
     }
   });
 
