@@ -1,3 +1,5 @@
+const defaults = require('../lib/defaults');
+
 const name = 'repositories/tests';
 const table = 'tests';
 
@@ -26,8 +28,9 @@ exports.register = function (server, options, next) {
     let queries = [];
 
     tests.forEach(test => {
-      // setting existing test title and code to blank indicates it should be deleted ...
-      if (!test.title && !test.code) {
+      // setting existing test title and code to blank indicates it should be deleted
+      // Joi converts this to the default ...
+      if (test.title === defaults.deleteMe && test.code === defaults.deleteMe) {
         // ... if it's theirs to delete ...
         if (isOwn && test.testID) {
           server.log('info', `deleting test ${test.testID} from page ${pageID}`);

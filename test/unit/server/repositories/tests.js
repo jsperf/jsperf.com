@@ -3,6 +3,7 @@ const Code = require('code');
 const Hapi = require('hapi');
 const sinon = require('sinon');
 const Hoek = require('hoek');
+const defaults = require('../../../../server/lib/defaults');
 
 const MockDb = {
   register: (server, options, next) => {
@@ -190,10 +191,10 @@ lab.experiment('Tests Repository', function () {
       let tClone = Hoek.clone(t);
       tClone[0].testID = 123;
       tClone[1].testID = 321;
-      delete tClone[0].code;
-      delete tClone[0].title;
-      delete tClone[1].code;
-      delete tClone[1].title;
+      tClone[0].code = defaults.deleteMe;
+      tClone[0].title = defaults.deleteMe;
+      tClone[1].code = defaults.deleteMe;
+      tClone[1].title = defaults.deleteMe;
 
       tests.bulkUpdate(pageID, tClone, true)
         .then(results => {
@@ -212,10 +213,10 @@ lab.experiment('Tests Repository', function () {
     lab.test('does nothing if no title and no code with no test id', function (done) {
       genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
       let tClone = Hoek.clone(t);
-      delete tClone[0].code;
-      delete tClone[0].title;
-      delete tClone[1].code;
-      delete tClone[1].title;
+      tClone[0].code = defaults.deleteMe;
+      tClone[0].title = defaults.deleteMe;
+      tClone[1].code = defaults.deleteMe;
+      tClone[1].title = defaults.deleteMe;
 
       tests.bulkUpdate(pageID, tClone, true)
         .then(results => {
@@ -232,10 +233,10 @@ lab.experiment('Tests Repository', function () {
       let tClone = Hoek.clone(t);
       tClone[0].testID = 123;
       tClone[1].testID = 321;
-      delete tClone[0].code;
-      delete tClone[0].title;
-      delete tClone[1].code;
-      delete tClone[1].title;
+      tClone[0].code = defaults.deleteMe;
+      tClone[0].title = defaults.deleteMe;
+      tClone[1].code = defaults.deleteMe;
+      tClone[1].title = defaults.deleteMe;
 
       tests.bulkUpdate(pageID, tClone, false)
         .then(results => {

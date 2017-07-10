@@ -3,7 +3,7 @@ const Lab = require('lab');
 const Code = require('code');
 const Hapi = require('hapi');
 const sinon = require('sinon');
-
+const defaults = require('../../../../../server/lib/defaults');
 const HomePlugin = require('../../../../../server/web/home/index');
 
 const YarPlugin = {
@@ -169,25 +169,29 @@ lab.experiment('home', function () {
         });
       });
 
-      lab.test('test title required', function (done) {
-        delete request.payload.test[0].title;
+      lab.test('test title required if code present', function (done) {
+        // code present in defaults above
+        Code.expect(request.payload.test[0].code).to.not.be.empty();
+        request.payload.test[0].title = '';
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(400);
 
-          Code.expect(response.result).to.include('Please enter a title for this code snippet.');
+          Code.expect(response.result).to.include(defaults.errors.codeTitle);
 
           done();
         });
       });
 
-      lab.test('test code required', function (done) {
-        delete request.payload.test[0].code;
+      lab.test('test code required if title present', function (done) {
+        // title present in defaults above
+        Code.expect(request.payload.test[0].title).to.not.be.empty();
+        request.payload.test[0].code = '';
 
         server.inject(request, function (response) {
           Code.expect(response.statusCode).to.equal(400);
 
-          Code.expect(response.result).to.include('Please enter a code snippet.');
+          Code.expect(response.result).to.include(defaults.errors.code);
 
           done();
         });

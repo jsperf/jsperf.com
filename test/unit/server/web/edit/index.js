@@ -418,8 +418,10 @@ lab.experiment('POST', function () {
       });
     });
 
-    lab.test('test title required', function (done) {
-      delete request.payload.test[0].title;
+    lab.test('test title required if code present', function (done) {
+      // code present in defaults above
+      Code.expect(request.payload.test[0].code).to.not.be.empty();
+      request.payload.test[0].title = '';
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(400);
@@ -430,8 +432,10 @@ lab.experiment('POST', function () {
       });
     });
 
-    lab.test('test code required', function (done) {
-      delete request.payload.test[0].code;
+    lab.test('test code required if title present', function (done) {
+      // title present in defaults above
+      Code.expect(request.payload.test[0].title).to.not.be.empty();
+      request.payload.test[0].code = '';
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(400);
@@ -547,6 +551,34 @@ lab.experiment('POST', function () {
         var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
         request.headers = {};
         request.headers.cookie = 'session=' + cookie[1];
+        server.inject(request, response => {
+          let firstCallArgs = pagesServiceStub.edit.args[0];
+
+          Code.expect(firstCallArgs[0].slug).to.equal(request.payload.slug);
+          Code.expect(firstCallArgs[1]).to.equal(true);
+          Code.expect(firstCallArgs[2]).to.equal(22);
+
+          done();
+        });
+      });
+    });
+
+    lab.test('calls edit page service with update params to delete test', function (done) {
+      pagesServiceStub.edit.onCall(0).returns(Promise.resolve(request.payload));
+
+      server.inject('/setsession', function (res) {
+        var header = res.headers['set-cookie'];
+        var cookie = header[0].match(/(?:[^\x00-\x20\(\)<>@\,;\:\\'\/\[\]\?\=\{\}\x7F]+)\s*=\s*(?:([^\x00-\x20\'\,\;\\\x7F]*))/); // eslint-disable-line no-control-regex, no-useless-escape
+
+        request.headers = {};
+        request.headers.cookie = 'session=' + cookie[1];
+
+        // add extra blank test to simulate deleting a code snippet
+        request.payload.test.push({
+          title: '',
+          code: ''
+        });
+
         server.inject(request, response => {
           let firstCallArgs = pagesServiceStub.edit.args[0];
 
