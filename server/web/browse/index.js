@@ -25,16 +25,42 @@ exports.register = function (server, options, next) {
           slug: 'browse'
         }
       };
+      const key = {
+        segment: 'browse',
+        id: 'browse'
+      };
 
-      pagesRepo.getLatestVisible(250)
-        .then(function (rows) {
-          context.pages = rows;
+      server.plugins.cache.get(key, (err, cached) => {
+        if (err) {
+          reply(err);
+        } else if (cached) {
+          server.log('debug', 'cache hit on /browse');
+          // massage data for template
+          cached.item.forEach(r => {
+            r.published = new Date(r.published);
+            r.updated = new Date(r.updated);
+          });
+          context.pages = cached.item;
           reply.view('browse/index', context);
-        })
-        .catch(function () {
-          context.genError = 'Sorry. Could not find tests to browse.';
-          reply.view('browse/index', context);
-        });
+        } else {
+          server.log('debug', 'cache miss on /browse');
+          pagesRepo.getLatestVisible(250)
+            .then(function (rows) {
+              context.pages = rows;
+              server.plugins.cache.set(key, rows, 60000, (err) => {
+                if (err) {
+                  throw err;
+                } else {
+                  reply.view('browse/index', context);
+                }
+              });
+            })
+            .catch(function () {
+              context.genError = 'Sorry. Could not find tests to browse.';
+              reply.view('browse/index', context);
+            });
+        }
+      });
     }
   });
 
@@ -116,5 +142,5 @@ exports.register = function (server, options, next) {
 
 exports.register.attributes = {
   name: 'web/browse',
-  dependencies: ['repositories/pages']
+  dependencies: ['repositories/pages', 'cache']
 };

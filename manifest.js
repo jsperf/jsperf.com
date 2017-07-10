@@ -145,6 +145,17 @@ var manifest = {
         }
       }
     },
+    {
+      plugin: {
+        register: './server/lib/cache',
+        options: {
+          host: config.get('/cache/host'),
+          port: config.get('/cache/port'),
+          password: config.get('/cache/password'),
+          partition: 'jsperf'
+        }
+      }
+    },
     { plugin: './server/repositories/comments' },
     { plugin: './server/repositories/pages' },
     { plugin: './server/repositories/tests' },

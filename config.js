@@ -1,6 +1,12 @@
 require('dotenv').config();
 const Joi = require('joi');
 
+const prodOptional = {
+  is: 'production',
+  then: Joi.string().required(),
+  otherwise: Joi.string().optional()
+};
+
 const envSchema = Joi.object().keys({
   SCHEME: Joi.string().valid('http', 'https').optional().default('http'),
   NODE_ENV: Joi.string().required(),
@@ -17,16 +23,15 @@ const envSchema = Joi.object().keys({
   MYSQL_USER: Joi.string().required(),
   MYSQL_PASSWORD: Joi.string().required(),
   MYSQL_DATABASE: Joi.string().required(),
-  LOGGLY_TOKEN: Joi.string().when('NODE_ENV', {
+  LOGGLY_TOKEN: Joi.string().when('NODE_ENV', prodOptional),
+  LOGGLY_SUBDOMAIN: Joi.string().when('NODE_ENV', prodOptional),
+  REDIS_HOST: Joi.string().when('NODE_ENV', prodOptional),
+  REDIS_PORT: Joi.number().when('NODE_ENV', {
     is: 'production',
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional()
+    then: Joi.number().required(),
+    otherwise: Joi.number().optional()
   }),
-  LOGGLY_SUBDOMAIN: Joi.string().when('NODE_ENV', {
-    is: 'production',
-    then: Joi.string().required(),
-    otherwise: Joi.string().optional()
-  })
+  REDIS_PASSWORD: Joi.string().when('NODE_ENV', prodOptional)
 }).unknown(true); // allow other keys in process.env not defined here
 
 const result = Joi.validate(process.env, envSchema);
@@ -83,6 +88,11 @@ var config = {
   loggly: {
     token: result.value.LOGGLY_TOKEN,
     subdomain: result.value.LOGGLY_SUBDOMAIN
+  },
+  cache: {
+    host: result.value.REDIS_HOST,
+    port: result.value.REDIS_PORT,
+    password: result.value.REDIS_PASSWORD
   }
 };
 
