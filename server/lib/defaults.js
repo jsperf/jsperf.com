@@ -5,6 +5,8 @@ const regex = require('./regex');
 const MEDIUM_TEXT_LENGTH = 16777215;
 exports.mediumTextLength = MEDIUM_TEXT_LENGTH;
 
+exports.deleteMe = 'GENERATED_DEFAULT_DELETE_ME';
+
 exports.errors = {
   title: 'You must enter a title for this test case.',
   slug: 'The slug can only contain alphanumeric characters and hyphens.',

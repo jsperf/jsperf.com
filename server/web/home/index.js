@@ -50,8 +50,8 @@ exports.register = function (server, options, next) {
       };
 
       Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {
+        let errObj = {};
         if (er) {
-          var errObj = {};
           // `abortEarly` option defaults to `true` so can rely on 0 index
           // but just in case...
           try {
@@ -65,44 +65,55 @@ exports.register = function (server, options, next) {
                 errObj.slugError = defaults.errors.slug;
                 break;
               default:
-                const idx = valErr.path.split('.')[1];
-                switch (valErr.context.key) {
-                  case 'title':
-                    request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
-                    break;
-                  case 'code':
-                    request.payload.test[idx].codeError = defaults.errors.code;
-                    break;
-                  default:
-                    throw new Error('unknown validation error');
-                }
+                throw new Error('unknown validation error');
             }
           } catch (ex) {
             errObj.genError = defaults.errors.general;
           }
           errResp(errObj);
         } else {
-          // Joi defaults any properties not present in `request.payload` so use `payload` from here on out
-          var payload = pageWithTests;
+          // additional validation that's not possible or insanely complex w/ Joi
+          let wasAdditionalValidationError = false;
+          pageWithTests.test.forEach((t, idx) => {
+            const missingTitle = t.title === defaults.deleteMe;
+            const missingCode = t.code === defaults.deleteMe;
 
-          pagesService.checkIfSlugAvailable(server, payload.slug)
-            .then(isAvail => {
-              if (!isAvail) {
-                errResp({
-                  slugError: defaults.errors.slugDupe
-                });
-              } else {
-                return pagesService.create(payload)
-                  .then(resultPageId => {
-                    const own = request.yar.get('own') || {};
-                    own[resultPageId] = true;
-                    request.yar.set('own', own);
-                    request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
-                    reply.redirect('/' + payload.slug);
+            if (missingTitle && !missingCode) {
+              wasAdditionalValidationError = true;
+              request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
+            }
+
+            if (missingCode && !missingTitle) {
+              wasAdditionalValidationError = true;
+              request.payload.test[idx].codeError = defaults.errors.code;
+            }
+          });
+
+          if (wasAdditionalValidationError) {
+            errResp(errObj);
+          } else {
+            // Joi defaults any properties not present in `request.payload` so use `payload` from here on out
+            var payload = pageWithTests;
+
+            pagesService.checkIfSlugAvailable(server, payload.slug)
+              .then(isAvail => {
+                if (!isAvail) {
+                  errResp({
+                    slugError: defaults.errors.slugDupe
                   });
-              }
-            })
-            .catch(errResp);
+                } else {
+                  return pagesService.create(payload)
+                    .then(resultPageId => {
+                      const own = request.yar.get('own') || {};
+                      own[resultPageId] = true;
+                      request.yar.set('own', own);
+                      request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+                      reply.redirect('/' + payload.slug);
+                    });
+                }
+              })
+              .catch(errResp);
+          }
         }
       });
     }

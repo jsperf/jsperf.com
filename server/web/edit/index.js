@@ -79,26 +79,14 @@ exports.register = function (server, options, next) {
       };
 
       Joi.validate(request.payload, schema.testPage, function (err, pageWithTests) {
+        let errObj = {};
         if (err) {
-          let errObj = {};
+          server.log(['error'], err);
           try {
-            const valErr = err.details[0];
-            switch (valErr.path) {
-              case 'title':
-                errObj.titleError = defaults.errors.title;
-                break;
-              default:
-                const idx = valErr.path.split('.')[1];
-                switch (valErr.context.key) {
-                  case 'title':
-                    request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
-                    break;
-                  case 'code':
-                    request.payload.test[idx].codeError = defaults.errors.code;
-                    break;
-                  default:
-                    throw err;
-                }
+            if (err.details[0].path === 'title') {
+              errObj.titleError = defaults.errors.title;
+            } else {
+              throw err;
             }
           } catch (ex) {
             server.log(['error'], ex);
@@ -106,24 +94,46 @@ exports.register = function (server, options, next) {
           }
           errResp(errObj);
         } else {
-          let isOwn = false;
+          // additional validation that's not possible or insanely complex w/ Joi
+          let wasAdditionalValidationError = false;
+          pageWithTests.test.forEach((t, idx) => {
+            const missingTitle = t.title === defaults.deleteMe;
+            const missingCode = t.code === defaults.deleteMe;
 
-          pagesService.getBySlug(request.params.testSlug, request.params.rev)
-            .then(values => {
-              const prevPage = values[0];
-              const own = request.yar.get('own') || {};
-              isOwn = own[prevPage.id];
-              const isAdmin = request.yar.get('admin');
-              let update = !!(isAdmin || isOwn);
-              return pagesService.edit(pageWithTests, update, prevPage.maxRev, prevPage.id);
-            })
-            .then(resultingRevision => {
-              request.yar.set('authorSlug', pageWithTests.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+            if (missingTitle && !missingCode) {
+              wasAdditionalValidationError = true;
+              request.payload.test[idx].codeTitleError = defaults.errors.codeTitle;
+            }
 
-              const r = resultingRevision > 1 ? `/${resultingRevision}` : '';
+            if (missingCode && !missingTitle) {
+              wasAdditionalValidationError = true;
+              request.payload.test[idx].codeError = defaults.errors.code;
+            }
+          });
 
-              reply.redirect(`/${request.params.testSlug}${r}`);
-            }).catch(errResp);
+          if (wasAdditionalValidationError) {
+            errResp(errObj);
+          } else {
+            let isOwn = false;
+
+            pagesService.getBySlug(request.params.testSlug, request.params.rev)
+              .then(values => {
+                const prevPage = values[0];
+                const own = request.yar.get('own') || {};
+                isOwn = own[prevPage.id];
+                const isAdmin = request.yar.get('admin');
+                let update = !!(isAdmin || isOwn);
+                server.log('debug', `isAdmin: ${isAdmin} isOwn: ${isOwn} update: ${update}`);
+                return pagesService.edit(pageWithTests, update, prevPage.maxRev, prevPage.id);
+              })
+              .then(resultingRevision => {
+                request.yar.set('authorSlug', pageWithTests.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+
+                const r = resultingRevision > 1 ? `/${resultingRevision}` : '';
+
+                reply.redirect(`/${request.params.testSlug}${r}`);
+              }).catch(errResp);
+          }
         }
       });
     }
