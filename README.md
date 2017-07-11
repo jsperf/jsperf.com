@@ -47,6 +47,9 @@ COOKIE_PASS=password-should-be-32-characters
 # MYSQL_PORT=3306
 # LOGGLY_TOKEN=
 # LOGGLY_SUBDOMAIN=
+# REDIS_HOST=
+# REDIS_PORT=
+# REDIS_PASSWORD=
 ```
 
 ### Start
