@@ -19,11 +19,23 @@ MockRepo.register.attributes = {
   name: 'repositories/pages'
 };
 
+const MockCache = {
+  register: (server, options, next) => {
+    server.expose('get', (key, cb) => { cb(null, null); });
+    server.expose('set', (key, val, ttl, cb) => { cb(null); });
+    next();
+  }
+};
+
+MockCache.register.attributes = {
+  name: 'cache'
+};
+
 const lab = exports.lab = Lab.script();
 let request, server, getLatestVisibleStub, getLatestVisibleForAuthorStub;
 
 lab.beforeEach(function (done) {
-  const plugins = [ MockRepo, BrowsePlugin ];
+  const plugins = [ MockRepo, MockCache, BrowsePlugin ];
   server = new Hapi.Server();
   server.connection();
   server.register(require('vision'), () => {
@@ -74,6 +86,51 @@ lab.experiment('browse', function () {
 
       server.inject(request, function (response) {
         Code.expect(response.statusCode).to.equal(200);
+
+        done();
+      });
+    });
+
+    lab.test('it responds with error from cache get', (done) => {
+      const testErr = new Error('testing get');
+      sinon.stub(server.plugins.cache, 'get').callsArgWith(1, testErr);
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(500);
+
+        done();
+      });
+    });
+
+    lab.test('it responds with items from cache get', (done) => {
+      sinon.stub(server.plugins.cache, 'get').callsArgWith(1, null, {
+        item: [
+          {
+            url: 'test',
+            title: 'Test',
+            testCount: 2,
+            revisionCount: 1,
+            updated: new Date().toISOString(),
+            published: new Date().toISOString()
+          }
+        ]
+      });
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(200);
+
+        done();
+      });
+    });
+
+    lab.test('it responds with generic error when cache set errors', (done) => {
+      getLatestVisibleStub.returns(Promise.resolve([]));
+      const testErr = new Error('testing set');
+      sinon.stub(server.plugins.cache, 'set').callsArgWith(3, testErr);
+
+      server.inject(request, function (response) {
+        Code.expect(response.statusCode).to.equal(200);
+        Code.expect(response.result).to.contain('Sorry. Could not find tests to browse.');
 
         done();
       });
