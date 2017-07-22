@@ -58,7 +58,7 @@ exports.register = function (server, options, next) {
     }
 
     const slug = resultingRevision > 1 ? `${payload.slug}/${resultingRevision}` : payload.slug;
-    return browserscopeRepo.addTest(payload.title, payload.info, slug)
+    return browserscopeRepo.addTest(payload.title, payload.info, payload.slug)
       .then(testKey => {
         if (testKey) {
           page.browserscopeID = testKey;
