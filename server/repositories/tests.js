@@ -38,7 +38,7 @@ exports.register = function (server, options, next) {
         }
         // ... otherwise skip over the test
       } else {
-        if (test.testID) {
+        if (isOwn && test.testID) {
           queries.push(db.genericQuery(`UPDATE ?? SET title = ${db.escape(test.title)}, defer =  ${db.escape(test.defer)} , code =  ${db.escape(test.code)} WHERE pageID = ${pageID} AND testID = ${test.testID}`, [table]));
         } else {
           queries.push(db.genericQuery(`INSERT INTO ?? (??) VALUES (${pageID}, ${db.escape(test.title)}, ${db.escape(test.defer)}, ${db.escape(test.code)})`, [table, columns]));

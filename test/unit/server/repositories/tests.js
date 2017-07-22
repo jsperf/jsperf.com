@@ -173,7 +173,7 @@ lab.experiment('Tests Repository', function () {
       let tClone = Hoek.clone(t);
       tClone[0].testID = 123;
       tClone[1].testID = 321;
-      tests.bulkUpdate(pageID, tClone, false)
+      tests.bulkUpdate(pageID, tClone, true)
         .then(results => {
           const call1 = genericQueryStub.getCall(0).args;
           const call2 = genericQueryStub.getCall(1).args;
