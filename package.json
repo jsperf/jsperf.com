@@ -48,7 +48,7 @@
     "hapi-auth-cookie": "7.0.0",
     "hapi-qs": "^1.1.2",
     "highlight.js": "^9.8.0",
-    "hoek": "4.1.1",
+    "hoek": "^4.2.0",
     "inert": "^4.2.1",
     "joi": "^10.0.1",
     "jsesc": "^2.3.0",
