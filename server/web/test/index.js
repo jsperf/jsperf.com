@@ -23,7 +23,7 @@ exports.register = function (server, options, next) {
         var stripped = false;
 
         if (hasPrep) {
-          const reScripts = new RegExp(regex.script, 'i');
+          const reScripts = new RegExp(regex.script, 'gi');
           stripped = page.initHTML.replace(reScripts, '');
 
           var swappedScripts = [];
@@ -42,7 +42,7 @@ exports.register = function (server, options, next) {
               }
             ),
             true
-          ).value.replace(/@jsPerfTagToken/, () => swappedScripts.pop());
+          ).value.replace(/@jsPerfTagToken/g, () => swappedScripts.pop());
         }
 
         // update hits once per page per session
