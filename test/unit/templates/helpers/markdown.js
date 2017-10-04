@@ -1,20 +1,14 @@
-var Lab = require('lab');
-var Code = require('code');
-var proxyquire = require('proxyquire');
+const Lab = require('lab');
+const Code = require('code');
+const markdown = require('../../../../templates/helpers/markdown');
 
-var markdown = proxyquire('../../../../templates/helpers/markdown', {
-  'marked': function () {
-    return '<strong>word</strong>';
-  }
-});
+const { experiment, test } = exports.lab = Lab.script();
 
-var lab = exports.lab = Lab.script();
+experiment('Template Helper markdown', function () {
+  test('returns marked safe string', function (done) {
+    const res = markdown('hello **world**');
 
-lab.experiment('Template Helper markdown', function () {
-  lab.test('returns marked safe string', function (done) {
-    var res = markdown('*word*');
-
-    Code.expect(res.toString()).to.equal('<strong>word</strong>');
+    Code.expect(res.toString()).to.equal('<p>hello <strong>word</strong></p>\n');
 
     done();
   });

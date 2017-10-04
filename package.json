@@ -54,7 +54,7 @@
     "jsesc": "^2.3.0",
     "lodash.assign": "4.2.0",
     "lodash.omit": "4.5.0",
-    "marked": "0.3.6",
+    "marky-markdown": "^11.3.2",
     "mysql": "^2.14.1",
     "scooter": "4.0.0",
     "umzug": "2.0.1",
