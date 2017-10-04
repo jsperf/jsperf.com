@@ -8,7 +8,7 @@ experiment('Template Helper markdown', function () {
   test('returns marked safe string', function (done) {
     const res = markdown('hello **world**');
 
-    Code.expect(res.toString()).to.equal('<p>hello <strong>word</strong></p>\n');
+    Code.expect(res.toString()).to.equal('<p>hello <strong>world</strong></p>\n');
 
     done();
   });
