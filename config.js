@@ -37,7 +37,7 @@ const envSchema = Joi.object().keys({
 const result = Joi.validate(process.env, envSchema);
 
 if (result.error) {
-  throw new Error(`${result.error.details[0].path} environment variable is missing`);
+  throw new Error(`${result.error.details[0].path[0]} environment variable is missing`);
 }
 
 var Confidence = require('confidence');
