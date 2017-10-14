@@ -57,7 +57,7 @@ exports.register = function (server, options, next) {
           try {
             const valErr = er.details[0];
 
-            switch (valErr.path) {
+            switch (valErr.path[0]) {
               case 'title':
                 errObj.titleError = defaults.errors.title;
                 break;

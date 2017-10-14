@@ -1,4 +1,4 @@
-var marked = require('marked');
-var Handlebars = require('handlebars');
+const marky = require('marky-markdown');
+const Handlebars = require('handlebars');
 
-module.exports = (content) => new Handlebars.SafeString(marked(content));
+module.exports = (content) => new Handlebars.SafeString(marky(content));

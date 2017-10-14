@@ -44,6 +44,13 @@ In one terminal, have jsPerf running (`npm start`). In another, have webdriver-m
 SELENIUM_SERVER=http://127.0.0.1:4444/wd/hub npm run test-e2e
 ```
 
+### Known Globals
+
+Lab detects global variable leaks. Sometimes downstream dependencies make this unavoidable so we ignore specific variables in the `lab` command for `npm test` (`package.json#scripts.test`). Here are the known globals with explanations:
+
+- `__core-js_shared__` stems from `core-js`?
+- `__grim__` stems from `grim`, a dependency of `marky-markdown` (`npm ls grim`)
+
 ## Adding new dependencies
 
 Install using `npm` and either `--save` or `--save-dev`. **Do not edit `package.json` manually.**

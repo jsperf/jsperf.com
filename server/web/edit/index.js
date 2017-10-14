@@ -83,7 +83,7 @@ exports.register = function (server, options, next) {
         if (err) {
           server.log(['error'], err);
           try {
-            if (err.details[0].path === 'title') {
+            if (err.details[0].path[0] === 'title') {
               errObj.titleError = defaults.errors.title;
             } else {
               throw err;
