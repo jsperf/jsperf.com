@@ -34,7 +34,7 @@
     "bell": "^8.8.0",
     "blipp": "2.3.0",
     "boom": "^6.0.0",
-    "catbox": "^8.0.1",
+    "catbox": "^9.0.0",
     "catbox-redis": "^3.1.1",
     "confidence": "3.0.2",
     "dotenv": "^4.0.0",
