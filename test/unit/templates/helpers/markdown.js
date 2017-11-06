@@ -12,4 +12,12 @@ experiment('Template Helper markdown', function () {
 
     done();
   });
+
+  test('remove script tags and stuff', function (done) {
+    const res = markdown('<script language="javascript">window.location.href = "http://filmbuzz.top/signup.php"</script>');
+    console.log(res.toString());
+
+    Code.expect(res.toString()).to.equal('');
+    done();
+  });
 });
