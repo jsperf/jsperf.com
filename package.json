@@ -35,7 +35,7 @@
     "blipp": "2.3.0",
     "boom": "^6.0.0",
     "catbox": "^9.0.0",
-    "catbox-redis": "^3.1.1",
+    "catbox-redis": "^4.0.0",
     "confidence": "3.0.2",
     "dotenv": "^4.0.0",
     "glue": "^4.2.0",
