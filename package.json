@@ -60,7 +60,7 @@
     "umzug": "2.0.1",
     "vision": "^4.1.1",
     "visionary": "^6.0.2",
-    "yar": "^8.1.1"
+    "yar": "^9.0.0"
   },
   "devDependencies": {
     "benchmark": "2.1.4",
