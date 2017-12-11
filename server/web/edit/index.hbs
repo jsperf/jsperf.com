@@ -136,7 +136,8 @@ This edit will create a new revision.
         <div>
           <label for="test[{{@index}}][defer]">Async </label>
           <label class="inline">
-            <input type="checkbox" value="y" {{#compare defer "y" operator="==="}} checked{{/compare}}> (check if this is an <a href="/faq#async">asynchronous test</a>)
+            <input type="checkbox" value="y" name="test[{{@index}}][defer]" id="test[{{@index}}][defer]" {{#compare defer "y" operator="==="}} checked{{/compare}}>
+            (check if this is an <a href="/faq#async">asynchronous test</a>)
           </label>
         </div>
         <div>
