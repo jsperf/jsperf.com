@@ -1,7 +1,8 @@
 {
   "name": "jsperf.com",
   "version": "2.0.0",
-  "description": "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
+  "description":
+    "jsPerf aims to provide an easy way to create and share test cases, comparing the performance of different JavaScript snippets by running benchmarks",
   "engines": {
     "node": "8.x.x"
   },
@@ -9,22 +10,19 @@
     "build": "gulp",
     "lint": "lab -d -L",
     "start": "node server.js",
-    "test": "lab -I __core-js_shared__,__grim__ -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
+    "test":
+      "lab -I __core-js_shared__,__grim__ -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
     "test-e2e": "lab -L -m 30000 -M 10000 test/e2e",
     "snyk-protect": "snyk protect",
-    "deploy": "now --public -e NODE_ENV=production -e SCHEME=https -e DOMAIN=jsperf.com -e GITHUB_CALLBACK=https://jsperf.com -e MYSQL_USER=@jsperf-db-user -e MYSQL_PASSWORD=@jsperf-db-pass -e MYSQL_DATABASE=@jsperf-db-db -e MYSQL_HOST=@jsperf-db-host -e MYSQL_PORT=@jsperf-db-port -e LOGGLY_TOKEN=@jsperf-loggly-token -e LOGGLY_SUBDOMAIN=@jsperf-loggly-subdomain -e REDIS_HOST=@jsperf-redis-host -e REDIS_PORT=@jsperf-redis-port -e REDIS_PASSWORD=@jsperf-redis-password -e GITHUB_CLIENT_ID=@jsperf-github-id -e GITHUB_CLIENT_SECRET=@jsperf-github-secret -e BROWSERSCOPE=@jsperf-browserscope -e BELL_COOKIE_PASS=@jsperf-bell-pass -e COOKIE_PASS=@jsperf-cookie-pass",
+    "deploy": "now",
     "watch": "nodemon -e js,hbs server.js"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:jsperf/jsperf.com.git"
   },
-  "keywords": [
-    "jsperf"
-  ],
-  "contributors": [
-    "Max Beatty"
-  ],
+  "keywords": ["jsperf"],
+  "contributors": ["Max Beatty"],
   "bugs": {
     "url": "https://github.com/jsperf/jsperf.com/issues"
   },
@@ -94,6 +92,28 @@
   },
   "snyk": true,
   "now": {
-    "alias": "jsperf.com"
+    "alias": "jsperf.com",
+    "env": {
+      "NODE_ENV": "production",
+      "SCHEME": "https",
+      "DOMAIN": "jsperf.com",
+      "GITHUB_CLIENT_ID": "@jsperf-github-id",
+      "GITHUB_CLIENT_SECRET": "@jsperf-github-secret",
+      "GITHUB_CALLBACK": "https://jsperf.com",
+      "BROWSERSCOPE": "@jsperf-browserscope",
+      "BELL_COOKIE_PASS": "@jsperf-bell-pass",
+      "COOKIE_PASS": "@jsperf-cookie-pass",
+      "MYSQL_USER": "@jsperf-db-user",
+      "MYSQL_PASSWORD": "@jsperf-db-pass",
+      "MYSQL_DATABASE": "@jsperf-db-db",
+      "MYSQL_HOST": "@jsperf-db-host",
+      "MYSQL_PORT": "@jsperf-db-port",
+      "LOGGLY_TOKEN": "@jsperf-loggly-token",
+      "LOGGLY_SUBDOMAIN": "@jsperf-loggly-subdomain",
+      "REDIS_HOST": "@jsperf-redis-host",
+      "REDIS_PORT": "@jsperf-redis-port",
+      "REDIS_PASSWORD": "@jsperf-redis-password"
+    },
+    "public": true
   }
 }
