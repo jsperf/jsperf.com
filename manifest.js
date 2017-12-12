@@ -52,7 +52,11 @@ var manifest = {
                   threshold: 20,
                   maxDelay: 15000
                 }]
-              }]
+              }],
+              console: [
+                { module: 'good-console' },
+                'stdout'
+              ]
             },
             $default: {
               console: [

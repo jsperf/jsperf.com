@@ -9,7 +9,7 @@ const prodOptional = {
 
 const envSchema = Joi.object().keys({
   SCHEME: Joi.string().valid('http', 'https').optional().default('http'),
-  NODE_ENV: Joi.string().required(),
+  NODE_ENV: Joi.string().optional().default('development'),
   PORT: Joi.number().optional().default(3000),
   DOMAIN: Joi.string().optional().default('localhost'),
   GITHUB_CLIENT_SECRET: Joi.string().required(),
