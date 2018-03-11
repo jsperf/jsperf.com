@@ -168,12 +168,12 @@ lab.experiment('Tests Repository', function () {
         });
     });
 
-    lab.test('updates test if it is an existing test', function (done) {
+    lab.test('updates test if it is an existing test and the same owner', function (done) {
       genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
       let tClone = Hoek.clone(t);
       tClone[0].testID = 123;
       tClone[1].testID = 321;
-      tests.bulkUpdate(pageID, tClone, false)
+      tests.bulkUpdate(pageID, tClone, true)
         .then(results => {
           const call1 = genericQueryStub.getCall(0).args;
           const call2 = genericQueryStub.getCall(1).args;
@@ -182,6 +182,24 @@ lab.experiment('Tests Repository', function () {
           Code.expect(call2[1]).to.equal(['tests']);
           Code.expect(call1[0]).to.equal('UPDATE ?? SET title = `t1`, defer =  `n` , code =  `a = 1` WHERE pageID = 1 AND testID = 123');
           Code.expect(call1[1]).to.equal(['tests']);
+          done();
+        });
+    });
+
+    lab.test('inserts new test if user is not the original owner', function (done) {
+      genericQueryStub.returns(Promise.resolve({ affectedRows: 1 }));
+      let tClone = Hoek.clone(t);
+      tClone[0].testID = 123;
+      tClone[1].testID = 321;
+      tests.bulkUpdate(pageID, tClone, false)
+        .then(results => {
+          const call1 = genericQueryStub.getCall(0).args;
+          const call2 = genericQueryStub.getCall(1).args;
+          Code.expect(call2[0]).to.equal('INSERT INTO ?? (??) VALUES (1, `t2`, `n`, `a = 2`)');
+          Code.expect(call2[1]).to.equal([ 'tests', [ 'pageID', 'title', 'defer', 'code' ] ]);
+
+          Code.expect(call1[0]).to.equal('INSERT INTO ?? (??) VALUES (1, `t1`, `n`, `a = 1`)');
+          Code.expect(call1[1]).to.equal([ 'tests', [ 'pageID', 'title', 'defer', 'code' ] ]);
           done();
         });
     });
