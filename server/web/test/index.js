@@ -125,6 +125,8 @@ exports.register = function (server, options, next) {
 
       getTestPage(request)
         .then((model) => {
+          request.payload.authorGitHub = request.auth.credentials.username;
+
           const result = Joi.validate(request.payload, schema.comment, {abortEarly: false});
           if (result.error) {
             let errObj = {};

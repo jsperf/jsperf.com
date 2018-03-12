@@ -37,6 +37,7 @@ exports.testPageContext = {
   genError: null,
   slugPattern: regex.slug,
   author: '',
+  authorGitHub: '',
   authorEmail: '',
   authorURL: '',
   title: '',

@@ -274,7 +274,7 @@ lab.experiment('Pages Repository', function () {
         .then(function (p) {
           Code.expect(p).to.be.array();
           Code.expect(genericQueryStub.calledWithExactly(
-            'SELECT published, updated, author, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
+            'SELECT published, updated, author, authorGitHub, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
             [slug]
           )).to.be.true();
 
@@ -293,7 +293,7 @@ lab.experiment('Pages Repository', function () {
         .then(p => {
           Code.expect(p).to.be.array();
           Code.expect(genericQueryStub.calledWithExactly(
-            'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
+            'SELECT published, updated, author, authorGitHub, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
             [slug, 'y']
           )).to.be.true();
 

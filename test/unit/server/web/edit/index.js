@@ -379,7 +379,7 @@ lab.experiment('POST', function () {
     request = {
       method: 'POST',
       url: '/wee/1/edit',
-      credentials: {'test': 'profile'},
+      credentials: {'username': 'koolaidman', 'test': 'profile'},
       payload: {
         author: 'Pitcher Man',
         authorEmail: 'kool-aid@kraft.com',
