@@ -8,16 +8,18 @@
 
 1. [Node.js](https://nodejs.org/en/) (see preferred version in [`.nvmrc`](https://github.com/jsperf/jsperf.com/blob/master/.nvmrc))
 2. [MySQL](https://dev.mysql.com/downloads/mysql/)
-  1. Install
-    1. macOS: `brew install mysql`
-  2. Initialize: `mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"`
+    1. Install
+        1. macOS: `brew install mysql`
+    2. If you are upgrading an older version of mysql on your computer and you run into an error complaining about the Column count of mysql.user being wrong, try running `mysql_upgrade -uroot -p` See: https://stackoverflow.com/questions/43846950/column-count-of-mysql-user-is-wrong-expected-42-found-44-the-table-is-probabl for more information.
+    3. Initialize: `mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"`
 3. Get a [Browserscope.org](https://www.browserscope.org/) API key by signing in and going to [the settings page](https://www.browserscope.org/user/settings).
 4. Register a [new OAuth GitHub application](https://github.com/settings/applications/new). Leave the callback URL blank. Copy the "Client ID" and "Client Secret".
 
 ### Setup
-
-1. Install dependencies: `npm install`
-2. Create a `.env` file (will be ignored by git) with the following variables (`VAR_NAME=value`):
+1. Clone the repository by typing `git clone git@github.com:jsperf/jsperf.com.git` or fork and clone your forked repostiory.
+2. Install dependencies: `npm install`
+    1. If you run into errors involving node-gyp and incompatible python versions, run `npm install --python=python2.7`
+3. Create a `.env` file (will be ignored by git) with the following variables (`VAR_NAME=value`):
 
 ```
 NODE_ENV=development
