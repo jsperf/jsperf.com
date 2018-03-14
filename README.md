@@ -58,7 +58,7 @@ COOKIE_PASS=password-should-be-32-characters
 npm start
 ```
 
-Hopefully everything smoothly started up and you're ready to start [contributing](CONTRIBUTING.md).
+Hopefully everything smoothly started up and you're ready to start [contributing](CONTRIBUTING.md). If not, check out the [wiki](https://github.com/jsperf/jsperf.com/wiki/Local-Development-Debugging) for debugging tips.
 
 ## Sponsorship
 
