@@ -13,7 +13,8 @@
     "test-e2e": "lab -L -m 30000 -M 10000 test/e2e",
     "snyk-protect": "snyk protect",
     "deploy": "now",
-    "watch": "nodemon -e js,hbs server.js"
+    "watch": "nodemon -e js,hbs server.js",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -60,7 +61,8 @@
     "umzug": "2.0.1",
     "vision": "^4.1.1",
     "visionary": "^6.0.2",
-    "yar": "^8.1.1"
+    "yar": "^8.1.1",
+    "snyk": "^1.87.0"
   },
   "devDependencies": {
     "benchmark": "2.1.4",
@@ -89,8 +91,7 @@
     "proxyquire": "1.8.0",
     "saucelabs": "^1.3.0",
     "selenium-webdriver": "^3.6.0",
-    "sinon": "^4.4.5",
-    "snyk": "^1.70.0"
+    "sinon": "^4.4.5"
   },
   "snyk": true,
   "now": {
