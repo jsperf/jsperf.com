@@ -62,7 +62,7 @@
     "vision": "^4.1.1",
     "visionary": "^6.0.2",
     "yar": "^8.1.1",
-    "snyk": "^1.87.0"
+    "snyk": "^1.88.1"
   },
   "devDependencies": {
     "benchmark": "2.1.4",
