@@ -1,6 +1,4 @@
-# jsperf.com [![Greenkeeper badge](https://badges.greenkeeper.io/jsperf/jsperf.com.svg)](https://greenkeeper.io/) [![Build Status](https://travis-ci.org/jsperf/jsperf.com.svg?branch=master)](https://travis-ci.org/jsperf/jsperf.com) [![Test Coverage](https://codeclimate.com/github/jsperf/jsperf.com/badges/coverage.svg)](https://codeclimate.com/github/jsperf/jsperf.com) [![Code Climate](https://codeclimate.com/github/jsperf/jsperf.com/badges/gpa.svg)](https://codeclimate.com/github/jsperf/jsperf.com) [![NSP Status](https://nodesecurity.io/orgs/jsperf/projects/27e175d1-4baf-420e-9317-f480737ad163/badge)](https://nodesecurity.io/orgs/jsperf/projects/27e175d1-4baf-420e-9317-f480737ad163)
-
-[Chat on `irc.freenode.net` in the `#jsperf` channel](https://webchat.freenode.net/?channels=jsperf).
+# jsperf.com [![Greenkeeper badge](https://badges.greenkeeper.io/jsperf/jsperf.com.svg)](https://greenkeeper.io/) [![Build Status](https://travis-ci.org/jsperf/jsperf.com.svg?branch=master)](https://travis-ci.org/jsperf/jsperf.com) [![Test Coverage](https://codeclimate.com/github/jsperf/jsperf.com/badges/coverage.svg)](https://codeclimate.com/github/jsperf/jsperf.com) [![Code Climate](https://codeclimate.com/github/jsperf/jsperf.com/badges/gpa.svg)](https://codeclimate.com/github/jsperf/jsperf.com)
 
 ## How to run a local copy of jsPerf
 
