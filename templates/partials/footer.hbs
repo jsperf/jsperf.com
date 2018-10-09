@@ -16,9 +16,9 @@
             <a href="/">Add</a>
           </li>
 
-          {{#if authorGitHub}}
+          {{#if credentials}}
             <li>
-              <a href="/browse/{{authorGitHub}}">My tests</a>
+              <a href="/browse/{{credentials.username}}">My tests</a>
             </li>
           {{/if}}
 

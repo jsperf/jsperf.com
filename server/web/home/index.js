@@ -104,12 +104,12 @@ exports.register = function (server, options, next) {
                     slugError: defaults.errors.slugDupe
                   });
                 } else {
+                  payload.author = request.auth.credentials.username;
                   return pagesService.create(payload)
                     .then(resultPageId => {
                       const own = request.yar.get('own') || {};
                       own[resultPageId] = true;
                       request.yar.set('own', own);
-                      request.yar.set('authorGitHub', payload.authorGitHub.replace(/[^a-zA-Z0-9-]/, ''));
                       reply.redirect('/' + payload.slug);
                     });
                 }

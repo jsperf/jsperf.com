@@ -129,7 +129,6 @@ exports.register = function (server, options, next) {
                 return pagesService.edit(pageWithTests, update, prevPage.maxRev, prevPage.id);
               })
               .then(resultingRevision => {
-                request.yar.set('authorGitHub', pageWithTests.authorGitHub.replace(/[^a-zA-Z0-9-]/, ''));
                 const r = resultingRevision > 1 ? `/${resultingRevision}` : '';
 
                 reply.redirect(`/${request.params.testSlug}${r}`);
