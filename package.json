@@ -11,10 +11,7 @@
     "start": "node server.js",
     "test": "lab -I __core-js_shared__,__grim__ -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
     "test-e2e": "lab -L -m 30000 -M 10000 test/e2e",
-    "snyk-protect": "snyk protect",
-    "deploy": "now",
-    "watch": "nodemon -e js,hbs server.js",
-    "prepare": "npm run snyk-protect"
+    "watch": "nodemon -e js,hbs server.js"
   },
   "repository": {
     "type": "git",
@@ -22,9 +19,6 @@
   },
   "keywords": [
     "jsperf"
-  ],
-  "contributors": [
-    "Max Beatty"
   ],
   "bugs": {
     "url": "https://github.com/jsperf/jsperf.com/issues"
@@ -61,8 +55,7 @@
     "umzug": "2.0.1",
     "vision": "^4.1.1",
     "visionary": "^6.0.2",
-    "yar": "^8.1.1",
-    "snyk": "^1.88.1"
+    "yar": "^8.1.1"
   },
   "devDependencies": {
     "benchmark": "2.1.4",
@@ -93,7 +86,6 @@
     "selenium-webdriver": "^3.6.0",
     "sinon": "^4.4.5"
   },
-  "snyk": true,
   "now": {
     "alias": "jsperf.com",
     "env": {
