@@ -1,31 +1,7 @@
 language: node_js
 
-# addons:
-#   sauce_connect: true
-#
-# services:
-#   - mysql
-#
-# before_install:
-#   - mysql -uroot -e "CREATE DATABASE jsperf; GRANT ALL ON jsperf.* TO 'jsuser'@'localhost' IDENTIFIED BY 'jspass'; FLUSH PRIVILEGES;"
-#
-# env:
-#   - NODE_ENV=test PORT=3000 MYSQL_USER=jsuser MYSQL_PASSWORD=jspass MYSQL_DATABASE=jsperf GITHUB_CALLBACK=http://localhost:3000 BELL_COOKIE_PASS=password-should-be-32-characters COOKIE_PASS=password-should-be-32-characters
-
-before_install:
-  - npm install -g greenkeeper-lockfile@1
-
-before_script:
-  - greenkeeper-lockfile-update
-
-script:
-  - npm test
-  # - npm start &
-  # - sleep 3
-  # - curl -v http://localhost:3000/health
-  # - npm run test-e2e
+sudo: false
 
 after_script:
-  - greenkeeper-lockfile-upload
   - npm install -g codeclimate-test-reporter
   - codeclimate-test-reporter < lcov.info || echo "Could not upload code coverage to CodeClimate"
