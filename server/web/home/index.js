@@ -49,6 +49,8 @@ exports.register = function (server, options, next) {
         }, errObj)).code(400);
       };
 
+      request.payload.authorGitHub = request.auth.credentials.username;
+
       Joi.validate(request.payload, schema.testPage, function (er, pageWithTests) {
         let errObj = {};
         if (er) {
@@ -107,7 +109,7 @@ exports.register = function (server, options, next) {
                       const own = request.yar.get('own') || {};
                       own[resultPageId] = true;
                       request.yar.set('own', own);
-                      request.yar.set('authorSlug', payload.author.replace(' ', '-').replace(/[^a-zA-Z0-9 -]/, ''));
+                      request.yar.set('authorGitHub', payload.authorGitHub.replace(/[^a-zA-Z0-9-]/, ''));
                       reply.redirect('/' + payload.slug);
                     });
                 }

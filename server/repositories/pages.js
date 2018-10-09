@@ -54,16 +54,18 @@ exports.register = function (server, options, next) {
     // WHERE
     //   author LIKE '%{{author}}%'
     //   OR author LIKE '{{author}}'
+    //   OR authorGitHub = '{{author}}'
     //   AND updated IN (SELECT MAX(updated) FROM pages WHERE visible = 'y' GROUP BY slug)
     //   AND visible = 'y'
     // ORDER BY updated DESC
 
     var wcAuthor = '%' + author + '%';
     var a = author.trim().replace('-', '%');
+    var gh = author.trim();
 
     return db.genericQuery(
-      "SELECT id AS pID, slug AS url, revision, title, published, updated, author, (SELECT COUNT(*) FROM pages WHERE slug = url AND visible = 'y') AS revisionCount, (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount FROM pages WHERE author LIKE ? OR author LIKE ? AND updated IN (SELECT MAX(updated) FROM pages WHERE visible = 'y' GROUP BY slug) AND visible = 'y' ORDER BY updated DESC",
-      [wcAuthor, a]
+      "SELECT id AS pID, slug AS url, revision, title, published, updated, author, authorGitHub, (SELECT COUNT(*) FROM pages WHERE slug = url AND visible = 'y') AS revisionCount, (SELECT COUNT(*) FROM tests WHERE pageID = pID) AS testCount FROM pages WHERE (author LIKE ? OR author LIKE ? OR authorGitHub = ?) AND updated IN (SELECT MAX(updated) FROM pages WHERE visible = 'y' GROUP BY slug) AND visible = 'y' ORDER BY updated DESC",
+      [wcAuthor, a, gh]
     );
   });
 
@@ -119,7 +121,7 @@ exports.register = function (server, options, next) {
     server.log(['debug'], `${name}::findBySlug: ${JSON.stringify(arguments)}`);
 
     return db.genericQuery(
-      'SELECT published, updated, author, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
+      'SELECT published, updated, author, authorGitHub, authorEmail, authorURL, revision, visible, title FROM pages WHERE slug = ? ORDER BY published ASC',
       [slug]
     );
   });
@@ -128,7 +130,7 @@ exports.register = function (server, options, next) {
     server.log(['debug'], `${name}::findBySlug: ${JSON.stringify(arguments)}`);
 
     return db.genericQuery(
-      'SELECT published, updated, author, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
+      'SELECT published, updated, author, authorGitHub, authorEmail, revision, visible, title FROM pages WHERE slug = ? AND visible = ? ORDER BY published ASC',
       [slug, 'y']
     );
   });

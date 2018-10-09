@@ -85,5 +85,6 @@ module.exports = {
     // resource path
     '(?:/\\S*)?' + '$',
   slug: '[A-Za-z0-9](?:-?[A-Za-z0-9])*',
-  script: '(<script[^>]*?>)([\\s\\S]*?)(</script>)'
+  script: '(<script[^>]*?>)([\\s\\S]*?)(</script>)',
+  github: '(?=^.{0,39}$)[A-Za-z0-9]+(-?[A-Za-z0-9])+$'
 };

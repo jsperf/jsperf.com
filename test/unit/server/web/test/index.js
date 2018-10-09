@@ -560,7 +560,7 @@ lab.experiment('create comment', () => {
 
   lab.experiment('when authorized', () => {
     lab.beforeEach(done => {
-      request.credentials = {'test': 'profile'};
+      request.credentials = {'username': 'somerandomaccount', 'test': 'profile'};
       done();
     });
 

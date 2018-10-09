@@ -10,6 +10,7 @@ exports.register = function (server, options, next) {
       author: payload.author,
       authorEmail: payload.authorEmail,
       authorURL: payload.authorURL,
+      authorGitHub: payload.authorGitHub,
       content: payload.message,
       ip,
       published: new Date()

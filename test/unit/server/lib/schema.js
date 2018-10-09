@@ -31,6 +31,7 @@ lab.experiment('Schema Library', function () {
           author: 'Pitcher Man',
           authorEmail: 'kool-aid@kraft.com',
           authorURL: 'http://kool-aid.com',
+          authorGitHub: 'koolaidman',
           title: 'oh',
           slug: 'wee',
           info: '',

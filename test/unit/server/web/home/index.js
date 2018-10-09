@@ -117,7 +117,7 @@ lab.experiment('home', function () {
       request = {
         method: 'POST',
         url: '/',
-        credentials: {'test': 'profile'},
+        credentials: {'username': 'koolaidman', 'test': 'profile'},
         payload: {
           author: 'Pitcher Man',
           authorEmail: 'kool-aid@kraft.com',

@@ -90,19 +90,19 @@ exports.register = function (server, options, next) {
 
   server.route({
     method: 'GET',
-    path: '/browse/{authorSlug}',
+    path: '/browse/{authorGitHub}',
     handler: function (request, reply) {
-      pagesRepo.getLatestVisibleForAuthor(request.params.authorSlug)
+      pagesRepo.getLatestVisibleForAuthor(request.params.authorGitHub)
         .then(function (rows) {
           if (rows.length === 0) {
             reply(Boom.notFound('The author was not found'));
           } else {
             reply.view('browse/author', {
-              headTitle: 'Test cases by ' + request.params.authorSlug,
+              headTitle: 'Test cases by ' + request.params.authorGitHub,
               showAtom: {
-                slug: 'browse/' + request.params.authorSlug
+                slug: 'browse/' + request.params.authorGitHub
               },
-              author: request.params.authorSlug,
+              author: request.params.authorGitHub,
               pages: rows
             });
           }
@@ -115,14 +115,14 @@ exports.register = function (server, options, next) {
 
   server.route({
     method: 'GET',
-    path: '/browse/{authorSlug}.atom',
+    path: '/browse/{authorGitHub}.atom',
     handler: function (request, reply) {
-      pagesRepo.getLatestVisibleForAuthor(request.params.authorSlug)
+      pagesRepo.getLatestVisibleForAuthor(request.params.authorGitHub)
         .then(function (rows) {
           var updated = getUpdatedDate(rows);
 
           reply.view('browse/author-atom', {
-            author: request.params.authorSlug,
+            author: request.params.authorGitHub,
             update: updated.toISOString,
             pages: rows
           }, {
