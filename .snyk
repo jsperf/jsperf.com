@@ -3,6 +3,9 @@ version: v1.12.0
 ignore: {}
 # patches apply the minimum changes required to fix a vulnerability
 patch:
+  'npm:tunnel-agent:20170305':
+    - good-loggly > loggly > request > tunnel-agent:
+        patched: '2018-06-28T22:39:19.924Z'
   'npm:lodash:20180130':
     - marky-markdown > highlights > first-mate-select-grammar > lodash:
         patched: '2018-07-05T22:41:04.529Z'
