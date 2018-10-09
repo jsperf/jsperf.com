@@ -15,7 +15,7 @@ exports.register = function (server, options, next) {
     server.expose('set', client.set.bind(client));
     server.expose('drop', client.drop.bind(client));
 
-    client.start(next);
+    client.start().then(next).catch(next);
   } else {
     server.log('info', 'no redis config provided. caching disabled');
     server.expose('get', (key, callback) => { callback(null, null); });
