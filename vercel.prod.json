@@ -1,5 +1,5 @@
 {
-    "name": "JSPerf",
+    "name": "jsPerf",
     "version": 2,
     "public": true,
     "alias": ["jsperf.com"],
