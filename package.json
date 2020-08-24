@@ -25,6 +25,9 @@
   },
   "license": "MIT",
   "homepage": "https://github.com/jsperf/jsperf.com",
+  "resolutions": {
+    "@npmcorp/marky-markdown/**/oniguruma": "^7.2.1"
+  },
   "dependencies": {
     "@npmcorp/marky-markdown": "^12.0.3",
     "bell": "^8.8.0",
