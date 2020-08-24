@@ -26,7 +26,7 @@
   "license": "MIT",
   "homepage": "https://github.com/jsperf/jsperf.com",
   "resolutions": {
-    "gulp/**/graceful-fs": "^4.2.4",
+    "graceful-fs": "^4.2.4",
     "@npmcorp/marky-markdown/**/oniguruma": "^7.2.1"
   },
   "dependencies": {
