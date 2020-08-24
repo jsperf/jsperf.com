@@ -44,7 +44,7 @@
     "good-console": "^6.4.0",
     "good-loggly": "3.1.0",
     "good-squeeze": "^5.1.0",
-    "gulp": "^4.0.2",
+    "gulp": "3.9.1",
     "handlebars": "^4.0.12",
     "hapi": "^16.6.2",
     "hapi-auth-cookie": "7.0.0",
