@@ -1,12 +1,9 @@
 {
+  "name": "jsPerf",
+  "version": 2,
   "public": true,
-  "type": "docker",
-  "features": {
-    "cloud": "v2"
-  },
-  "alias": "jsperf.com",
+  "alias": ["jsperf.com"],
   "env": {
-    "NODE_ENV": "production",
     "SCHEME": "https",
     "DOMAIN": "jsperf.com",
     "GITHUB_CLIENT_ID": "@jsperf-github-id",
