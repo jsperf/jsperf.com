@@ -9,9 +9,8 @@
     }
   ],
   "routes": [
-    { "handle": "filesystem" },
     {
-      "src": "/.*",
+      "src": "/(.*)",
       "dest": "server.js"
     }
   ],
