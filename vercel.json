@@ -2,6 +2,18 @@
   "name": "jsPerf",
   "version": 2,
   "public": true,
+  "builds": [
+    {
+      "src": "./server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ],
   "alias": ["jsperf.com"],
   "env": {
     "SCHEME": "https",
