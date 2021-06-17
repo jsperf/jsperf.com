@@ -1,5 +1,4 @@
 {
-  "name": "jsPerf",
   "version": 2,
   "public": true,
   "builds": [
@@ -14,7 +13,6 @@
       "dest": "server.js"
     }
   ],
-  "alias": ["jsperf.com"],
   "env": {
     "SCHEME": "https",
     "DOMAIN": "jsperf.com",
