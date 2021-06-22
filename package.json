@@ -48,7 +48,7 @@
     "handlebars": "^4.0.12",
     "hapi": "^16.6.2",
     "hapi-auth-cookie": "7.0.0",
-    "hapi-qs": "^1.1.2",
+    "hapi-qs": "^2.0.1",
     "highlight.js": "^9.8.0",
     "hoek": "^5.0.4",
     "inert": "^4.2.1",
