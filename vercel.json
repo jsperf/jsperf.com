@@ -2,11 +2,16 @@
   "name": "jsPerf",
   "version": 2,
   "public": true,
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }],
   "builds": [
     {
-      "src": "./server.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/index.js"
     }
   ],
   "alias": ["jsperf.com"],
