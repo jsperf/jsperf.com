@@ -78,7 +78,7 @@ var manifest = {
             hbs: 'handlebars'
           },
           relativeTo: __dirname,
-          path: './server/web',
+          path: '../server/web',
           layout: true,
           helpersPath: 'templates/helpers',
           partialsPath: 'templates/partials',
@@ -109,7 +109,7 @@ var manifest = {
     { plugin: 'hapi-auth-cookie' },
     {
       plugin: {
-        register: './server/web/auth/strategies',
+        register: '../server/web/auth/strategies',
         options: {
           session: {
             password: config.get('/auth/session/pass'),
@@ -128,7 +128,7 @@ var manifest = {
     },
     {
       plugin: {
-        register: './server/lib/db',
+        register: '../server/lib/db',
         options: {
           host: config.get('/mysql/host'),
           port: config.get('/mysql/port'),
@@ -141,7 +141,7 @@ var manifest = {
     },
     {
       plugin: {
-        register: './server/repositories/browserscope',
+        register: '../server/repositories/browserscope',
         options: {
           api_key: config.get('/browserscope'),
           scheme: config.get('/scheme'),
@@ -151,7 +151,7 @@ var manifest = {
     },
     {
       plugin: {
-        register: './server/lib/cache',
+        register: '../server/lib/cache',
         options: {
           host: config.get('/cache/host'),
           port: config.get('/cache/port'),
@@ -160,30 +160,30 @@ var manifest = {
         }
       }
     },
-    { plugin: './server/repositories/comments' },
-    { plugin: './server/repositories/pages' },
-    { plugin: './server/repositories/tests' },
-    { plugin: './server/services/comments' },
-    { plugin: './server/services/pages' },
-    { plugin: './server/api/json' },
-    { plugin: './server/web/auth/github' },
-    { plugin: './server/web/browse' },
-    { plugin: './server/web/comment' },
-    { plugin: './server/web/contributors' },
-    { plugin: './server/web/errors' },
-    { plugin: './server/web/faq' },
-    { plugin: './server/web/health' },
-    { plugin: './server/web/home' },
-    { plugin: './server/web/popular' },
-    { plugin: './server/web/public' },
-    { plugin: './server/web/redirects' },
-    { plugin: './server/web/search' },
-    { plugin: './server/web/sitemap/xml' },
-    { plugin: './server/web/sponsor' },
-    { plugin: './server/web/test' },
-    { plugin: './server/web/testimonials' },
-    { plugin: './server/web/edit' },
-    { plugin: './server/web/delete' }
+    { plugin: '../server/repositories/comments' },
+    { plugin: '../server/repositories/pages' },
+    { plugin: '../server/repositories/tests' },
+    { plugin: '../server/services/comments' },
+    { plugin: '../server/services/pages' },
+    { plugin: '../server/api/json' },
+    { plugin: '../server/web/auth/github' },
+    { plugin: '../server/web/browse' },
+    { plugin: '../server/web/comment' },
+    { plugin: '../server/web/contributors' },
+    { plugin: '../server/web/errors' },
+    { plugin: '../server/web/faq' },
+    { plugin: '../server/web/health' },
+    { plugin: '../server/web/home' },
+    { plugin: '../server/web/popular' },
+    { plugin: '../server/web/public' },
+    { plugin: '../server/web/redirects' },
+    { plugin: '../server/web/search' },
+    { plugin: '../server/web/sitemap/xml' },
+    { plugin: '../server/web/sponsor' },
+    { plugin: '../server/web/test' },
+    { plugin: '../server/web/testimonials' },
+    { plugin: '../server/web/edit' },
+    { plugin: '../server/web/delete' }
   ]
 };
 

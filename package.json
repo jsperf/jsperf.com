@@ -8,10 +8,10 @@
   "scripts": {
     "build": "gulp",
     "lint": "lab -d -L",
-    "start": "node server.js",
+    "start": "node ./api/index.js",
     "test": "lab -I __core-js_shared__,__grim__ -t 100 -c -L -r lcov -o lcov.info -r console -o stdout -r html -o coverage.html test/unit",
     "test-e2e": "lab -L -m 30000 -M 10000 test/e2e",
-    "watch": "nodemon -e js,hbs server.js"
+    "watch": "nodemon -e js,hbs ./api/index.js"
   },
   "repository": {
     "type": "git",

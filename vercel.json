@@ -8,12 +8,6 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
-    }
-  ],
   "alias": ["jsperf.com"],
   "env": {
     "SCHEME": "https",
