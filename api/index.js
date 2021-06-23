@@ -1,4 +1,11 @@
-var composer = require('./index');
+var Glue = require('glue');
+var Manifest = require('./manifest');
+
+var composeOptions = {
+  relativeTo: __dirname
+};
+
+const composer = Glue.compose.bind(Glue, Manifest.get('/'), composeOptions);
 
 composer(function (err, server) {
   if (err) {

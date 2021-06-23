@@ -4,14 +4,14 @@
   "public": true,
   "builds": [
     {
-      "src": "./server.js",
+      "src": "api/index.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "api/index.js"
     }
   ],
   "alias": ["jsperf.com"],
